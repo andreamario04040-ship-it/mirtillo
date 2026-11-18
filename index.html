@@ -31,7 +31,7 @@
   --ok:#2F9158; --ok-su:#FFFFFF;
   --mirtillo:#4A56B5;      /* le bacche piene della difficoltà */
   --surface:#FFFFFF; --surface-2:#E6EFF9;
-  --ink:#102A4C; --ink-2:#42587A; --ink-3:#8699B2;
+  --ink:#102A4C; --ink-2:#42587A; --ink-3:#5A6E85;
   --line:#DCE7F3; --line-strong:#102A4C;
   --verde-bg:#DAF0E2; --verde-ink:#1F7045;
   --terra-bg:#FFEDD8; --terra-ink:#9A5410;
@@ -188,7 +188,9 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px}
 .meal.empty{background:transparent;box-shadow:none;border:2px dashed var(--line);color:var(--ink-3)}
 .meal.miss{background-color:var(--alert-bg);background-image:none}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
-.stat{padding:15px 8px 16px;border-radius:var(--blob-s);text-align:center;background-color:var(--salvia)}
+.stat{padding:15px 8px 16px;border-radius:var(--blob-s);text-align:center;background-color:var(--salvia);
+  border:0;font:inherit;color:inherit;cursor:pointer;display:block;width:100%}
+.stat:active{transform:scale(.97)}
 .stat:nth-child(2){border-radius:var(--blob-s2)}
 .stat:nth-child(3){border-radius:var(--blob-s3)}
 .stat .ic{display:block;font-size:30px;line-height:1;font-style:normal;margin-bottom:5px}
@@ -262,12 +264,19 @@ body.no-pad .app{padding-bottom:0;background-image:none}
   font-size:19px;font-weight:800;display:grid;place-items:center;color:var(--verde-scuro)}
 .stepper b{min-width:58px;text-align:center;font-family:var(--font-display);font-size:15px}
 /* versione compatta, per le righe della spesa a mano */
-.quanto{display:flex;align-items:center;gap:5px;flex:0 0 auto}
+.quanto{display:flex;align-items:center;gap:4px;flex:0 0 auto}
 .quanto input{width:78px;text-align:right;font-weight:800;font-size:16px;
   border:0;outline:none;background:var(--surface);color:var(--ink);
   border-radius:12px;padding:8px 9px;box-shadow:inset 0 0 0 1.5px var(--box-ingr)}
 .quanto input:focus{box-shadow:inset 0 0 0 2px var(--verde)}
+.quanto input.corto{width:42px;padding:8px 2px;text-align:center}
+.quanto .passo{width:31px;height:31px;flex:0 0 auto;border:0;border-radius:50%;
+  background:var(--surface-2);color:var(--verde-scuro);font-size:19px;font-weight:800;
+  display:grid;place-items:center;line-height:1}
+.quanto .passo:active{transform:scale(.92)}
 .quanto b{font-size:12px;font-weight:800;color:var(--ink-2);min-width:26px}
+.quanto .unit{font-size:12px;font-weight:800;color:var(--verde-scuro);min-width:34px;
+  padding:7px 5px;border-radius:9px;background:var(--verde-bg);border:0;white-space:nowrap}
 .stepper.sm{padding:3px;gap:2px}
 .stepper.sm button{width:30px;height:30px;font-size:17px}
 .stepper.sm b{min-width:24px;font-size:14px}
@@ -469,8 +478,8 @@ body.onboarding .app{padding-bottom:40px}
   animation:pulse 2.8s ease-in-out infinite}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.16)}}
 
-#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(-18px);
-  top:calc(12px + env(safe-area-inset-top,0px));z-index:70;box-shadow:0 10px 26px rgba(var(--ombra-scura),.30);
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(18px);
+  bottom:calc(104px + env(safe-area-inset-bottom,0px));z-index:70;box-shadow:0 10px 26px rgba(var(--ombra-scura),.30);
   max-width:min(420px,calc(100vw - 32px));background:var(--verde-scuro);color:var(--crema);
   font-weight:800;font-size:13.5px;padding:12px 18px;border-radius:99px;text-align:center;
   opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
@@ -514,37 +523,37 @@ const ING = {
   uova:{n:'Uova',e:'🥚',u:'pz',q:6,f:10,pr:3.20,l:'frigo',exp:9,fav:1},
   latte:{n:'Latte intero',e:'🥛',u:'ml',q:700,f:1000,pr:1.35,l:'frigo',exp:5,fav:1},
   yogurt:{n:'Yogurt bianco',e:'🥣',u:'pz',q:5,f:8,pr:3.60,l:'frigo',exp:11,fav:1},
-  mozzarella:{n:'Mozzarella',e:'🧆',u:'g',q:125,f:250,pr:1.60,l:'frigo',exp:2,fav:1},
+  mozzarella:{n:'Mozzarella',e:'🧀',u:'g',q:125,f:250,pr:1.60,l:'frigo',exp:2,fav:1},
   parmigiano:{n:'Parmigiano',e:'🧀',u:'g',q:180,f:300,pr:7.20,l:'frigo',fav:1},
-  pecorino:{n:'Pecorino romano',e:'🧀',u:'g',q:0,f:200,pr:4.90,l:'frigo'},
+  pecorino:{n:'Pecorino romano',e:'🐑',u:'g',q:0,f:200,pr:4.90,l:'frigo'},
   guanciale:{n:'Guanciale',e:'🥓',u:'g',q:0,f:150,pr:3.80,l:'frigo'},
   burro:{n:'Burro',e:'🧈',u:'g',q:45,f:250,pr:2.60,l:'frigo'},
-  panna:{n:'Panna fresca',e:'🥛',u:'ml',q:200,f:200,pr:1.40,l:'frigo',exp:7},
+  panna:{n:'Panna fresca',e:'🫗',u:'ml',q:200,f:200,pr:1.40,l:'frigo',exp:7},
   pomodorini:{n:'Pomodorini',e:'🍅',u:'g',q:220,f:500,pr:2.20,l:'frigo',exp:4,fav:1},
   pollo:{n:'Petto di pollo',e:'🍗',u:'g',q:0,f:400,pr:4.50,l:'frigo',fav:1},
   macinato:{n:'Carne macinata',e:'🥩',u:'g',q:0,f:400,pr:4.20,l:'frigo'},
   piselli:{n:'Piselli',e:'🫛',u:'g',q:400,f:750,pr:2.40,l:'freezer',fav:1},
-  salmone:{n:'Filetti di salmone',e:'🐟',u:'pz',q:2,f:4,pr:7.90,l:'freezer',only:'Esselunga'},
+  salmone:{n:'Filetti di salmone',e:'🍣',u:'pz',q:2,f:4,pr:7.90,l:'freezer',only:'Esselunga'},
   spinaci:{n:'Spinaci',e:'🥬',u:'g',q:300,f:600,pr:2.10,l:'freezer'},
   spaghetti:{n:'Spaghetti',e:'🍝',u:'g',q:500,f:500,pr:1.10,l:'credenza',fav:1},
   pasta_mista:{n:'Pasta mista',e:'🍜',u:'g',q:320,f:500,pr:1.20,l:'credenza',fav:1},
   riso:{n:'Riso carnaroli',e:'🍚',u:'g',q:1000,f:1000,pr:2.80,l:'credenza',fav:1},
   farro:{n:'Farro perlato',e:'🌾',u:'g',q:0,f:500,pr:2.30,l:'credenza'},
   fagioli:{n:'Fagioli borlotti',e:'🫘',u:'scatole',q:2,f:2,pr:1.60,l:'credenza',fav:1},
-  ceci:{n:'Ceci',e:'🫛',u:'scatole',q:1,f:2,pr:1.50,l:'credenza',fav:1},
+  ceci:{n:'Ceci',e:'🧆',u:'scatole',q:1,f:2,pr:1.50,l:'credenza',fav:1},
   tonno:{n:'Tonno',e:'🐟',u:'scatole',q:3,f:3,pr:3.30,l:'credenza',fav:1},
   passata:{n:'Passata di pomodoro',e:'🥫',u:'g',q:700,f:1400,pr:2.00,l:'credenza',fav:1},
   pelati:{n:'Pomodori pelati',e:'🥫',u:'g',q:0,f:800,pr:1.40,l:'credenza',fav:1},
   olio:{n:'Olio EVO',e:'🫒',u:'ml',q:120,f:1000,pr:7.50,l:'credenza',fav:1},
   farina:{n:'Farina 00',e:'🌾',u:'g',q:480,f:1000,pr:0.90,l:'credenza'},
   zucchero:{n:'Zucchero',e:'🍬',u:'g',q:120,f:1000,pr:1.10,l:'credenza'},
-  lievito:{n:'Lievito per dolci',e:'🧂',u:'bustine',q:3,f:4,pr:1.20,l:'credenza'},
+  lievito:{n:'Lievito per dolci',e:'🎂',u:'bustine',q:3,f:4,pr:1.20,l:'credenza'},
   caffe:{n:'Caffè macinato',e:'☕',u:'g',q:60,f:250,pr:3.40,l:'credenza',fav:1},
-  fette:{n:'Fette biscottate',e:'🍞',u:'pz',q:18,f:30,pr:1.40,l:'credenza',fav:1},
+  fette:{n:'Fette biscottate',e:'🧇',u:'pz',q:18,f:30,pr:1.40,l:'credenza',fav:1},
   biscotti:{n:'Biscotti',e:'🍪',u:'pz',q:14,f:30,pr:2.20,l:'credenza',fav:1},
   marmellata:{n:'Marmellata',e:'🍓',u:'g',q:260,f:400,pr:2.10,l:'credenza',fav:1},
-  dado:{n:'Brodo vegetale',e:'🧂',u:'cubetti',q:6,f:10,pr:1.50,l:'credenza'},
-  vino_bianco:{n:'Vino bianco',e:'🍷',u:'ml',q:500,f:750,pr:3.50,l:'credenza',only:'Esselunga'},
+  dado:{n:'Brodo vegetale',e:'🧊',u:'cubetti',q:6,f:10,pr:1.50,l:'credenza'},
+  vino_bianco:{n:'Vino bianco',e:'🥂',u:'ml',q:500,f:750,pr:3.50,l:'credenza',only:'Esselunga'},
   sale:{n:'Sale',e:'🧂',u:'g',q:400,f:1000,pr:0.50,l:'credenza',staple:1},
   pepe:{n:'Pepe nero',e:'⚫',u:'g',q:40,f:50,pr:1.80,l:'credenza',staple:1},
   peperoncino:{n:'Peperoncino',e:'🌶️',u:'g',q:20,f:30,pr:1.20,l:'credenza',staple:1},
@@ -555,8 +564,8 @@ const ING = {
   patate:{n:'Patate',e:'🥔',u:'g',q:900,f:1500,pr:2.20,l:'ortofrutta',fav:1},
   limoni:{n:'Limoni',e:'🍋',u:'pz',q:3,f:5,pr:1.90,l:'ortofrutta',fav:1},
   basilico:{n:'Basilico',e:'🌿',u:'vaso',q:1,f:1,pr:1.50,l:'ortofrutta',fav:1,staple:1},
-  rosmarino:{n:'Rosmarino',e:'🌿',u:'rametti',q:4,f:6,pr:1.00,l:'ortofrutta',staple:1},
-  prezzemolo:{n:'Prezzemolo',e:'🌿',u:'mazzetto',q:1,f:1,pr:0.90,l:'ortofrutta',staple:1},
+  rosmarino:{n:'Rosmarino',e:'🌲',u:'rametti',q:4,f:6,pr:1.00,l:'ortofrutta',staple:1},
+  prezzemolo:{n:'Prezzemolo',e:'☘️',u:'mazzetto',q:1,f:1,pr:0.90,l:'ortofrutta',staple:1},
   scalogno:{n:'Scalogno',e:'🧅',u:'pz',q:2,f:4,pr:1.60,l:'ortofrutta'},
   melanzane:{n:'Melanzane',e:'🍆',u:'g',q:0,f:700,pr:2.40,l:'ortofrutta'},
   zucca:{n:'Zucca',e:'🎃',u:'g',q:0,f:600,pr:2.00,l:'ortofrutta'},
@@ -589,14 +598,14 @@ const CATALOGO=[
 ['mirtilli','Mirtilli','🫐','g',125,2.50,'ortofrutta','mirtillo blueberry'],
 ['lamponi','Lamponi','🫐','g',125,2.80,'ortofrutta','lampone more ribes'],
 ['melone','Melone','🍈','pz',1,2.50,'ortofrutta','meloni cantalupo retato'],
-['anguria','Anguria','🍉','pz',1,4.00,'ortofrutta','cocomero melone acqua'],
+['anguria','Anguria','🍉','pz',1,4.00,'ortofrutta','cocomero'],
 ['ananas','Ananas','🍍','pz',1,2.50,'ortofrutta','ananasso'],
 ['avocado','Avocado','🥑','pz',2,2.60,'ortofrutta','avocadi hass'],
 /* --- verdura --- */
-['insalata','Insalata','🥬','g',200,1.30,'ortofrutta','lattuga iceberg gentile valeriana valerianella songino misticanza insala'],
+['insalata','Insalata','🥗','g',200,1.30,'ortofrutta','lattuga iceberg gentile valeriana valerianella songino misticanza insala'],
 ['rucola','Rucola','🥬','g',100,1.20,'ortofrutta','rughetta'],
 ['radicchio','Radicchio','🥬','g',300,1.60,'ortofrutta','trevigiano chioggia'],
-['spinacino','Spinacino','🥬','g',150,1.50,'ortofrutta','baby spinaci foglia'],
+['spinacino','Spinacino','🌱','g',150,1.50,'ortofrutta','baby spinaci foglia'],
 ['finocchi','Finocchi','🥬','g',700,1.90,'ortofrutta','finocchio'],
 ['cavolfiore','Cavolfiore','🥦','pz',1,1.90,'ortofrutta','cavolfiori'],
 ['broccoli','Broccoli','🥦','g',500,1.90,'ortofrutta','broccolo cime rapa'],
@@ -623,7 +632,7 @@ const CATALOGO=[
 ['besciamella','Besciamella','🥛','ml',500,1.50,'frigo','bechamel'],
 ['pastasfoglia','Pasta sfoglia','🥐','g',230,1.80,'frigo','sfoglia brise brisee frolla'],
 ['tortellini','Tortellini','🥟','g',250,2.80,'frigo','tortelloni ravioli agnolotti cappelletti'],
-['gnocchi','Gnocchi di patate','🥔','g',500,1.30,'frigo','gnocco chicche'],
+['gnocchi','Gnocchi di patate','🍡','g',500,1.30,'frigo','gnocco chicche'],
 ['wurstel','Würstel','🌭','pz',4,1.50,'frigo','wurstel hot dog'],
 ['pizzapronta','Base pizza','🍕','pz',1,1.60,'frigo','base pizza impasto focaccia'],
 /* --- salumi --- */
@@ -638,16 +647,16 @@ const CATALOGO=[
 /* --- carne --- */
 ['hamburger','Hamburger','🍔','pz',2,3.00,'frigo','svizzere vitello bovino burger'],
 ['cosciapollo','Cosce di pollo','🍗','g',600,4.00,'frigo','sovracosce fusi alette pollo'],
-['tacchino','Fesa di tacchino','🍗','g',400,4.20,'frigo','tacchino fesa'],
-['lonza','Lonza di maiale','🥩','g',500,4.50,'frigo','arista lombo maiale braciole costine'],
-['spezzatino','Spezzatino','🥩','g',500,6.00,'frigo','spezzatino bovino manzo'],
+['tacchino','Fesa di tacchino','🦃','g',400,4.20,'frigo','tacchino fesa'],
+['lonza','Lonza di maiale','🐖','g',500,4.50,'frigo','arista lombo maiale braciole costine'],
+['spezzatino','Spezzatino','🥘','g',500,6.00,'frigo','spezzatino bovino manzo'],
 /* --- pesce --- */
-['merluzzo','Merluzzo','🐟','g',400,5.00,'freezer','baccala nasello platessa filetti bianchi'],
+['merluzzo','Merluzzo','🐠','g',400,5.00,'freezer','baccala nasello platessa filetti bianchi'],
 ['orata','Orata','🐟','pz',2,6.50,'frigo','branzino spigola'],
 ['gamberi','Gamberi','🦐','g',300,6.00,'freezer','gamberetti mazzancolle code'],
 ['calamari','Calamari','🦑','g',400,5.50,'freezer','totani seppie anelli'],
 ['cozze','Cozze','🦪','g',1000,4.00,'frigo','vongole frutti mare'],
-['bastoncini','Bastoncini di pesce','🐟','pz',10,3.20,'freezer','findus capitan'],
+['bastoncini','Bastoncini di pesce','🍢','pz',10,3.20,'freezer','findus capitan'],
 ['alici','Alici','🐟','g',80,1.80,'credenza','acciughe filetti'],
 ['sgombro','Sgombro','🐟','g',120,1.60,'credenza','sgombri maccarello'],
 /* --- dispensa: primi --- */
@@ -660,7 +669,7 @@ const CATALOGO=[
 ['polenta','Polenta','🌽','g',500,1.40,'credenza','farina mais bramata'],
 ['pangrattato','Pangrattato','🍞','g',500,1.00,'credenza','grattugiato'],
 ['pane','Pane','🍞','g',500,1.80,'credenza','pagnotta ciabatta michetta rosette baguette filone'],
-['panebauletto','Pane in cassetta','🍞','pz',20,1.60,'credenza','bauletto toast sandwich morbido'],
+['panebauletto','Pane in cassetta','🥪','pz',20,1.60,'credenza','bauletto toast sandwich morbido'],
 ['piadina','Piadine','🫓','pz',4,1.60,'credenza','piadina tortillas wrap'],
 /* --- dispensa: conserve e condimenti --- */
 ['concentrato','Concentrato di pomodoro','🥫','g',140,0.90,'credenza','triplo concentrato'],
@@ -670,9 +679,9 @@ const CATALOGO=[
 ['maisscatola','Mais','🌽','g',300,1.00,'credenza','mais dolce'],
 ['olive','Olive','🫒','g',300,2.00,'credenza','taggiasche denocciolate'],
 ['capperi','Capperi','🫒','g',100,1.60,'credenza','cappero'],
-['aceto','Aceto','🍾','ml',500,1.00,'credenza','vino aceto'],
+['aceto','Aceto','🍶','ml',500,1.00,'credenza','vino aceto'],
 ['balsamico','Aceto balsamico','🍾','ml',250,2.50,'credenza','balsamico modena'],
-['maionese','Maionese','🥫','g',250,1.80,'credenza','maio ketchup senape'],
+['maionese','Maionese','🫙','g',250,1.80,'credenza','maio ketchup senape'],
 ['tonno2','Tonno all olio','🐟','scatole',3,3.00,'credenza','tonnetto pinne gialle'],
 /* --- dispensa: dolci e colazione --- */
 ['cereali','Cereali','🥣','g',375,2.60,'credenza','corn flakes muesli granola fiocchi avena'],
@@ -691,9 +700,9 @@ const CATALOGO=[
 ['origano','Origano','🌿','pz',1,0.90,'credenza','origano'],
 ['paprika','Paprika','🌶️','pz',1,1.20,'credenza','paprica curry curcuma zafferano cannella noce moscata'],
 /* --- surgelati --- */
-['minestrone','Minestrone surgelato','🥦','g',1000,2.40,'freezer','minestrone verdure zuppa surgelata'],
+['minestrone','Minestrone surgelato','🍲','g',1000,2.40,'freezer','minestrone verdure zuppa surgelata'],
 ['patatinefritte','Patatine fritte','🍟','g',750,2.00,'freezer','patate fritte surgelate'],
-['gelato','Gelato','🍨','ml',500,3.50,'freezer','vaschetta cornetti ghiaccioli algida'],
+['gelato','Gelato','🍦','ml',500,3.50,'freezer','vaschetta cornetti ghiaccioli algida'],
 ['pizzasurgelata','Pizza surgelata','🍕','pz',1,2.60,'freezer','margherita surgelata buitoni'],
 /* --- bevande --- */
 ['acqua','Acqua','💧','ml',1500,0.30,'credenza','naturale frizzante levissima sangemini'],
@@ -709,16 +718,16 @@ const CATALOGO=[
 ['scarola','Scarola','🥬','pz',1,1.40,'ortofrutta','indivia cicoria catalogna bieta'],
 ['patatedolci','Patate dolci','🍠','g',1000,2.60,'ortofrutta','batata americana'],
 ['melagrana','Melagrana','🍎','pz',1,2.00,'ortofrutta','melograno'],
-['cachi','Cachi','🍊','g',1000,2.40,'ortofrutta','kaki loti'],
+['cachi','Cachi','🥭','g',1000,2.40,'ortofrutta','kaki loti'],
 ['fichi','Fichi','🫐','g',500,3.00,'ortofrutta','fico'],
 ['lime','Lime','🍋','pz',3,1.40,'ortofrutta','limetta'],
-['noci','Noci','🥜','g',250,3.20,'credenza','noce gherigli'],
+['noci','Noci','🌰','g',250,3.20,'credenza','noce gherigli'],
 ['mandorle','Mandorle','🥜','g',200,3.40,'credenza','mandorla'],
 ['nocciole','Nocciole','🥜','g',200,3.60,'credenza','nocciola'],
 ['pistacchi','Pistacchi','🥜','g',150,4.20,'credenza','pistacchio'],
 ['arachidi','Arachidi','🥜','g',200,2.00,'credenza','arachide noccioline'],
 ['uvetta','Uvetta','🍇','g',250,1.80,'credenza','uva passa sultanina'],
-['datteri','Datteri','🫐','g',250,2.80,'credenza','dattero medjoul'],
+['datteri','Datteri','🌴','g',250,2.80,'credenza','dattero medjoul'],
 ['pruguesecche','Prugne secche','🫐','g',250,2.40,'credenza','prugna secca albicocche disidratate'],
 ['salvia','Salvia','🌿','pz',1,0.90,'ortofrutta','menta timo maggiorana erba cipollina'],
 /* --- latticini e frigo, secondo giro --- */
@@ -726,23 +735,23 @@ const CATALOGO=[
 ['lattesenza','Latte senza lattosio','🥛','ml',1000,1.60,'frigo','zymil accadi delattosato'],
 ['lattevegetale','Bevanda vegetale','🥛','ml',1000,1.90,'frigo','mandorla soia avena riso alpro'],
 ['pannacucina','Panna da cucina','🥛','ml',200,1.00,'frigo','cucina chef vegetale'],
-['yogurtfrutta','Yogurt alla frutta','🥣','pz',8,2.80,'frigo','vitasnella muller frutta pesca fragola'],
+['yogurtfrutta','Yogurt alla frutta','🍨','pz',8,2.80,'frigo','vitasnella muller frutta pesca fragola'],
 ['formaggini','Formaggini','🧀','pz',8,1.70,'frigo','sottilette fettine formaggino'],
-['feta','Feta','🧀','g',200,2.40,'frigo','greco salamoia halloumi'],
+['feta','Feta','🐑','g',200,2.40,'frigo','greco salamoia halloumi'],
 ['burrata','Burrata','🧀','g',125,2.60,'frigo','stracciatella bufala'],
 ['tofu','Tofu','🌱','g',200,2.20,'frigo','seitan tempeh soia vegetale'],
 ['hummus','Hummus','🥣','g',200,2.20,'frigo','hommus ceci crema'],
 ['pastafresca','Pasta fresca','🍝','g',250,2.40,'frigo','tagliatelle fettuccine strozzapreti fresca'],
 /* --- carne e pesce, secondo giro --- */
-['coniglio','Coniglio','🍖','g',800,7.00,'frigo','coniglio busto'],
+['coniglio','Coniglio','🐰','g',800,7.00,'frigo','coniglio busto'],
 ['agnello','Agnello','🍖','g',800,9.00,'frigo','abbacchio costolette agnello'],
 ['costata','Costata','🥩','g',500,8.00,'frigo','fiorentina entrecote controfiletto tagliata'],
 ['roastbeef','Roast beef','🥩','g',100,3.00,'frigo','roastbeef arrosto fettine'],
 ['cotechino','Cotechino','🌭','g',500,3.50,'frigo','zampone'],
 ['porchetta','Porchetta','🥓','g',150,2.80,'frigo','porchetta'],
 ['pescespada','Pesce spada','🐟','g',300,6.50,'frigo','spada trancio'],
-['sogliola','Sogliola','🐟','g',400,5.50,'freezer','platessa limanda'],
-['salmoneaffum','Salmone affumicato','🐟','g',100,3.20,'frigo','affumicato norvegese'],
+['sogliola','Sogliola','🐠','g',400,5.50,'freezer','platessa limanda'],
+['salmoneaffum','Salmone affumicato','🍣','g',100,3.20,'frigo','affumicato norvegese'],
 ['polpo','Polpo','🐙','g',500,7.00,'freezer','moscardini seppie'],
 ['surimi','Surimi','🦀','g',200,2.20,'frigo','bastoncini granchio'],
 /* --- credenza, secondo giro --- */
@@ -753,7 +762,7 @@ const CATALOGO=[
 ['farinaintegrale','Farina integrale','🌾','g',1000,1.40,'credenza','manitoba integrale tipo'],
 ['zuccherovelo','Zucchero a velo','🍬','g',250,0.90,'credenza','velo vanigliato'],
 ['bicarbonato','Bicarbonato','🧂','g',500,1.00,'credenza','cremor tartaro ammoniaca'],
-['lievitobirra','Lievito di birra','🍞','pz',2,0.60,'frigo','cubetto mastro fornaio'],
+['lievitobirra','Lievito di birra','🫧','pz',2,0.60,'frigo','cubetto mastro fornaio'],
 ['gelatina','Colla di pesce','🍮','pz',6,1.20,'credenza','gelatina fogli'],
 ['fruttasciroppo','Frutta sciroppata','🍑','g',400,1.60,'credenza','sciroppata pesche ananas macedonia'],
 ['burroarachidi','Burro di arachidi','🥜','g',350,3.00,'credenza','arachidi tahina crema nocciole'],
@@ -762,7 +771,7 @@ const CATALOGO=[
 ['semi','Semi misti','🌻','g',200,2.20,'credenza','chia lino sesamo girasole zucca semi'],
 ['gallette','Gallette','🍘','g',130,1.30,'credenza','galletta riso mais azzimo'],
 ['caffecialde','Caffè in capsule','☕','pz',16,3.80,'credenza','capsule cialde nespresso lavazza dolce gusto'],
-['orzosolubile','Orzo solubile','☕','g',200,2.40,'credenza','solubile ginseng orzo'],
+['orzosolubile','Orzo solubile','🫖','g',200,2.40,'credenza','solubile ginseng orzo'],
 ['sciroppo','Sciroppo','🍹','ml',500,2.00,'credenza','menta orzata amarena granatina'],
 ['brododado','Brodo pronto','🥣','ml',500,1.40,'credenza','brodo vegetale carne pronto'],
 ['sale2','Sale grosso','🧂','g',1000,0.50,'credenza','grosso marino iodato'],
@@ -979,12 +988,13 @@ const S={
  invFilter:'tutto', invQuery:'', recFilter:'tutte',
  budget:4.50, weeks:1, store:"In's Mercato", diffMax:5, newDiff:2, people:2, planDate:null,
  step:0, photo:null, lines:[], others:[], shopped:false,
- checked:{}, extra:[], man:{sel:{},q:''}, azzera:0,
+ checked:{}, extra:[], man:{sel:{},q:'',u:{}}, azzera:0, ultima:null,
  onb:{fatto:false,passo:0}, diete:{}, imparate:{}, scelta:null, mod:null,
  prop:null, sheet:null,
  newIng:[{name:'',q:'',u:'g'},{name:'',q:'',u:'g'}]
 };
-const STORES=["In's Mercato",'Conad','Lidl','Esselunga','Carrefour'];
+const STORES=["In's Mercato",'Conad','Lidl','Esselunga','Carrefour','Eurospin',
+ 'Pam','MD','Bennet','Famila','Tigros','Altro'];
 
 /* ===================== utilità ===================== */
 const el=id=>document.getElementById(id);
@@ -1055,6 +1065,7 @@ function simula(){
  }));
  return out;
 }
+const oggiCorto=()=>new Date().toLocaleDateString('it-IT',{day:'numeric',month:'short'});
 function copertura(){
  const s=simula();
  const primo=s.find(m=>m.manca.length);
@@ -1178,6 +1189,16 @@ function installaPattern(){
 
 /* ===================== fascia scadenza spesa ===================== */
 function bandHTML(){
+ /* dispensa vuota: dire che la spesa copre sette giorni sarebbe una bugia,
+    ed è esattamente quello che si leggeva alla prima apertura. Qui serve
+    una cosa sola: dove si comincia. */
+ if(!inCasa().length) return `<div class="band soft">
+   <span class="big">🧺</span>
+   <h3>La dispensa è vuota</h3>
+   <div class="small" style="margin-top:5px;max-width:74%">Carica la prima spesa: da lì in poi so cosa potete cucinare e il conto lo tengo io.</div>
+   <button class="btn primary" data-a="go" data-s="spesa"
+     style="margin-top:15px;background:#fff;color:var(--verde-scuro)">🧾 Carica la spesa</button>
+ </div>`;
  const c=copertura(), g=c.giorni, urgente=g<=2;
  const testo = g<=0 ? 'Devi fare la spesa oggi'
    : g===1 ? 'La spesa copre ancora 1 giorno'
@@ -1223,7 +1244,7 @@ function vOggi(){
  const pronte=RECIPES.filter(r=>r.slots[0]!=='colazione'&&!check(r).gap).length;
  return `
  <h1 class="hello">Il menu di oggi</h1>
- <p class="muted" style="margin:2px 0 14px">${dayShort(0)} · spesa fatta da ${SPESA_FATTA.store}</p>
+ <p class="muted" style="margin:2px 0 14px">${dayShort(0)}${inCasa().length?' · spesa fatta da '+esc(S.store||SPESA_FATTA.store):' · dispensa ancora da riempire'}</p>
  ${bandHTML()}
  ${S.shopped&&probl.length?`<div class="alert" style="margin-top:12px">
    <div class="row"><span class="blob av" style="background:#fff">⚠️</span>
@@ -1238,9 +1259,9 @@ function vOggi(){
  </section>
 
  <div class="stats">
-   <div class="stat"><i class="ic">🫙</i><b class="tnum">${inCasa().length}</b><span>in dispensa</span></div>
-   <div class="stat"><i class="ic">⏳</i><b class="tnum">${inEsaurimento().length}</b><span>sta finendo</span></div>
-   <div class="stat"><i class="ic">🍳</i><b class="tnum">${pronte}</b><span>ricette pronte</span></div>
+   <button class="stat" data-a="go" data-s="dispensa"><i class="ic">🫙</i><b class="tnum">${inCasa().length}</b><span>in dispensa</span></button>
+   <button class="stat" data-a="go" data-s="spesa"><i class="ic">⏳</i><b class="tnum">${inEsaurimento().length}</b><span>sta finendo</span></button>
+   <button class="stat" data-a="go" data-s="ricette"><i class="ic">🍳</i><b class="tnum">${pronte}</b><span>ricette pronte</span></button>
  </div>
 
  <section class="sec">
@@ -1401,8 +1422,8 @@ function vSpesa(){
  <button class="cta-scontrino" data-a="scanner">
    <span class="blob av-lg" style="background:#FFFFFF8C;font-size:38px;width:64px;height:64px">🧾</span>
    <span class="col grow" style="gap:3px">
-     <strong>Hai già fatto la spesa?</strong>
-     <span class="small">Fotografa lo scontrino: riempio la dispensa e spunto la lista da solo.</span>
+     <strong>Fotografa lo scontrino</strong>
+     <span class="small">Hai già fatto la spesa? Riempio la dispensa e spunto la lista da solo.</span>
    </span>
    <span class="pill dark">📸</span>
  </button>
@@ -1452,15 +1473,15 @@ function vSpesa(){
        </button>`).join('')}
    </div>`).join('')}
 
- <section class="sec">
+ ${S.ultima?`<section class="sec">
    <div class="sec-h"><h2>Spesa precedente</h2><span>ancora in dispensa</span></div>
    <div class="card" style="padding:15px 16px">
      <div class="row"><span class="blob av" style="background:var(--salvia)">🧾</span>
-       <span class="col grow"><strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">${esc(SPESA_FATTA.store)} · ${SPESA_FATTA.data}</strong>
-       <span class="small">${SPESA_FATTA.righe} righe · ${eur(SPESA_FATTA.tot)}</span></span>
+       <span class="col grow"><strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">${esc(S.ultima.store)} · ${esc(S.ultima.data)}</strong>
+       <span class="small">${S.ultima.righe} cos${S.ultima.righe===1?'a':'e'}${S.ultima.tot?' · '+eur(S.ultima.tot):''}</span></span>
        <span class="pill ok">chiusa</span></div>
    </div>
- </section>
+ </section>`:''}
 
  <div style="margin-top:18px">
    <button class="btn wide" data-a="proposte">✨ Cambia le ricette della settimana</button>
@@ -1492,7 +1513,7 @@ function vRicette(){
    <h1 class="grow" style="font-size:26px">Le ricette</h1>
    <button class="btn sm primary" data-a="go" data-s="nuova">＋ Nuova</button>
  </div>
- <p class="muted" style="margin:3px 0 13px">${dati.length} ricette vostre · ${dati.filter(x=>!x.c.gap).length} fattibili adesso</p>
+ <p class="muted" style="margin:3px 0 13px">${dati.length} ricette · ${dati.filter(x=>!x.c.gap).length} fattibili adesso</p>
  <div class="chips">
    ${[['tutte','Tutte'],['pronte','✓ Fattibili'],['economiche','💰 Sotto 2,50 €'],['colazione','☕ Colazione']]
      .map(([k,l])=>`<button class="chip" aria-pressed="${F===k}" data-a="recf" data-f="${k}">${l}</button>`).join('')}
@@ -1779,25 +1800,39 @@ function doneProposte(){
 function apriManuale(){
  const sel={};
  listaSpesa().forEach(r=>{
-  const i=ING[r.k];
+  const i=ING[r.k]; if(!i){ sel[r.k]=1; return; }
   /* un suggerimento, non una regola: la quantità la scrivete voi */
-  sel[r.k]=i?Math.round(i.f*(r.conf||1)*10)/10:1;
+  sel[r.k]=aPezzi(r.k)?Math.max(1,Math.round(r.conf||1))
+                      :Math.round(i.f*(r.conf||1)*10)/10;
  });
- S.man={sel,q:''}; S.screen='manuale'; render();
+ S.man={sel,q:'',u:{}}; S.screen='manuale'; render();
+}
+function unitaManuale(k){
+ S.man.u=S.man.u||{};
+ return S.man.u[k]||(aPezzi(k)?unitaPezzo(k):ING[k].u);
 }
 function rigaManuale(k){
  const i=ING[k], c=S.man.sel[k]||0, preso=c>0;
+ const u=unitaManuale(k);
+ /* se si conta a pezzi puoi dire "2" invece di "250 g": l'unità si cambia
+    toccandola, e il numero che hai già scritto si converte da sé */
+ const doppia=aPezzi(k)&&(i.u==='g'||i.u==='ml');
  return `<div class="sitem ingr" style="${preso?'':'opacity:.5'}">
    <button class="tile av-sm" data-a="mtog" data-id="${k}" aria-label="${preso?'Togli':'Metti'} ${esc(i.n)}">${i.e}</button>
    <button class="col grow" data-a="mtog" data-id="${k}" style="text-align:left;min-width:0">
      <span class="name">${esc(i.n)}</span>
-     <span class="small">${preso?'quanto ne hai preso':'non l’ho preso'}</span>
+     ${preso?'':`<span class="small">non l’ho preso</span>`}
    </button>
    <span class="quanto">
-     <input type="number" step="any" min="0" inputmode="decimal" class="tnum"
+     ${u==='pz'?`<button class="passo" data-a="mq-passo" data-id="${k}" data-d="-1"
+       aria-label="Uno in meno">−</button>`:''}
+     <input type="number" step="any" min="0" inputmode="decimal" class="tnum ${u==='pz'?'corto':''}"
        data-a="mq-val" data-id="${k}" value="${preso?c:''}" placeholder="0"
        aria-label="Quantità di ${esc(i.n)}">
-     <b>${esc(i.u)}</b>
+     ${u==='pz'?`<button class="passo" data-a="mq-passo" data-id="${k}" data-d="1"
+       aria-label="Uno in più">+</button>`:''}
+     ${doppia?`<button class="unit" data-a="munit" data-id="${k}"
+       aria-label="Cambia unità, ora ${u}">${esc(u)} ⇄</button>`:`<b>${esc(u)}</b>`}
    </span>
  </div>`;
 }
@@ -1844,6 +1879,12 @@ function vManuale(){
    <button class="btn sm ghost wide" data-a="scanner">📸 Ho lo scontrino, lo fotografo</button>
  </div>`;
 }
+/* quanto propongo quando tocchi un prodotto: un pezzo se si conta, la
+   confezione solita se si pesa. Resta solo una proposta: il numero è tuo. */
+function propostaManuale(k){
+ const i=ING[k]; if(!i) return 1;
+ return aPezzi(k)?1:i.f;
+}
 function aggiornaTotaleManuale(){
  const n=Object.keys(S.man.sel).filter(k=>S.man.sel[k]>0).length;
  const b=document.querySelector('[data-a="mok"]');
@@ -1855,14 +1896,15 @@ function applicaManuale(){
  Object.keys(S.man.sel).forEach(k=>{
   const q=S.man.sel[k], i=ING[k];
   if(!q||!i) return;
-  i.q=Math.round((i.q+q)*10)/10;
+  i.q=Math.round((i.q+inUnita(k,q,unitaManuale(k)))*10)/10;
   i.f=Math.max(i.f,i.q); i.visto=1;
   if(i.exp!==undefined) i.exp=Math.max(i.exp,7);
   delete S.checked[k];
   S.extra=S.extra.filter(x=>x!==k);
   n++;
  });
- S.shopped=true; S.added=n; S.man={sel:{},q:''};
+ S.ultima={store:'Segnata a mano', data:oggiCorto(), righe:n, tot:0};
+ S.shopped=true; S.added=n; S.man={sel:{},q:'',u:{}}; salva();
  S.screen='dispensa'; render();
  toast(`${n} cos${n===1?'a messa':'e messe'} in dispensa`);
 }
@@ -1893,7 +1935,7 @@ function vBenvenuto(){
    <div style="padding-top:30px;text-align:center">
      <div class="blob av-lg b2" style="margin:0 auto 18px;width:104px;height:104px;font-size:56px;background:var(--salvia)">🫐</div>
      <h1 style="font-size:32px;line-height:1.1">Ciao, sono Mirtillo</h1>
-     <p class="muted" style="margin:10px auto 0;max-width:30ch">Tengo il conto di cosa avete in casa, vi dico cosa potete cucinare e preparo la lista della spesa da sola.</p>
+     <p class="muted" style="margin:10px auto 0;max-width:30ch">Tengo il conto di cosa avete in casa, vi dico cosa potete cucinare e preparo la lista della spesa da solo.</p>
      <div class="card" style="padding:16px;margin-top:22px;text-align:left">
        <p class="small" style="margin:0">Prima vi faccio qualche domanda: quante persone siete, quanto volete spendere, cosa non mangiate. Un minuto, e poi le proposte saranno su misura.</p>
      </div>
@@ -1946,7 +1988,7 @@ function vBenvenuto(){
  if(p==='spesso'){
   const n=SPESSO.filter(k=>ING[k]&&ING[k].fav).length;
   return testa('6 di 7','Cosa comprate quasi sempre?',
-   'Tocca quelli che avete sempre in casa: le proposte partiranno da lì.')
+   'Ho già acceso i soliti: spegnete quelli che non prendete mai. Le proposte partiranno da qui.')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${SPESSO.filter(k=>ING[k]).map(k=>`<button class="chip" aria-pressed="${!!ING[k].fav}" data-a="fav" data-v="${k}">${ING[k].e} ${esc(ING[k].n)}</button>`).join('')}
    </div>
@@ -2769,6 +2811,10 @@ function leggiQuantita(testo){
    ||t.match(/(?:^|\s)(\d{1,2})\s?x(?:\s|$)/)
    ||t.match(/(?:^|\s)(\d{1,2})\s?x\s?\d/);
  if(mx) molt=Math.min(20,parseInt(mx[1],10)||1);
+ /* "6 PZ", "CONF.4", "4 PEZZI": lo scontrino dice già quanti sono */
+ const mz=t.match(/(?:^|\s)(\d{1,2})\s?(?:pz|pezzi|pcs)\b/)
+   ||t.match(/\b(?:conf|cf)\.?\s?(\d{1,2})(?:\s|$)/);
+ if(mz&&molt===1) molt=Math.min(30,parseInt(mz[1],10)||1);
  const mp=t.match(/(\d+(?:[.,]\d+)?)\s?(kg|gr|g|ml|cl|lt|l)\b/);
  if(mp){
   let v=parseFloat(mp[1].replace(',','.')), u=mp[2];
@@ -2815,8 +2861,11 @@ function abbina(desc){
      const tolleranza = L>=10 ? 2 : (L>=7 ? 1 : 0);
      const d=lev(w,alias);
      if(d<=tolleranza && tolleranza>0) p=1-(d/L)*0.55;
-     if(w.length>=5&&alias.startsWith(w)) p=Math.max(p,.9);
-     if(alias.length>=5&&w.startsWith(alias)) p=Math.max(p,.9);
+     /* l'OCR tronca le parole lunghe ("PARMIGIAN", "INSALA."): un prefisso
+        vale solo se è quasi tutta la parola, altrimenti "verde" finisce
+        per essere il limone verdello */
+     if(w.length>=6&&alias.startsWith(w)&&alias.length-w.length<=3) p=Math.max(p,.9);
+     if(alias.length>=6&&w.startsWith(alias)&&w.length-alias.length<=3) p=Math.max(p,.9);
     }
     if(p&&idx>0) p*=0.8;
     if(p>migliore) migliore=p;
@@ -2851,26 +2900,19 @@ function leggiRiga(grezza,colonne){
  if(NONCIBO.find(w=>dn.includes(w))) return {scarto:'non è cibo',raw};
  const q=leggiQuantita(desc+' '+raw);
  if(nota){ const i=ING[nota];
-  if(i) return {raw,id:nota,q:(q.v&&q.u===i.u)?q.v:Math.round(i.f*q.molt*10)/10,
-                u:i.u,c:1,stato:'certa',desc,prezzo}; }
+  if(i){ const mis=misura(nota,q);
+   return {raw,id:nota,q:mis.q,u:mis.u,c:1,desc,prezzo,
+           chiedi:!!mis.chiedi,stato:mis.chiedi?'quanti':'certa'}; } }
  const m=abbina(desc);
  if(!m.id||m.punti<0.56){
   return {raw, id:null, guess:nomePresentabile(desc), desc, q:q.v||1,
           u:q.u||'pz', c:Math.max(.2,m.punti), stato:'ignota', prezzo};
  }
- const i=ING[m.id];
- let quanti=q.v, unita=q.u;
- if(i.u==='pz'||i.u==='scatole'||i.u==='vasi'||i.u==='spicchi'||i.u==='mazzetti'){
-  quanti=q.molt; unita=i.u;
- } else if(quanti==null){
-  quanti=Math.round(i.f*q.molt*10)/10; unita=i.u;
- } else if(unita!==i.u){
-  if(unita==='g'&&i.u==='ml') unita='ml';
-  else if(unita==='ml'&&i.u==='g') unita='g';
-  else { quanti=Math.round(i.f*q.molt*10)/10; unita=i.u; }
- }
- return {raw, id:m.id, q:quanti, u:unita, c:Math.min(.99,m.punti), desc,
-         stato:m.punti>=0.86?'certa':'dubbia', prezzo};
+ const mis=misura(m.id,q);
+ const sicuro=m.punti>=0.86;
+ return {raw, id:m.id, q:mis.q, u:mis.u, c:Math.min(.99,m.punti), desc, prezzo,
+         chiedi:!!mis.chiedi,
+         stato:sicuro?(mis.chiedi?'quanti':'certa'):'dubbia'};
 }
 
 /* il negozio, dalle prime righe */
@@ -3098,8 +3140,33 @@ function vScontrino(){
           </div>
         </div>`).join('');
      })()}
+     ${(()=>{
+       const da=S.lines.map((l,i)=>({l,i})).filter(x=>x.l.stato==='quanti'&&ING[x.l.id]);
+       if(!da.length) return '';
+       return `<div class="card" style="padding:16px;margin-bottom:12px;background-color:var(--ingr-on)">
+         <strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Quanti ne hai presi?</strong>
+         <p class="small" style="margin:4px 0 0">${da.length===1?'Una cosa si conta a pezzi':da.length+' cose si contano a pezzi'} e lo scontrino non dice quanti. Tocca il numero: se lasci stare metto quello che ti propongo.</p>
+       </div>`+
+       da.map(({l,i})=>{
+        const ing=ING[l.id], peso=ing.u==='g'||ing.u==='ml';
+        const scelti=[1,2,3,4,6,8];
+        return `<div class="card" style="padding:14px;margin-bottom:10px">
+          <div class="row">
+            <span class="tile av-sm" style="background:var(--verde-bg)">${ing.e}</span>
+            <span class="col grow" style="gap:2px">
+              <span class="name">${esc(ing.n)}</span>
+              <span class="small">${esc(domandaPezzi(l.id))} · propongo ${qty(l.q,l.u)}</span>
+            </span>
+          </div>
+          <div class="chips" style="margin-top:11px;flex-wrap:wrap;overflow:visible">
+            ${scelti.map(n=>`<button class="chip tnum" data-a="quanti" data-i="${i}" data-v="${n}"
+              aria-pressed="${l.q===n&&l.u!==ing.u}">${n}</button>`).join('')}
+            ${peso?`<button class="chip" data-a="apeso" data-i="${i}">⚖️ al peso</button>`:''}
+          </div>
+        </div>`;}).join('');
+     })()}
      <div class="inv">
-       ${S.lines.map((l,idx)=>({l,idx})).filter(x=>x.l.stato!=='dubbia'&&x.l.stato!=='ignota').map(({l,idx})=>`
+       ${S.lines.map((l,idx)=>({l,idx})).filter(x=>x.l.stato!=='dubbia'&&x.l.stato!=='ignota'&&x.l.stato!=='quanti').map(({l,idx})=>`
          <div class="pline ingr ${l.on?'':'off'}">
            <span class="tile av-sm" style="background:var(--${l.c<.7?'terra':'verde'}-bg)">${l.id&&ING[l.id]?ING[l.id].e:'❓'}</span>
            <span class="col grow" style="gap:3px">
@@ -3381,8 +3448,14 @@ document.addEventListener('click',e=>{
  else if(a==='live-fine'){ finiScanner(); }
  else if(a==='live-mano'){ fermaScanner(); apriManuale(); }
  else if(a==='conf-si'){ const l=S.lines[+t.dataset.i];
-   if(l){ l.stato='certa'; l.c=1; l.on=true; impara(l.raw,l.id); }
+   if(l){ l.stato=l.chiedi?'quanti':'certa'; l.c=1; l.on=true; impara(l.raw,l.id); }
    render(true); toast('Me lo ricordo'); }
+ else if(a==='quanti'){ const l=S.lines[+t.dataset.i];
+   if(l){ l.q=+t.dataset.v; l.u=unitaPezzo(l.id); l.stato='certa'; l.c=1; l.on=true; }
+   render(true); }
+ else if(a==='apeso'){ const l=S.lines[+t.dataset.i], ing=l&&ING[l.id];
+   if(ing){ l.u=ing.u; l.q=ing.f; l.stato='certa'; l.c=1; l.on=true; }
+   render(true); toast('Messo a peso: con la matita cambi i grammi'); }
  else if(a==='conf-no'){ const i=+t.dataset.i, l=S.lines[i];
    if(l){ impara(l.raw,false); S.others.push({raw:l.raw,why:'me l’hai detto tu'});
      S.lines.splice(i,1); }
@@ -3399,7 +3472,8 @@ document.addEventListener('click',e=>{
    if(l){
      const k='mio'+Date.now().toString(36)+i;
      const aPeso=(l.u==='g'||l.u==='ml')&&l.q>1;
-     ING[k]={visto:1,n:(l.guess||'Prodotto').slice(0,34),e:'🛒',
+     const nome=(l.guess||'Prodotto').slice(0,34);
+     ING[k]={visto:1,n:nome,e:emojiPer(nome),
              u:aPeso?l.u:'pz', q:0, f:aPeso?l.q:1,
              pr:l.prezzo||0, l:'credenza'};
      l.id=k; l.stato='certa'; l.c=1; l.on=true;
@@ -3418,18 +3492,38 @@ document.addEventListener('click',e=>{
    S.scelta=null; disegnaScelta(); render(true); toast('Imparato'); }
  else if(a==='onb-avanti'){ S.onb.passo=Math.min(PASSI.length-1,S.onb.passo+1); salva(); render(); }
  else if(a==='onb-fine'){ finisciOnb(t.dataset.v); }
- else if(a==='onb-demo'){ S.onb={fatto:true,passo:0}; S.screen='oggi'; salva(); render();
+ else if(a==='onb-demo'){ S.onb={fatto:true,passo:0}; S.screen='oggi';
+   S.ultima={store:SPESA_FATTA.store,data:SPESA_FATTA.data,righe:SPESA_FATTA.righe,tot:SPESA_FATTA.tot};
+   salva(); render();
    toast('Dati di esempio: li cancelli da Dispensa → I vostri dati'); }
  else if(a==='dieta'){ const g=t.dataset.v; S.diete[g]=!S.diete[g]; render(true); }
  else if(a==='fav'){ const k=t.dataset.v; if(ING[k]) ING[k].fav=ING[k].fav?0:1; render(true); }
- else if(a==='mtog'){ const k=t.dataset.id, i=ING[k];
-   S.man.sel[k]=S.man.sel[k]>0?0:(i?i.f:1); render(true); }
+ else if(a==='mtog'){ const k=t.dataset.id;
+   S.man.sel[k]=S.man.sel[k]>0?0:propostaManuale(k); render(true); }
  else if(a==='madd'){ const k=t.dataset.id;
-   S.man.sel[k]=ING[k]?ING[k].f:1; S.man.q=''; render(true); }
+   S.man.sel[k]=propostaManuale(k); S.man.q=''; render(true); }
+ else if(a==='mq-passo'){ const k=t.dataset.id;
+   const v=Math.max(0,Math.round(((S.man.sel[k]||0)+(+t.dataset.d))*10)/10);
+   S.man.sel[k]=v;
+   const inp=document.querySelector('input[data-a="mq-val"][data-id="'+k+'"]');
+   /* da zero a uno (e viceversa) cambia la faccia della riga, lì ridisegno */
+   if(v<=1&&inp&&Math.abs((+inp.value||0)-v)>=0.5&&(v===0||(+inp.value||0)===0)){ render(true); }
+   else if(inp){ inp.value=v||''; aggiornaTotaleManuale(); }
+   else render(true); }
+ else if(a==='munit'){ const k=t.dataset.id, i=ING[k];
+   S.man.u=S.man.u||{};
+   const ora=unitaManuale(k), nuova=ora==='pz'?i.u:'pz';
+   const q=S.man.sel[k]||0;
+   S.man.u[k]=nuova;
+   if(q>0) S.man.sel[k]=nuova==='pz'
+     ? Math.max(1,Math.round(q/(PEZZO[k]||1)))
+     : Math.round(q*(PEZZO[k]||1)*10)/10;
+   render(true); }
  else if(a==='mnuovo'){
    const nome=(S.man.q||'').trim(); if(!nome) return;
    const k='mio'+Date.now().toString(36);
-   ING[k]={visto:1,n:nome.charAt(0).toUpperCase()+nome.slice(1),e:'🛒',u:'pz',q:0,f:1,pr:0,l:'credenza'};
+   ING[k]={visto:1,n:nome.charAt(0).toUpperCase()+nome.slice(1),e:emojiPer(nome),
+           u:'pz',q:0,f:1,pr:0,l:'credenza'};
    S.man.sel[k]=1; S.man.q=''; render(true); toast(`"${ING[k].n}" aggiunto: scrivi quanto`); }
  else if(a==='mok'){ applicaManuale(); }
  else if(a==='svuota'){ svuotaDispensa(); }
@@ -3598,7 +3692,8 @@ function salvaModifica(){
  }else{
   const esistente=Object.keys(ING).find(k=>normalizza(ING[k].n)===normalizza(nome));
   const k=esistente||('mio'+Date.now().toString(36));
-  if(!esistente) ING[k]={visto:1,n:nome.slice(0,34),e:'🛒',u,q:0,f:q||1,pr:l.prezzo||0,l:rep};
+  if(!esistente) ING[k]={visto:1,n:nome.slice(0,34),e:emojiPer(nome),
+                         u,q:0,f:q||1,pr:l.prezzo||0,l:rep};
   else { ING[k].visto=1; ING[k].l=rep; }
   l.id=k; l.q=q||1; l.u=u;
  }
@@ -3612,14 +3707,17 @@ function applicaScontrino(){
  let n=0;
  S.lines.filter(l=>l.on&&l.id&&ING[l.id]).forEach(l=>{
   const i=ING[l.id];
-  i.q=Math.round((i.q+l.q)*10)/10;
+  i.q=Math.round((i.q+inUnita(l.id,l.q,l.u))*10)/10;
   i.f=Math.max(i.f,i.q); i.visto=1;
   if(i.exp!==undefined) i.exp=Math.max(i.exp,7);
   delete S.checked[l.id];
   S.extra=S.extra.filter(k=>k!==l.id);
   n++;
  });
- S.added=n; S.shopped=true; S.step=4; render(); toast(`${n} alimenti aggiornati in dispensa`);
+ S.ultima={store:S.store||'Scontrino', data:oggiCorto(), righe:n,
+   tot:Math.round(S.lines.filter(l=>l.on&&l.id).reduce((a,l)=>a+(l.prezzo||0),0)*100)/100};
+ S.added=n; S.shopped=true; S.step=4; salva(); render();
+ toast(`${n} aliment${n===1?'o aggiornato':'i aggiornati'} in dispensa`);
 }
 function cucinata(id){
  const r=R(id), c=check(r,S.serv); let n=0;
@@ -3665,7 +3763,7 @@ function salva(){
    RECIPES:RECIPES.filter(r=>r.mia),
    imp:{budget:S.budget,weeks:S.weeks,store:S.store,diffMax:S.diffMax,people:S.people,
         onb:S.onb,diete:S.diete,imparate:S.imparate},
-   stato:{shopped:S.shopped,checked:S.checked,extra:S.extra}
+   stato:{shopped:S.shopped,checked:S.checked,extra:S.extra,ultima:S.ultima}
  })); }catch(e){ S.senzaMemoria=true; }
 }
 const salvaPresto=()=>{ clearTimeout(salvaPresto.t); salvaPresto.t=setTimeout(salva,350); };
@@ -3742,7 +3840,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261118-2325';
+const VERSIONE='20261118-2353';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
@@ -3825,6 +3923,8 @@ const FRASI={
  maisscatola:['mais dolce'], sugopronto:['sugo pronto','sughi freschi'],
  vinorosso:['vino rosso'], vino_bianco:['vino bianco'],
  pescespada:['pesce spada'], formaggini:['formaggio spalmabile'],
+ te:['te verde','te nero','the verde','tisane'], costata:['bistecca','fiorentina'],
+ acqua:['acqua naturale','acqua frizzante','acqua minerale'],
  philadelphia:['formaggio spalmabile'], caffecialde:['caffe in capsule','capsule caffe']
 };
 
@@ -3850,7 +3950,190 @@ function montaCatalogo(){
   ALIAS[k]=[...new Set([...(ALIAS[k]||[]),...dalNome])];
  });
 }
+/* ===================== la faccia di un prodotto nuovo =====================
+   Quando aggiungete qualcosa che non conosco non gli lascio il carrello
+   generico: cerco nel nome la parola più lunga che riconosco, così "petto di
+   pollo arrosto" resta pollo e "succo di mela" non diventa una mela. */
+const EMOJI=[
+ ['pollo','🍗'],['tacchin','🦃'],['manz','🥩'],['bistecc','🥩'],['vitell','🥩'],
+ ['macinat','🥩'],['maial','🐖'],['agnell','🍖'],['coniglio','🐰'],['hamburger','🍔'],
+ ['svizzer','🍔'],['salsicc','🌭'],['wurst','🌭'],['prosciutt','🥓'],['salam','🥓'],
+ ['speck','🥓'],['mortadell','🥓'],['pancett','🥓'],['bresaol','🥓'],['guancial','🥓'],
+ ['cotolett','🍗'],['spiedin','🍢'],
+ ['pesce','🐟'],['merluzz','🐠'],['orata','🐟'],['branzin','🐟'],['spigol','🐟'],
+ ['tonno','🐟'],['alici','🐟'],['sgombr','🐟'],['salmon','🍣'],['gamber','🦐'],
+ ['calamar','🦑'],['totan','🦑'],['cozz','🦪'],['vongol','🦪'],['polp','🐙'],
+ ['granchi','🦀'],['surimi','🦀'],['bastoncin','🍢'],
+ ['latte','🥛'],['panna','🫗'],['burro','🧈'],['formagg','🧀'],['caciotta','🧀'],
+ ['pecorin','🐑'],['grana','🧀'],['parmigian','🧀'],['fontina','🧀'],['asiago','🧀'],
+ ['gorgonzol','🧀'],['mozzarell','🧀'],['burrat','🧀'],['stracciat','🧀'],['ricott','🧀'],
+ ['scamorz','🧀'],['provol','🧀'],['feta','🐑'],['yogurt','🥣'],['uov','🥚'],
+ ['gelat','🍦'],['budin','🍮'],
+ ['pane','🍞'],['panin','🍞'],['focacc','🫓'],['piadin','🫓'],['pizza','🍕'],
+ ['grissin','🥖'],['cornett','🥐'],['brioche','🥐'],['crackers','🍘'],['gallett','🍘'],
+ ['fette biscottate','🧇'],['pasta','🍝'],['spaghett','🍝'],['penne','🍝'],['fusill','🍝'],
+ ['maccheron','🍝'],['lasagn','🍝'],['tortellin','🥟'],['raviol','🥟'],['gnocch','🍡'],
+ ['riso','🍚'],['risott','🍚'],['farin','🌾'],['semol','🌾'],['orzo','🌾'],
+ ['farro','🌾'],['quinoa','🌾'],['cuscus','🌾'],['polenta','🌽'],['cereal','🥣'],
+ ['biscott','🍪'],['merendin','🧁'],['torta','🍰'],['cioccolat','🍫'],['cacao','🍫'],
+ ['caramell','🍬'],['zucchero','🍬'],['miele','🍯'],['marmellat','🍓'],['confettur','🍓'],
+ ['patatin','🍟'],['popcorn','🍿'],['tarall','🥨'],['snack','🍫'],
+ ['mel','🍎'],['pera','🍐'],['pere','🍐'],['banan','🍌'],['aranc','🍊'],
+ ['mandarin','🍊'],['clementin','🍊'],['limon','🍋'],['lime','🍋'],['pompelm','🍊'],
+ ['kiwi','🥝'],['uva','🍇'],['uvetta','🍇'],['pesch','🍑'],['albicocc','🍑'],
+ ['prugn','🫐'],['susin','🫐'],['cilieg','🍒'],['fragol','🍓'],['mirtill','🫐'],
+ ['lampon','🫐'],['more','🫐'],['ribes','🫐'],['melon','🍈'],['anguri','🍉'],
+ ['cocomer','🍉'],['ananas','🍍'],['avocad','🥑'],['cocco','🥥'],['mango','🥭'],
+ ['fico','🫐'],['fichi','🫐'],['dattero','🌴'],['datteri','🌴'],['cachi','🥭'],
+ ['melagran','🍎'],
+ ['insalat','🥗'],['lattug','🥗'],['valerian','🥗'],['misticanz','🥗'],['spinac','🥬'],
+ ['rucol','🥬'],['radicchi','🥬'],['cicori','🥬'],['scarol','🥬'],['cavol','🥬'],
+ ['verza','🥬'],['broccol','🥦'],['asparag','🥬'],['carciof','🥬'],['finocch','🥬'],
+ ['sedano','🥬'],['pomodor','🍅'],['peperoncin','🌶️'],['peperon','🫑'],['cetriol','🥒'],
+ ['zucchin','🥒'],['zucca','🎃'],['melanzan','🍆'],['patat','🥔'],['carot','🥕'],
+ ['cipoll','🧅'],['scalogn','🧅'],['porro','🧅'],['aglio','🧄'],['fungh','🍄'],
+ ['champignon','🍄'],['porcin','🍄'],['mais','🌽'],['pisell','🫛'],['fagiol','🫘'],
+ ['ceci','🧆'],['lenticch','🫘'],['soia','🌱'],['tofu','🌱'],['germogli','🌱'],
+ ['barbabietol','🫐'],['zenzer','🫚'],['curcum','🫚'],
+ ['oliv','🫒'],['olio','🫒'],['aceto','🍶'],['sale','🧂'],['pepe','⚫'],
+ ['basilico','🌿'],['prezzemol','☘️'],['origan','🌿'],['salvia','🌿'],['alloro','🌿'],
+ ['rosmarin','🌲'],['spezie','🧂'],['curry','🧂'],['paprik','🌶️'],['peperonc','🌶️'],
+ ['noci','🌰'],['noce','🌰'],['mandorl','🥜'],['nocciol','🥜'],['pistacc','🥜'],
+ ['arachid','🥜'],['anacard','🥜'],['semi','🌻'],['pinoli','🌰'],
+ ['acqua','💧'],['birra','🍺'],['vino','🍷'],['spumante','🍾'],['prosecco','🍾'],
+ ['champagne','🍾'],['succo','🧃'],['aranciat','🥤'],['cola','🥤'],['bibit','🥤'],
+ ['gassos','🥤'],['energy','🥤'],['caffe','☕'],['tisana','🍵'],['liquor','🥃'],
+ ['amaro','🥃'],['grappa','🥃'],['gin','🥃'],['rum','🥃'],['vodka','🥃'],['sciropp','🍹'],
+ ['passata','🥫'],['pelati','🥫'],['polpa','🥫'],['sugo','🥫'],['concentrat','🥫'],
+ ['pesto','🌿'],['maionese','🫙'],['ketchup','🍅'],['senape','🫙'],['salsa','🫙'],
+ ['brodo','🧊'],['dado','🧊'],['lievito','🫧'],['besciamell','🥛'],['hummus','🥣'],
+ ['surgelat','🧊'],['ghiaccio','🧊'],['capper','🫒'],
+ ['detersiv','🧼'],['sapon','🧼'],['sgrassat','🧼'],['ammorbid','🧼'],['carta','🧻'],
+ ['shampoo','🧴'],['dentifric','🧴'],['spazzolin','🪥'],['pannolin','🧷'],
+ ['croccantini','🐾'],['gatto','🐾'],['cane','🐾']
+];
+function emojiPer(nome){
+ const n=normalizza(nome||'');
+ if(!n) return '🛒';
+ let vinta=null;
+ for(const [w,e] of EMOJI){
+  if(new RegExp('(?:^|[^a-z])'+w).test(n) && (!vinta||w.length>vinta[0].length)) vinta=[w,e];
+ }
+ return vinta?vinta[1]:'🛒';
+}
 montaCatalogo();
+
+/* ===================== quanto ne hai preso =====================
+   Un alimento non si misura come capita: le uova si contano, la passata si
+   versa, la mozzarella si compra a palline anche se il prezzo è al chilo.
+   Per ogni alimento che si conta tengo quanto pesa (o quanto contiene) un
+   pezzo. Serve a tre cose: proporre l'unità giusta, convertire fra pezzi e
+   peso, e sapere quando conviene chiedere invece di indovinare. */
+const PEZZO={
+ /* carne e pesce porzionati */
+ hamburger:110, wurstel:50, salsiccia:90, cosciapollo:220, cotolettesurg:120,
+ pollo:170, lonza:200, costata:400, orata:350, merluzzo:120, sogliola:150,
+ pescespada:180, salmone:150, bastoncini:25,
+ /* latticini a pezzo */
+ mozzarella:125, burrata:125, scamorza:250, yogurt:125, yogurtgreco:150, uova:60,
+ /* pane e forno */
+ pane:500, panebauletto:20, piadina:100, pizzapronta:300, pizzasurgelata:350,
+ /* frutta che si prende a pezzi */
+ mele:180, pere:180, banane:120, arance:200, mandarini:80, limoni:90, limoni2:90,
+ lime:60, pompelmo:350, kiwi:90, pesche:150, avocado:200, melone:1200,
+ anguria:3000, ananas:1200, melagrana:300,
+ /* verdura che si prende a pezzi */
+ patate:150, cipolla:120, cipollotto:40, scalogno:25, porro:200,
+ carote:80, zucchine:200, zucchine2:220, melanzane:300, peperoni:180, cetrioli:250,
+ carciofi:120, cavolfiore:800, verza:1000, scarola:300,
+ /* bottiglie, brick e barattoli */
+ acqua:1500, birra:660, succo:1000, bibita:1500, tefreddo:1500, energydrink:250,
+ vinorosso:750, vino_bianco:750, spumante:750, latte:1000, lattepas:1000,
+ lattesenza:1000, lattevegetale:1000, panna:200, pannacucina:200,
+ olio:1000, aceto:500, balsamico:250
+};
+/* dove una parola mia fa capire meglio la domanda */
+const DOMANDE={
+ hamburger:'Sono hamburger già pronti? Quanti?', wurstel:'Quanti würstel?',
+ salsiccia:'Quante salsicce?', cosciapollo:'Quante cosce?',
+ cotolettesurg:'Quante cotolette?', pollo:'Quanti petti di pollo?',
+ orata:'Quante orate?', merluzzo:'Quanti filetti?', bastoncini:'Quanti bastoncini?',
+ mozzarella:'Quante mozzarelle?', burrata:'Quante burrate?', uova:'Quante uova?',
+ yogurt:'Quanti vasetti?', yogurtgreco:'Quanti vasetti?',
+ pane:'Quanti filoni?', piadina:'Quante piadine?', pizzasurgelata:'Quante pizze?',
+ pizzapronta:'Quante basi?', panebauletto:'Quante confezioni?',
+ acqua:'Quante bottiglie?', birra:'Quante birre?', bibita:'Quante bottiglie?',
+ succo:'Quanti brick?', latte:'Quanti cartoni?', lattepas:'Quanti cartoni?',
+ vino_bianco:'Quante bottiglie?', vinorosso:'Quante bottiglie?',
+ mele:'Quante mele?', banane:'Quante banane?', arance:'Quante arance?',
+ limoni:'Quanti limoni?', patate:'Quante patate?', cipolla:'Quante cipolle?',
+ zucchine:'Quante zucchine?', melanzane:'Quante melanzane?',
+ peperoni:'Quanti peperoni?', carciofi:'Quanti carciofi?', melone:'Quanti meloni?',
+ salmone:'Quanti filetti?', sogliola:'Quante sogliole?', pescespada:'Quante fette?',
+ scamorza:'Quante scamorze?', burrata:'Quante burrate?',
+ lonza:'Quanti pezzi?', costata:'Quante bistecche?',
+ anguria:'Quante angurie?', ananas:'Quanti ananas?', avocado:'Quanti avocado?',
+ pompelmo:'Quanti pompelmi?', lime:'Quanti lime?', limoni2:'Quanti limoni?',
+ cetrioli:'Quanti cetrioli?', cipollotto:'Quanti cipollotti?', porro:'Quanti porri?',
+ scalogno:'Quanti scalogni?', cavolfiore:'Quanti cavolfiori?', verza:'Quante verze?',
+ scarola:'Quante scarole?', melagrana:'Quante melagrane?',
+ zucchine2:'Quante zucchine?', finocchi:'Quanti finocchi?',
+ olio:'Quante bottiglie?', aceto:'Quante bottiglie?', balsamico:'Quante bottiglie?',
+ spumante:'Quante bottiglie?', tefreddo:'Quante bottiglie?',
+ energydrink:'Quante lattine?', panna:'Quante confezioni?',
+ pannacucina:'Quante confezioni?', lattesenza:'Quanti cartoni?',
+ lattevegetale:'Quanti cartoni?', pizzapronta:'Quante basi?',
+ bastoncini:'Quanti bastoncini?', salsiccia:'Quante salsicce?'
+};
+const aPezzi=id=>!!PEZZO[id];
+/* si conta davvero? Le uova e gli hamburger sì; le mele si pesano, anche se
+   so quanto pesa una mela, perché nessuno compra "sei mele" alla cassa. */
+function contaDavvero(id){
+ const i=ING[id]; if(!i||!aPezzi(id)) return false;
+ if(i.u!=='g'&&i.u!=='ml') return true;
+ return pezziTipici(id)<=4;
+}
+const unitaPezzo=id=>{const i=ING[id];
+ return i&&i.u!=='g'&&i.u!=='ml'?i.u:'pz';};
+/* quanti pezzi è la confezione tipica */
+function pezziTipici(id){
+ const i=ING[id]; if(!i) return 1;
+ if(i.u==='g'||i.u==='ml') return Math.max(1,Math.round(i.f/(PEZZO[id]||i.f)));
+ return Math.max(1,Math.round(i.f));
+}
+/* porta una quantità nell'unità in cui la dispensa tiene quell'alimento */
+function inUnita(id,q,u){
+ const i=ING[id]; if(!i) return q;
+ if(!u||u===i.u) return q;
+ const peso=PEZZO[id];
+ if((u==='g'||u==='ml')&&(i.u==='g'||i.u==='ml')) return q;
+ if(u==='pz'&&(i.u==='g'||i.u==='ml')) return peso?Math.round(q*peso*10)/10:q;
+ if((u==='g'||u==='ml')&&i.u!=='g'&&i.u!=='ml')
+  return peso?Math.max(1,Math.round(q/peso)):q;
+ return q;
+}
+/* la misura migliore per una riga di scontrino, e se vale la pena chiedere */
+function misura(id,let_){
+ const i=ING[id]; if(!i) return {q:let_.v||1,u:let_.u||'pz'};
+ const molt=let_.molt||1;
+ /* 1. il peso c'è scritto: quello è un dato, non si tocca */
+ if(let_.v&&(let_.u==='g'||let_.u==='ml')){
+  if(i.u==='g'||i.u==='ml') return {q:let_.v,u:i.u};
+  const peso=PEZZO[id];
+  if(peso) return {q:Math.max(1,Math.round(let_.v/peso)),u:i.u};
+  return {q:let_.v,u:let_.u};
+ }
+ /* 2. "x3" sullo scontrino: tre pezzi, e non serve chiedere */
+ if(molt>1&&aPezzi(id)) return {q:molt,u:unitaPezzo(id)};
+ if(molt>1) return {q:Math.round(i.f*molt*10)/10,u:i.u};
+ /* 3. nessun numero: la confezione solita, come prima. Ma se quella cosa
+       si compra contandola ti chiedo quanti, perché "hamburger" senza
+       grammi non vuol dire 110 g: vuol dire uno, o due, o quattro. */
+ const pesa=i.u==='g'||i.u==='ml';
+ return {q:pesa?Math.round(i.f*10)/10:pezziTipici(id),u:i.u,chiedi:contaDavvero(id)};
+}
+/* la domanda, con le parole dell'alimento quando le ho */
+const domandaPezzi=id=>DOMANDE[id]||'Quanti ne hai presi?';
 
 /* iOS ignora user-scalable: il pizzico va fermato a mano, e il doppio tocco
    che ingrandisce pure. I campi di testo restano normali. */
