@@ -2658,14 +2658,64 @@ function svuotaDispensa(){
  toast('Dispensa svuotata: ora puoi caricare la tua spesa');
 }
 
-/* installabile dalla home: il service worker tiene l'app anche senza rete.
-   Dentro l'anteprima di Claude non si registra, e va benissimo così. */
+/* ===================== aggiornamenti =====================
+   L'app sta sulla home del telefono, quindi deve accorgersi da sola quando
+   pubblico una versione nuova. Tre accorgimenti, perché uno solo non basta:
+   - updateViaCache:'none' obbliga il browser a ricontrollare sw.js dalla rete
+     (GitHub Pages dice "tienilo 10 minuti", e il controllo non avverrebbe);
+   - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
+   - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
+     sicura: se non combacia con quella in esecuzione, ricarico. */
+const VERSIONE='20261118-1826';
+let ricaricando=false;
+
+function ricaricaPerAggiornamento(silenzioso){
+ if(ricaricando) return;
+ ricaricando=true;
+ try{ salva(); }catch(e){}
+ if(silenzioso) location.reload();
+ else { toast('Aggiornamento pronto, riapro…'); setTimeout(()=>location.reload(),1100); }
+}
+
+async function controllaVersione(appenaAperta){
+ try{
+  const r=await fetch('versione.json?t='+Date.now(),{cache:'no-store'});
+  if(!r.ok) return;
+  const d=await r.json();
+  if(!d||!d.v||d.v===VERSIONE) return;
+  /* non interrompo una lettura dello scontrino o il primo avvio a metà */
+  if(S.screen==='scanner'||S.screen==='benvenuto'){
+   toast('C’è un aggiornamento: lo installo quando esci da qui');
+   return;
+  }
+  ricaricaPerAggiornamento(appenaAperta);
+ }catch(e){ /* offline: pazienza, si riproverà alla prossima apertura */ }
+}
+
 if('serviceWorker' in navigator &&
    (location.protocol==='https:'||location.hostname==='localhost')){
  window.addEventListener('load',()=>{
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'})
+   .then(reg=>{
+     reg.update().catch(()=>{});
+     document.addEventListener('visibilitychange',()=>{
+      if(!document.hidden) reg.update().catch(()=>{});
+     });
+   }).catch(()=>{});
+ });
+ /* quando il service worker nuovo prende il comando, la pagina va ricaricata */
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{
+  if(sessionStorage.getItem('mirtillo.ricaricato')) return;
+  try{ sessionStorage.setItem('mirtillo.ricaricato','1'); }catch(e){}
+  ricaricaPerAggiornamento(true);
  });
 }
+
+/* il segnavolta: all'apertura in silenzio, al rientro con un avviso */
+window.addEventListener('load',()=>setTimeout(()=>controllaVersione(true),800));
+document.addEventListener('visibilitychange',()=>{
+ if(!document.hidden) controllaVersione(false);
+});
 
 const avevoDati=carica();
 const saltati=avanzaGiorni();

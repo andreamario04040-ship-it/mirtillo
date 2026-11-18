@@ -2,7 +2,7 @@
    Tiene in cache il guscio dell'app così si apre anche senza rete.
    La pagina la chiedo prima alla rete (per prendere gli aggiornamenti) e
    ripiego sulla copia salvata quando sei offline; icone e font dalla cache. */
-const CACHE = 'mirtillo-v2';
+const CACHE = 'mirtillo-v3';
 const GUSCIO = [
   './',
   './index.html',
@@ -33,10 +33,20 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
 
-  // la pagina: prima la rete, poi la copia in cache
+  // il segnavolta: sempre dalla rete, mai dalla cache, o non vedo mai gli aggiornamenti
+  if (/versione\.json/.test(req.url)) {
+    e.respondWith(fetch(req, { cache: 'no-store' }).catch(() => new Response('{}', {
+      headers: { 'content-type': 'application/json' } })));
+    return;
+  }
+
+  // la pagina: prima la rete, poi la copia in cache.
+  // cache:'reload' salta la cache HTTP del browser: GitHub Pages dice
+  // "tieniti questa pagina per 10 minuti" e senza questo l'aggiornamento
+  // appena pubblicato non arriverebbe.
   if (req.mode === 'navigate') {
     e.respondWith(
-      fetch(req)
+      fetch(req, { cache: 'reload' })
         .then(r => {
           const copia = r.clone();
           caches.open(CACHE).then(c => c.put('./index.html', copia));
