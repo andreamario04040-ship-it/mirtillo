@@ -2666,7 +2666,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261118-1826';
+const VERSIONE='20261118-1827';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
@@ -2683,6 +2683,13 @@ async function controllaVersione(appenaAperta){
   if(!r.ok) return;
   const d=await r.json();
   if(!d||!d.v||d.v===VERSIONE) return;
+  /* se ho già ricaricato per questa stessa versione e il file servito è
+     ancora quello vecchio, mi fermo: meglio una versione vecchia che un
+     telefono che si ricarica all'infinito */
+  let tentata=null;
+  try{ tentata=sessionStorage.getItem('mirtillo.aggiorna'); }catch(e){}
+  if(tentata===d.v) return;
+  try{ sessionStorage.setItem('mirtillo.aggiorna',d.v); }catch(e){}
   /* non interrompo una lettura dello scontrino o il primo avvio a metà */
   if(S.screen==='scanner'||S.screen==='benvenuto'){
    toast('C’è un aggiornamento: lo installo quando esci da qui');
