@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Mirtillo</title>
 <meta name="description" content="La dispensa, le ricette e la spesa, sempre in tasca.">
 <meta name="theme-color" content="#F2F8FF">
@@ -67,6 +67,9 @@
   --font-body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
 }
 *{box-sizing:border-box}
+/* niente zoom: è un'app, non una pagina da sfogliare */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
+body{touch-action:manipulation}
 body{background-color:var(--crema);
   color:var(--ink);font-family:var(--font-body);font-weight:600;
   -webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -74,7 +77,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;margin:0;letter-spacing:-.01em;
   color:var(--verde-scuro);text-wrap:balance}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
-input,select,textarea{font:inherit;color:inherit}
+/* 16px esatti: sotto questa misura iOS ingrandisce la pagina appena tocchi
+   un campo, e da lì resta storta. È la vera causa, non lo zoom col pizzico. */
+input,select,textarea{font:inherit;color:inherit;font-size:16px}
 .tnum{font-variant-numeric:tabular-nums}
 
 /* ---------- guscio ---------- */
@@ -236,7 +241,7 @@ body.no-pad .app{padding-bottom:0;background-image:none}
   -webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3)}
 .search{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:99px;
   background-color:var(--surface);box-shadow:var(--shadow-sm)}
-.search input{border:0;background:none;outline:none;width:100%;font-weight:700;font-size:15px}
+.search input{border:0;background:none;outline:none;width:100%;font-weight:700;font-size:16px}
 .search input::placeholder{color:var(--ink-3)}
 .group-h{display:flex;align-items:center;gap:9px;margin:22px 0 10px}
 .group-h h3{font-size:16px}
@@ -258,7 +263,7 @@ body.no-pad .app{padding-bottom:0;background-image:none}
 .stepper b{min-width:58px;text-align:center;font-family:var(--font-display);font-size:15px}
 /* versione compatta, per le righe della spesa a mano */
 .quanto{display:flex;align-items:center;gap:5px;flex:0 0 auto}
-.quanto input{width:74px;text-align:right;font-weight:800;font-size:15px;
+.quanto input{width:78px;text-align:right;font-weight:800;font-size:16px;
   border:0;outline:none;background:var(--surface);color:var(--ink);
   border-radius:12px;padding:8px 9px;box-shadow:inset 0 0 0 1.5px var(--box-ingr)}
 .quanto input:focus{box-shadow:inset 0 0 0 2px var(--verde)}
@@ -339,14 +344,14 @@ body.no-pad .app{padding-bottom:0;background-image:none}
 .field{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
 .field label{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)}
 .field input,.field select,.field textarea{background:var(--surface);border:0;border-radius:var(--r-sm);
-  padding:12px 15px;font-weight:700;font-size:15px;outline:none;font-family:var(--font-body);width:100%;
+  padding:12px 15px;font-weight:700;font-size:16px;outline:none;font-family:var(--font-body);width:100%;
   box-shadow:inset 0 0 0 2px var(--line)}
 .field input:focus-visible,.field textarea:focus-visible{box-shadow:inset 0 0 0 2px var(--verde-scuro)}
 .nr-step{padding:16px;margin-bottom:13px}
 .nr-num{width:30px;height:30px;border-radius:var(--blob);background:var(--verde);color:var(--su-verde);
   font-family:var(--font-display);display:grid;place-items:center;font-size:15px;flex:0 0 auto}
 .ingrow{display:grid;grid-template-columns:1fr 68px 78px 34px;gap:7px;align-items:center;margin-bottom:8px}
-.ingrow input,.ingrow select{padding:10px 12px;font-size:14px;border-radius:14px;background:var(--surface);
+.ingrow input,.ingrow select{padding:10px 12px;font-size:16px;border-radius:14px;background:var(--surface);
   border:0;box-shadow:inset 0 0 0 2px var(--line);outline:none;font-family:var(--font-body);font-weight:700;width:100%}
 .ingrow .del{display:grid;place-items:center;height:40px;border-radius:50%;color:var(--ink-3)}
 .ingnote{font-size:11.5px;font-weight:800;margin:-4px 0 10px 4px}
@@ -2522,12 +2527,16 @@ async function leggiFoto(dataUrl){
    detersivi, totali, righe di cassa. Niente è automatico fino in fondo, infatti
    ogni riga passa dalla revisione prima di entrare in dispensa. */
 
-const CATENE=["In's Mercato","Ins Mercato","Conad","Esselunga","Lidl","Carrefour",
+const CATENE=["In's Mercato","Ins Mercato","Pam Panorama","Famila Superstore",
+ "Eurospin Italia","Bennet","Tigros","Conad","Esselunga","Lidl","Carrefour",
  "Eurospin","Bennet","Pam","MD","Coop","Penny","Famila","Tigros","Iper","Despar",
  "Sigma","Crai","Todis","Alì","Basko","Prix","Aldi"];
 
 /* abbreviazioni che si trovano stampate sugli scontrini */
-const ABBREV={pass:'passata',passat:'passata',pom:'pomodoro',pomod:'pomodoro',
+const ABBREV={pst:'pasta',ltt:'latte',frn:'farina',zch:'zucchero',tnn:'tonno',
+ prm:'parmigiano',mzz:'mozzarella',brr:'burro',frm:'formaggio',bsc:'biscotti',
+ pomd:'pomodoro',semolato:'zucchero',
+ pass:'passata',passat:'passata',pom:'pomodoro',pomod:'pomodoro',
  pomodor:'pomodoro',mozz:'mozzarella',parmig:'parmigiano',parm:'parmigiano',
  pecor:'pecorino',rom:'romano',spagh:'spaghetti',spag:'spaghetti',latt:'latte',
  zucch:'zucchine',zucc:'zucchine',melanz:'melanzane',champ:'champignon',
@@ -2924,11 +2933,32 @@ function rigaDaColonne(riga,col){
 /* le righe lette con le colonne, più quelle che restano da buttare */
 function leggiColonne(righeOCR){
  const buone=[], scarti=[];
- const colonne=colonneDi(righeOCR||[]);
- (righeOCR||[]).forEach(r=>{
-  const grezza=(r.text||'').replace(/\s+/g,' ').trim();
-  if(grezza.length<4) return;
+ const righe=righeOCR||[];
+ const colonne=colonneDi(righe);
+ /* Alcune catene stampano la descrizione su una riga e il prezzo su quella
+    dopo. Se una riga ha parole ma niente prezzo, e la successiva ha il prezzo
+    senza una descrizione sua, le unisco: sono lo stesso acquisto. */
+ const saltare={};
+ righe.forEach((r,i)=>{
+  if(saltare[i]) return;
   const col=rigaDaColonne(r,colonne);
+  if(col) return;
+  const succ=righe[i+1]; if(!succ) return;
+  const colS=rigaDaColonne(succ,colonne);
+  if(!colS) return;
+  const parole=(r.words||[]).filter(w=>w.text&&/[a-zA-Zàèéìòù]{3}/.test(w.text));
+  if(parole.length<1) return;
+  const suaDesc=(colS.desc||'').replace(/[^a-zA-Zàèéìòù]/g,'');
+  if(suaDesc.length>6) return;          /* la riga sotto ha già un nome suo */
+  const mio=parole.map(w=>w.text.trim()).join(' ');
+  r.__unita={desc:mio,prezzo:colS.prezzo,molt:colS.molt||1};
+  saltare[i+1]=1;
+ });
+ righe.forEach((r,i)=>{
+  if(saltare[i]) return;
+  const grezza=(r.text||'').replace(/\s+/g,' ').trim();
+  if(grezza.length<4 && !r.__unita) return;
+  const col=r.__unita||rigaDaColonne(r,colonne);
   if(!col){ return; }                        /* niente prezzo: silenzio, non è un acquisto */
   /* i controlli "non è cibo" devono vedere la riga intera: una parola letta
      male ma decisiva (SHOPPER) sparirebbe dalla sola descrizione ripulita */
@@ -3680,7 +3710,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261118-2314';
+const VERSIONE='20261118-2322';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
@@ -3767,12 +3797,12 @@ const FRASI={
 };
 
 function montaCatalogo(){
- Object.keys(FRASI).forEach(k=>{ ALIAS[k]=[...(ALIAS[k]||[]),...FRASI[k]]; });
  CATALOGO.forEach(([k,n,e,u,f,pr,l,parole])=>{
   if(!ING[k]) ING[k]={n,e,u,q:0,f,pr,l};
   const extra=(parole||'').split(/\s+/).filter(Boolean);
   ALIAS[k]=[...new Set([...(ALIAS[k]||[]),...extra])];
  });
+ Object.keys(FRASI).forEach(k=>{ ALIAS[k]=[...(ALIAS[k]||[]),...FRASI[k]]; });
  /* le parole scritte a mano valgono più di quelle ricavate dal nome:
     "olio" è l'olio, non il tonno all'olio. Quindi una parola già assegnata
     a qualcuno non viene regalata a nessun altro. */
@@ -3789,6 +3819,17 @@ function montaCatalogo(){
  });
 }
 montaCatalogo();
+
+/* iOS ignora user-scalable: il pizzico va fermato a mano, e il doppio tocco
+   che ingrandisce pure. I campi di testo restano normali. */
+['gesturestart','gesturechange','gestureend'].forEach(ev=>
+ document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
+let ultimoTocco=0;
+document.addEventListener('touchend',e=>{
+ const ora=Date.now();
+ if(ora-ultimoTocco<320 && !/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) e.preventDefault();
+ ultimoTocco=ora;
+},{passive:false});
 
 const avevoDati=carica();
 const saltati=avanzaGiorni();
