@@ -383,12 +383,17 @@ body.no-pad .app{padding-bottom:0;background-image:none}
   box-shadow:0 0 0 100vmax rgba(6,10,22,.55);transition:opacity .3s}
 .live .guida.ok{opacity:0}
 .live .guida.ok{border-color:#9BE37A}
-.live .stato{position:absolute;left:14px;right:14px;z-index:2;text-align:center;
-  top:calc(16px + env(safe-area-inset-top,0px))}
-.live .stato b{display:inline-block;background:rgba(10,16,32,.72);color:#fff;
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
-  font-family:var(--font-display);font-size:15px;font-weight:700;
-  padding:10px 16px;border-radius:99px;max-width:100%}
+.live .guidacard{position:absolute;left:12px;right:62px;z-index:3;
+  top:calc(14px + env(safe-area-inset-top,0px));
+  display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:18px;
+  background:rgba(10,16,32,.78);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  box-shadow:0 6px 22px rgba(0,0,0,.35);transition:background .3s}
+.live .guidacard.ok{background:rgba(22,60,34,.8)}
+.live .guidacard .ic{font-size:22px;line-height:1;flex:0 0 auto}
+.live .guidacard .tx{display:flex;flex-direction:column;min-width:0}
+.live .guidacard b{color:#fff;font-family:var(--font-display);font-size:15px;line-height:1.2}
+.live .guidacard i{color:rgba(255,255,255,.72);font-style:normal;font-size:12.5px;
+  font-weight:600;line-height:1.25;margin-top:2px}
 .live .chiudi{position:absolute;z-index:3;right:14px;width:40px;height:40px;border-radius:50%;
   top:calc(14px + env(safe-area-inset-top,0px));
   background:rgba(10,16,32,.72);color:#fff;font-size:20px;display:grid;place-items:center}
@@ -641,7 +646,6 @@ const CATALOGO=[
 ['alici','Alici','🐟','g',80,1.80,'credenza','acciughe filetti'],
 ['sgombro','Sgombro','🐟','g',120,1.60,'credenza','sgombri maccarello'],
 /* --- dispensa: primi --- */
-['pasta_corta','Pasta corta','🍝','g',500,0.90,'credenza','penne fusilli rigatoni sedanini mezze maniche farfalle conchiglie tortiglioni caserecce orecchiette'],
 ['pasta_lunga','Pasta lunga','🍝','g',500,0.90,'credenza','linguine bucatini vermicelli spaghettini capellini tagliatelle fettuccine'],
 ['pastina','Pastina','🍜','g',500,1.10,'credenza','stelline risoni ditalini anellini'],
 ['lasagne','Lasagne','🍝','g',500,1.60,'credenza','sfoglie lasagna cannelloni'],
@@ -669,7 +673,7 @@ const CATALOGO=[
 ['cereali','Cereali','🥣','g',375,2.60,'credenza','corn flakes muesli granola fiocchi avena'],
 ['nutella','Crema spalmabile','🍫','g',400,3.20,'credenza','nutella cacao nocciola'],
 ['cioccolato','Cioccolato','🍫','g',100,1.50,'credenza','tavoletta fondente latte milka lindt novi'],
-['merendine','Merendine','🧁','pz',10,2.60,'credenza','brioche kinder plumcake girelle'],
+['merendine','Merendine','🧁','pz',10,2.60,'credenza','brioche brioches croissant kinder plumcake girelle cornetti'],
 ['crackers','Crackers','🍘','g',500,1.80,'credenza','cracker salatini'],
 ['grissini','Grissini','🥖','g',250,1.40,'credenza','grissino torinesi'],
 ['taralli','Taralli','🥨','g',250,1.80,'credenza','tarallini'],
@@ -744,7 +748,7 @@ const CATALOGO=[
 ['farinaintegrale','Farina integrale','🌾','g',1000,1.40,'credenza','manitoba integrale tipo'],
 ['zuccherovelo','Zucchero a velo','🍬','g',250,0.90,'credenza','velo vanigliato'],
 ['bicarbonato','Bicarbonato','🧂','g',500,1.00,'credenza','cremor tartaro ammoniaca'],
-['lievitobirra','Lievito di birra','🍞','pz',2,0.60,'frigo','birra cubetto mastro fornaio'],
+['lievitobirra','Lievito di birra','🍞','pz',2,0.60,'frigo','cubetto mastro fornaio'],
 ['gelatina','Colla di pesce','🍮','pz',6,1.20,'credenza','gelatina fogli'],
 ['fruttasciroppo','Frutta sciroppata','🍑','g',400,1.60,'credenza','sciroppata pesche ananas macedonia'],
 ['burroarachidi','Burro di arachidi','🥜','g',350,3.00,'credenza','arachidi tahina crema nocciole'],
@@ -858,7 +862,7 @@ let RECIPES=[
          'Manteca la pasta con la crema e il parmigiano.']},
  /* --- ricette che usano il catalogo nuovo --- */
  {id:'pastapesto',n:'Pasta al pesto',e:'🌿',min:15,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
-  ing:[['pasta_corta',180],['pesto',90],['parmigiano',20]],
+  ing:[['pasta_mista',180],['pesto',90],['parmigiano',20]],
   steps:['Lessa la pasta.','Stempera il pesto con due cucchiai di acqua di cottura.',
          'Manteca fuori dal fuoco, così il basilico non si cuoce.']},
  {id:'caprese',n:'Caprese',e:'🍅',min:10,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo','cena'],
@@ -877,7 +881,7 @@ let RECIPES=[
   steps:['Soffritto di carota, sedano e cipolla.','Unisci lenticchie e acqua, 30 minuti.',
          'Aggiusta di sale e servi con un filo d’olio a crudo.']},
  {id:'pastanorma',n:'Pasta alla norma',e:'🍆',min:35,d:3,serv:2,tag:'Della domenica',slots:['pranzo','cena'],
-  ing:[['pasta_corta',180],['melanzane',1],['passata',300],['ricotta',80],['basilico',1],['olio',30]],
+  ing:[['pasta_mista',180],['melanzane',1],['passata',300],['ricotta',80],['basilico',1],['olio',30]],
   steps:['Melanzane a cubetti, rosolate in padella.','Unisci la passata, 15 minuti.',
          'Condisci la pasta e finisci con ricotta e basilico.']},
  {id:'cotoletta',n:'Cotoletta',e:'🍖',min:25,d:2,serv:2,tag:'Classico',slots:['pranzo','cena'],
@@ -892,7 +896,7 @@ let RECIPES=[
   steps:['Lessa broccoli e patate in poca acqua.','Frulla con il brodo fino a vellutata.',
          'Olio a crudo e pepe.']},
  {id:'pastaceci',n:'Pasta e ceci',e:'🫘',min:35,d:2,serv:2,tag:'Comfort',slots:['pranzo','cena'],
-  ing:[['pasta_corta',160],['ceci',1],['rosmarino',1],['aglio',1],['olio',25],['passata',100]],
+  ing:[['pasta_mista',160],['ceci',1],['rosmarino',1],['aglio',1],['olio',25],['passata',100]],
   steps:['Aglio e rosmarino in olio, unisci i ceci e la passata.',
          'Frulla metà ceci per legare.','Cuoci la pasta direttamente nel sugo con acqua calda.']},
  {id:'uovaspeck',n:'Uova al tegamino con speck',e:'🍳',min:12,d:1,serv:2,tag:'Svelta',slots:['colazione','cena'],
@@ -971,7 +975,7 @@ const S={
  budget:4.50, weeks:1, store:"In's Mercato", diffMax:5, newDiff:2, people:2, planDate:null,
  step:0, photo:null, lines:[], others:[], shopped:false,
  checked:{}, extra:[], man:{sel:{},q:''}, azzera:0,
- onb:{fatto:false,passo:0}, diete:{}, colazione:true, imparate:{}, scelta:null, mod:null,
+ onb:{fatto:false,passo:0}, diete:{}, imparate:{}, scelta:null, mod:null,
  prop:null, sheet:null,
  newIng:[{name:'',q:'',u:'g'},{name:'',q:'',u:'g'}]
 };
@@ -1981,7 +1985,8 @@ const TESS_URL='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.m
 
 const L={attivo:false, video:null, stream:null, worker:null, timer:null,
  leggendo:false, trovate:[], scarti:[], negozio:null, fermi:0, fase:'avvio',
- errore:null, cand:{}, viste:{}, ritaglio:null, caselle:null, carta:null, raf:null};
+ errore:null, cand:{}, viste:{}, ritaglio:null, caselle:null, carta:null, raf:null,
+ cartaOcr:null, ritaglioOcr:null, miniTrack:null, ultimoTrack:0, persa:0};
 
 /* Dove finisce un punto del fotogramma elaborato sullo schermo.
    Il video è mostrato in "cover": ingrandito al massimo e centrato, quindi
@@ -2025,6 +2030,17 @@ function animaOverlay(){
  L.raf=requestAnimationFrame(animaOverlay);
  const cv=el('live-ovl'), video=L.video;
  if(!cv||!video||!video.videoWidth) return;
+ /* Rileggo il bordo della carta molte volte al secondo: costa poco (80x80)
+    e mi dice quanto si è spostata e ingrandita l'inquadratura da quando ho
+    letto. Le caselle le sposto di conseguenza, così restano sulle parole. */
+ const ora=performance.now();
+ if(!L.ultimoTrack||ora-L.ultimoTrack>110){
+  L.ultimoTrack=ora;
+  if(!L.miniTrack) L.miniTrack=document.createElement('canvas');
+  const c2=trovaCarta(video,L.miniTrack);
+  if(c2) L.carta=c2; else L.persa=(L.persa||0)+1;
+  if(c2) L.persa=0;
+ }
  const dpr=Math.min(2,window.devicePixelRatio||1);
  const larg=cv.clientWidth, alt=cv.clientHeight;
  if(cv.width!==Math.round(larg*dpr)){ cv.width=Math.round(larg*dpr); cv.height=Math.round(alt*dpr); }
@@ -2059,8 +2075,25 @@ function animaOverlay(){
  c.beginPath(); c.moveTo(x0,ys); c.lineTo(x1,ys); c.stroke();
  c.restore();
 
- if(!L.caselle||!L.caselle.length||!L.canvasOcr) return;
- const m=mappa(video,L.canvasOcr,larg,alt);
+ if(!L.caselle||!L.caselle.length||!L.canvasOcr||!L.ritaglioOcr) return;
+ if(L.persa>6) return;           /* carta persa di vista: meglio niente che caselle a caso */
+ const vw2=video.videoWidth, vh2=video.videoHeight;
+ const kk=Math.max(larg/vw2, alt/vh2);
+ const oX=(larg-vw2*kk)/2, oY=(alt-vh2*kk)/2;
+ const r=L.ritaglioOcr;
+ const kx=r.sw/L.canvasOcr.width, ky=r.sh/L.canvasOcr.height;
+ let mx=1,my=1,tx=0,ty=0;
+ if(L.cartaOcr&&L.carta){
+  const lo=Math.max(1,L.cartaOcr.x1-L.cartaOcr.x0), ho=Math.max(1,L.cartaOcr.y1-L.cartaOcr.y0);
+  mx=(L.carta.x1-L.carta.x0)/lo; my=(L.carta.y1-L.carta.y0)/ho;
+  if(!isFinite(mx)||mx<=0) mx=1;
+  if(!isFinite(my)||my<=0) my=1;
+  tx=L.carta.x0-L.cartaOcr.x0*mx; ty=L.carta.y0-L.cartaOcr.y0*my;
+ }
+ const m=(cx,cy)=>{
+  const vx=(r.sx+cx*kx)*mx+tx, vy=(r.sy+cy*ky)*my+ty;
+  return [oX+vx*kk, oY+vy*kk];
+ };
  const eta=Math.min(1,(t-(L.quando||t))/420);
  c.save();
  c.lineWidth=1;
@@ -2104,6 +2137,27 @@ function freccia(mostra){
  const f=el('live-freccia'); if(f) f.classList.toggle('on',!!mostra);
 }
 
+/* la scheda in alto dice sempre cosa fare, non solo cosa sta succedendo */
+const GUIDE={
+ avvio:   ['📷','Accendo la fotocamera','un attimo solo'],
+ scarico: ['⬇️','Preparo la lettura','scarico il riconoscimento, solo la prima volta'],
+ cerca:   ['🧾','Inquadra lo scontrino','tienilo disteso e riempi lo schermo in larghezza'],
+ legge:   ['👀','Sto leggendo','tieni fermo un attimo'],
+ conferma:['⏳','Sto confermando','ancora un istante senza muoverti'],
+ nuove:   ['✨','Righe nuove trovate','continua così'],
+ scendi:  ['⬇️','Questo pezzo è fatto','scendi piano verso il basso'],
+ buio:    ['💡','Vedo poco','più luce, oppure avvicinati'],
+ illeggibile:['🔍','Vedo il testo ma non lo capisco','avvicinati ancora un po’'],
+ pronto:  ['🛒','Puoi caricare la spesa','o scendi ancora per il resto']
+};
+function guida(chiave,extra){
+ const g=GUIDE[chiave]; if(!g) return;
+ const ic=el('live-ic'), t=el('live-stato'), sotto=el('live-sotto'), card=el('live-guidacard');
+ if(ic) ic.textContent=g[0];
+ if(t) t.textContent=extra||g[1];
+ if(sotto) sotto.textContent=g[2];
+ if(card) card.classList.toggle('ok',chiave==='nuove'||chiave==='pronto');
+}
 function statoLive(testo){ const e=el('live-stato'); if(e) e.textContent=testo; }
 function guidaOk(ok){ const g=el('live-guida'); if(g) g.classList.toggle('ok',!!ok); }
 
@@ -2113,7 +2167,11 @@ function vScanner(){
    <canvas class="ovl" id="live-ovl"></canvas>
    <div class="guida" id="live-guida"></div>
    <div class="freccia" id="live-freccia"><span>⌄</span><span>⌄</span><b>Scendi piano</b></div>
-   <div class="stato"><b id="live-stato">Accendo la fotocamera…</b></div>
+   <div class="guidacard" id="live-guidacard">
+     <span class="ic" id="live-ic">📷</span>
+     <span class="tx"><b id="live-stato">Accendo la fotocamera…</b>
+     <i id="live-sotto">un attimo solo</i></span>
+   </div>
    <button class="chiudi" data-a="live-chiudi" aria-label="Chiudi">✕</button>
    <div class="fondo">
      <div class="trovati" id="live-trovati"></div>
@@ -2137,7 +2195,7 @@ function disegnaTrovate(){
  box.scrollTop=0;
  const c=el('live-conta');
  if(c) c.textContent=L.trovate.length
-   ? `${L.trovate.length} riga${L.trovate.length===1?'':'he'} lette${L.negozio?' · '+L.negozio:''}`
+   ? `${L.trovate.length} ${L.trovate.length===1?'riga letta':'righe lette'}${L.negozio?' · '+L.negozio:''}`
    : '';
  const b=el('live-fine');
  if(b){ b.disabled=!L.trovate.length;
@@ -2220,6 +2278,7 @@ function fotogramma(video,canvas,sorgente,carta){
  const maxPix=2.9e6;
  if(sw*sh*scala*scala>maxPix) scala=Math.sqrt(maxPix/(sw*sh));
  canvas.width=Math.round(sw*scala); canvas.height=Math.round(sh*scala);
+ if(!sorgente) L.ritaglioOcr={sx,sy,sw,sh};
  const c=canvas.getContext('2d',{willReadFrequently:true});
  c.imageSmoothingQuality='high';
  c.drawImage(sorgente||video,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
@@ -2272,13 +2331,13 @@ async function apriScanner(){
  if(!L.attivo){ fermaScanner(); return; }
  video.srcObject=L.stream;
  try{ await video.play(); }catch(e){}
- statoLive('Inquadra lo scontrino');
+ guida('cerca');
  const canvas=document.createElement('canvas');
  const mini=document.createElement('canvas');
  try{
   const T=await caricaTesseract();
   if(!L.attivo) return;
-  statoLive('Preparo la lettura…');
+  guida('scarico');
   L.worker=await T.createWorker('ita',1);
   await L.worker.setParameters({
    tessedit_pageseg_mode:'6',
@@ -2290,7 +2349,7 @@ async function apriScanner(){
    'La prima volta serve la rete per scaricare il riconoscimento del testo (poi resta nel telefono). Controlla la connessione, oppure inserisci la spesa a mano.');
  }
  if(!L.attivo){ fermaScanner(); return; }
- statoLive('Inquadra lo scontrino');
+ guida('cerca');
  L.timer=setInterval(()=>passata(canvas,mini), 900);
  L.raf=requestAnimationFrame(animaOverlay);
 }
@@ -2310,14 +2369,14 @@ async function passata(canvas,mini){
  const pieno=inquadrato(L.video,mini);
  if(pieno<0.22||!carta){
   guidaOk(false); freccia(false); disegnaOverlay(null,carta);
-  statoLive('Inquadra lo scontrino'); return;
+  guida('cerca'); return;
  }
  guidaOk(true);
  L.leggendo=true;
  try{
-  if(L.fase!=='letto') statoLive('Lo sto leggendo…');
+  if(L.fase!=='letto') guida('legge');
   L.canvasOcr=canvas;
-  L.ritaglio=carta;
+  L.ritaglio=carta; L.cartaOcr=carta;
   const {data}=await L.worker.recognize(fotogramma(L.video,canvas,null,carta),{},
     {text:true,blocks:true});
   if(!L.attivo) return;
@@ -2371,19 +2430,18 @@ async function passata(canvas,mini){
   if(nuove){
    L.fermi=0; L.fase='letto'; freccia(false);
    disegnaTrovate();
-   statoLive(nuove===1?'+1 riga':'+'+nuove+' righe');
+   guida('nuove',nuove===1?'+1 riga letta':'+'+nuove+' righe lette');
    if(navigator.vibrate) try{navigator.vibrate(18);}catch(e){}
   }else{
    L.fermi++;
    const inAttesa=Object.keys(L.cand).length;
    if(inAttesa&&L.fermi<3){
-    statoLive('Tieni fermo un attimo…');
+    guida('conferma');
    } else if(L.trovate.length&&L.fermi>=2){
-    statoLive('Ho finito questo pezzo'); freccia(true);
+    guida(L.trovate.length?'pronto':'scendi'); freccia(true);
    } else if(!L.trovate.length&&L.fermi>=3){
     freccia(false);
-    statoLive(parole.length?'Vedo il testo ma non lo capisco: più luce'
-                           :'Avvicinati un po’, o cerca più luce');
+    guida(caselle.length?'illeggibile':'buio');
    }
   }
  }catch(e){ /* un fotogramma venuto male: si riprova col prossimo */ }
@@ -2394,7 +2452,8 @@ function fermaScanner(){
  L.attivo=false;
  if(L.timer){ clearInterval(L.timer); L.timer=null; }
  if(L.raf){ cancelAnimationFrame(L.raf); L.raf=null; }
- L.caselle=null; L.carta=null;
+ L.caselle=null; L.carta=null; L.cartaOcr=null;
+ L.ritaglioOcr=null; L.persa=0;
  if(L.stream){ L.stream.getTracks().forEach(t=>{try{t.stop();}catch(e){}}); L.stream=null; }
  if(L.worker){ const w=L.worker; L.worker=null; try{ w.terminate(); }catch(e){} }
  L.video=null; L.canvasOcr=null;
@@ -2519,19 +2578,19 @@ const ALIAS={uova:['uova','uovo','ovoprodotto'],
  parmigiano:['parmigiano','grana','reggiano','padano','grattugiato'],
  pecorino:['pecorino','romano'],guanciale:['guanciale','pancetta'],burro:['burro'],
  panna:['panna'],pomodorini:['pomodorini','ciliegino','ciliegini','datterini'],
- pollo:['pollo','fesa','sovracoscia','amadori'],
- macinato:['macinata','macinato','trita','hamburger','svizzera'],
+ pollo:['pollo','fesa','sovracoscia','amadori','petto di pollo','petto pollo'],
+ macinato:['macinata','macinato','trita','svizzera'],
  piselli:['piselli','pisellini'],
  salmone:['salmone'],spinaci:['spinaci'],spaghetti:['spaghetti'],
  pasta_mista:['penne','fusilli','rigatoni','maniche','tortiglioni','farfalle','pasta',
-   'semola','barilla','rummo','garofalo','voiello','dececco','sedanini','caserecce',
-   'orecchiette','conchiglie','paccheri','linguine','bucatini','maccheroni'],
+   'barilla','rummo','garofalo','voiello','dececco','sedanini','caserecce',
+   'orecchiette','conchiglie','paccheri','mezze'],
  riso:['riso','carnaroli','arborio'],farro:['farro'],
  fagioli:['fagioli','borlotti','cannellini'],ceci:['ceci'],
  tonno:['tonno','riomare','nostromo','asdomar','mareblu','maruzzella'],
  passata:['passata','mutti','cirio','valfrutta','pomi','sugo'],
- pelati:['pelati','polpa','datterino','cubettati'],
- olio:['olio','extravergine','oliva','bertolli','monini','farchioni','carapelli'],
+ pelati:['pelati','polpa','datterino','cubettati','pomodori pelati','pomodoro pelato'],
+ olio:['olio','extravergine','oliva','bertolli','monini','farchioni','carapelli','olio di oliva'],
  farina:['farina'],zucchero:['zucchero'],lievito:['lievito'],
  caffe:['caffe','caffè','arabica','miscela','lavazza','illy','kimbo','segafredo','borbone'],
  fette:['fette','biscottate'],
@@ -2694,14 +2753,18 @@ function leggiQuantita(testo){
      gnocchi, non patate. Una somiglianza trovata più avanti vale meno,
      così finisce fra le cose da chiedere invece che fra le certezze. */
 function abbina(desc){
- const parole=normalizza(desc).split(/[\s\/-]+/)
+ const parole=normalizza(desc).split(/[\s\/.-]+/)
    .filter(w=>w.length>2 && !/^\d/.test(w)).map(espandi);
  if(!parole.length) return {id:null,punti:0};
+ const intera=normalizza(desc);
  let best={id:null,punti:0};
  for(const id in ALIAS){
   if(!ING[id]) continue;
   let migliore=0;
   for(const alias of ALIAS[id]){
+   /* un alias di più parole ("pomodori pelati", "petto di pollo") vale pieno
+      ovunque compaia: è più specifico di una parola sola */
+   if(alias.includes(' ')&&intera.includes(alias)){ migliore=Math.max(migliore,1.05); continue; }
    for(let idx=0;idx<parole.length;idx++){
     const w=parole[idx];
     let p=0;
@@ -2848,9 +2911,14 @@ function rigaDaColonne(riga,col){
   else break;
  }
  if(!testa.length||!/[a-zA-Zàèéìòù]/.test(testa[0].text)) return null;
- const desc=testa.map(w=>w.text.trim()).join(' ').replace(/\s+/g,' ').trim();
+ let desc=testa.map(w=>w.text.trim()).join(' ').replace(/\s+/g,' ').trim();
+ /* certe catene scrivono la quantità in testa: "2 X CROISSANT" */
+ let molt=1;
+ const mx=desc.match(/^(\d{1,2})\s*[xX*]\s+/);
+ if(mx){ molt=parseInt(mx[1],10)||1; desc=desc.slice(mx[0].length).trim(); }
+ else desc=desc.replace(/^[xX]\s+/,'').trim();
  if(prezzo===null) return null;      /* la riga c'è, ma senza prezzo non è un acquisto */
- return {desc,prezzo};
+ return {desc,prezzo,molt};
 }
 
 /* le righe lette con le colonne, più quelle che restano da buttare */
@@ -3534,7 +3602,7 @@ function salva(){
       salvassi tutte un aggiornamento non ve ne porterebbe mai di nuove */
    RECIPES:RECIPES.filter(r=>r.mia),
    imp:{budget:S.budget,weeks:S.weeks,store:S.store,diffMax:S.diffMax,people:S.people,
-        onb:S.onb,diete:S.diete,colazione:S.colazione,imparate:S.imparate},
+        onb:S.onb,diete:S.diete,imparate:S.imparate},
    stato:{shopped:S.shopped,checked:S.checked,extra:S.extra}
  })); }catch(e){ S.senzaMemoria=true; }
 }
@@ -3612,7 +3680,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261118-2257';
+const VERSIONE='20261118-2314';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
@@ -3673,7 +3741,33 @@ document.addEventListener('visibilitychange',()=>{
 /* Il catalogo diventa roba riconoscibile, non roba che avete in casa:
    entra in dispensa solo quando lo comprate. E ogni ingrediente guadagna
    come parole chiave quelle del proprio nome, oltre a quelle delle casse. */
+/* nomi composti: il secondo termine è quello che distingue il prodotto,
+   quindi la frase intera deve valere più della singola parola */
+const FRASI={
+ salmoneaffum:['salmone affumicato','salmone affum'],
+ yogurtgreco:['yogurt greco'], yogurtfrutta:['yogurt alla frutta','yogurt frutta'],
+ panebauletto:['pane bauletto','pane in cassetta','pane per toast'],
+ balsamico:['aceto balsamico'], lievitobirra:['lievito di birra'],
+ zuccherovelo:['zucchero a velo'], zuccherocanna:['zucchero di canna'],
+ fruttibosco:['frutti di bosco'], pastasfoglia:['pasta sfoglia','pasta brise'],
+ salsasoia:['salsa di soia'], burroarachidi:['burro di arachidi'],
+ risobasmati:['riso basmati','riso venere','riso integrale'],
+ pastaintegrale:['pasta integrale'], lattesenza:['senza lattosio'],
+ lattepas:['parzialmente scremato'], patatedolci:['patate dolci'],
+ pastafresca:['pasta fresca'], pizzasurgelata:['pizza surgelata'],
+ patatinefritte:['patate fritte'], cotolettesurg:['cordon bleu'],
+ prosciuttocotto:['prosciutto cotto','prosc cotto'],
+ prosciuttocrudo:['prosciutto crudo','prosc crudo'],
+ concentrato:['concentrato di pomodoro'],
+ pannacucina:['panna da cucina'], lattevegetale:['bevanda vegetale','latte di mandorla','latte di soia','latte di avena'],
+ maisscatola:['mais dolce'], sugopronto:['sugo pronto','sughi freschi'],
+ vinorosso:['vino rosso'], vino_bianco:['vino bianco'],
+ pescespada:['pesce spada'], formaggini:['formaggio spalmabile'],
+ philadelphia:['formaggio spalmabile'], caffecialde:['caffe in capsule','capsule caffe']
+};
+
 function montaCatalogo(){
+ Object.keys(FRASI).forEach(k=>{ ALIAS[k]=[...(ALIAS[k]||[]),...FRASI[k]]; });
  CATALOGO.forEach(([k,n,e,u,f,pr,l,parole])=>{
   if(!ING[k]) ING[k]={n,e,u,q:0,f,pr,l};
   const extra=(parole||'').split(/\s+/).filter(Boolean);
@@ -3686,8 +3780,10 @@ function montaCatalogo(){
  Object.keys(ALIAS).forEach(k=>(ALIAS[k]||[]).forEach(w=>assegnate.add(w)));
  Object.keys(ING).forEach(k=>{
   const miei=new Set(ALIAS[k]||[]);
-  const dalNome=normalizza(ING[k].n).split(/\s+/)
-    .filter(w=>w.length>3 && (miei.has(w)||!assegnate.has(w)));
+  const nome=normalizza(ING[k].n).split(/\s+/).filter(w=>w.length>3);
+  /* la prima parola del nome è di chi porta quel nome: "Birra" è la birra,
+     non il lievito di birra, anche se lui l'aveva chiesta prima */
+  const dalNome=nome.filter((w,i)=>w.length>3 && (i===0||miei.has(w)||!assegnate.has(w)));
   dalNome.forEach(w=>assegnate.add(w));
   ALIAS[k]=[...new Set([...(ALIAS[k]||[]),...dalNome])];
  });
