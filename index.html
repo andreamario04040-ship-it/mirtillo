@@ -1685,7 +1685,7 @@ const TESS_URL='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.m
 
 const L={attivo:false, video:null, stream:null, worker:null, timer:null,
  leggendo:false, trovate:[], scarti:[], negozio:null, fermi:0, fase:'avvio',
- errore:null, cand:{}, ritaglio:null};
+ errore:null, cand:{}, viste:{}, ritaglio:null};
 
 /* Dove finisce un punto del fotogramma elaborato sullo schermo.
    Il video è mostrato in "cover": ingrandito al massimo e centrato, quindi
@@ -1922,7 +1922,7 @@ function ripiego(titolo,testo){
 async function apriScanner(){
  S.screen='scanner'; render();
  L.trovate=[]; L.scarti=[]; L.negozio=null; L.fermi=0; L.attivo=true; L.errore=null;
- L.cand={}; L.ritaglio=null;
+ L.cand={}; L.viste={}; L.ritaglio=null;
  disegnaTrovate();
  const video=el('live-video'); L.video=video;
  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
@@ -1987,21 +1987,35 @@ async function passata(canvas,mini){
   const {data}=await L.worker.recognize(fotogramma(L.video,canvas,null,carta),{},
     {text:true,blocks:true});
   if(!L.attivo) return;
-  const letto=leggiScontrino(data.text||'');
-  if(letto.store&&!L.negozio){ L.negozio=letto.store; S.store=letto.store; }
+  const righeOCR=estraiRighe(data);
+  const letto=leggiColonne(righeOCR);
+  if(!L.negozio){
+   const st=leggiNegozio(righeOCR.map(r=>(r.text||'')));
+   if(st){ L.negozio=st; S.store=st; }
+  }
   /* Una riga entra in lista solo se la rileggo in due passate diverse.
      Il rumore dell'OCR cambia ogni volta, il testo vero no: è così che si
      smette di accumulare robaccia mentre tieni fermo il telefono. */
+  /* Una riga decisa non si riconsidera più: né per rimetterla in lista, né
+     per rimetterla fra gli scarti. Senza questo, ogni passata ripropone le
+     stesse righe con il rumore leggermente diverso e la lista si gonfia. */
   let nuove=0; const prese=[];
   letto.lines.forEach(l=>{
-   if(giaPresa(l)) return;
    const k=chiaveRiga(l.desc||l.raw);
-   if(!k) return;
+   if(!k||L.viste[k]||giaPresa(l)) return;
    const c=L.cand[k]||{n:0};
    c.n++; c.l=l; L.cand[k]=c;
-   if(c.n>=2){ L.trovate.push(l); nuove++; prese.push(normalizza(l.raw)); delete L.cand[k]; }
+   if(c.n>=2){
+    L.viste[k]=1; L.trovate.push(l); nuove++;
+    prese.push(normalizza(l.raw)); delete L.cand[k];
+   }
   });
-  letto.other.forEach(o=>{ if(!L.scarti.some(x=>x.raw===o.raw)) L.scarti.push(o); });
+  letto.other.forEach(o=>{
+   const k=chiaveRiga(o.raw);
+   if(!k||L.viste[k]) return;
+   L.viste[k]=1;
+   if(L.scarti.length<20) L.scarti.push(o);
+  });
 
   /* disegno sul video quello che ho letto: verde ciò che è finito in lista */
   const parole=[];
@@ -2084,9 +2098,11 @@ async function leggiFoto(dataUrl){
     immagine=fotogramma(null,cv,rit);
    } else immagine=fotogramma(null,cv,sorgente);
   }
-  const {data}=await w.recognize(immagine,{},{text:true});
+  const {data}=await w.recognize(immagine,{},{text:true,blocks:true});
   try{ w.terminate(); }catch(e){}
-  const letto=leggiScontrino(data.text||'');
+  const righeOCR=estraiRighe(data);
+  const letto=righeOCR.length?leggiColonne(righeOCR):leggiScontrino(data.text||'');
+  letto.store=leggiNegozio(righeOCR.length?righeOCR.map(r=>r.text||''):(data.text||'').split('\n'));
   S.lines=letto.lines.map(l=>Object.assign({},l,{on:true}));
   S.others=letto.other;
   if(letto.store) S.store=letto.store;
@@ -2360,7 +2376,7 @@ function abbina(desc){
 }
 
 /* da una riga grezza a una riga di scontrino, oppure a uno scarto motivato */
-function leggiRiga(grezza){
+function leggiRiga(grezza,colonne){
  const raw=String(grezza||'').replace(/\s+/g,' ').trim();
  if(raw.length<3) return null;
  const n=normalizza(raw);
@@ -2373,7 +2389,7 @@ function leggiRiga(grezza){
  /* l'intestazione col nome della catena non è un prodotto */
  if(CATENE.some(c=>{const k=normalizza(c); return k.length>3&&n.includes(k);}))
   return {scarto:'intestazione',raw};
- const pulita=ripulisciRiga(raw);
+ const pulita=colonne?{desc:colonne.desc,prezzo:colonne.prezzo}:ripulisciRiga(raw);
  const desc=pulita.desc, prezzo=pulita.prezzo;
  if(!sembraProdotto(desc,prezzo)) return {scarto:'riga non prodotto',raw};
  /* la riga ripulita può essere una di quelle di cassa */
@@ -2422,6 +2438,90 @@ function leggiNegozio(righe){
    return c==='Ins Mercato'?"In's Mercato":c;
  }
  return null;
+}
+
+/* ===== lettura per colonne =====
+   Uno scontrino è una tabella: descrizione a sinistra, IVA in mezzo, prezzo a
+   destra. Leggendo la riga come una stringa unica i tre pezzi si mescolano e
+   il prezzo finisce nel nome. Tesseract però dà la posizione di ogni parola,
+   e con quella le colonne si separano in modo netto. */
+/* un prezzo letto male ha una cifra in più o un segno attaccato: mi basta
+   che "assomigli" a un prezzo, la posizione conta più del valore */
+const RE_PREZZO=/^(\d{1,4})[.,](\d{2})\d?$/;
+const RE_IVA=/^\d{1,2}\s?%$/;
+const parolePulite=riga=>(riga.words||[]).filter(w=>w&&w.text&&w.text.trim()&&w.bbox)
+  .sort((a,b)=>a.bbox.x0-b.bbox.x0);
+
+function prezzoDi(w){
+ const m=w.text.trim().replace(/[^\d.,]/g,'').match(RE_PREZZO);
+ return m?parseFloat(m[1]+'.'+m[2]):null;
+}
+
+/* le colonne sono le stesse per tutte le righe: le calcolo una volta sola
+   sulle righe lette bene, e le riuso su quelle lette male */
+function colonneDi(righe){
+ const xp=[], xi=[];
+ righe.forEach(r=>{
+  const ws=parolePulite(r);
+  for(let i=ws.length-1;i>=0;i--){
+   if(prezzoDi(ws[i])!==null){ xp.push(ws[i].bbox.x0); break; }
+  }
+  ws.forEach(w=>{ if(RE_IVA.test(w.text.trim())) xi.push(w.bbox.x0); });
+ });
+ const mediana=a=>{ if(!a.length) return Infinity;
+   a.sort((x,y)=>x-y); return a[Math.floor(a.length/2)]; };
+ return {prezzo:mediana(xp), iva:mediana(xi)};
+}
+
+function rigaDaColonne(riga,col){
+ const ws=parolePulite(riga);
+ if(ws.length<2) return null;
+ let prezzo=null, xPrezzo=Infinity, xIva=Infinity;
+ for(let i=ws.length-1;i>=0;i--){
+  const p=prezzoDi(ws[i]);
+  if(prezzo===null && p!==null){ prezzo=p; xPrezzo=ws[i].bbox.x0; }
+  if(RE_IVA.test(ws[i].text.trim())) xIva=Math.min(xIva,ws[i].bbox.x0);
+ }
+ /* colonne di riserva, quando su questa riga il prezzo non si legge */
+ if(col){
+  if(xPrezzo===Infinity && col.prezzo!==Infinity) xPrezzo=col.prezzo;
+  if(xIva===Infinity && col.iva!==Infinity) xIva=col.iva;
+ }
+ const limite=Math.min(xPrezzo,xIva)-4;
+ if(!isFinite(limite)) return null;
+ let testa=ws.filter(w=>w.bbox.x1<limite && (w.confidence===undefined||w.confidence>=35));
+ /* in testa resta la sporcizia del margine: via tutto ciò che non ha lettere */
+ while(testa.length>1 && !/[a-zA-Zàèéìòù]/.test(testa[0].text)) testa.shift();
+ const largh=(ws[ws.length-1].bbox.x1-ws[0].bbox.x0)||1;
+ while(testa.length>1){
+  const a=testa[0], b=testa[1];
+  const lettere=(a.text.match(/[a-zA-Zàèéìòù]/g)||[]).length;
+  if(lettere<=2 && (b.bbox.x0-a.bbox.x1)/largh>0.03) testa.shift();
+  else break;
+ }
+ if(!testa.length||!/[a-zA-Zàèéìòù]/.test(testa[0].text)) return null;
+ const desc=testa.map(w=>w.text.trim()).join(' ').replace(/\s+/g,' ').trim();
+ if(prezzo===null) return null;      /* la riga c'è, ma senza prezzo non è un acquisto */
+ return {desc,prezzo};
+}
+
+/* le righe lette con le colonne, più quelle che restano da buttare */
+function leggiColonne(righeOCR){
+ const buone=[], scarti=[];
+ const colonne=colonneDi(righeOCR||[]);
+ (righeOCR||[]).forEach(r=>{
+  const grezza=(r.text||'').replace(/\s+/g,' ').trim();
+  if(grezza.length<4) return;
+  const col=rigaDaColonne(r,colonne);
+  if(!col){ return; }                        /* niente prezzo: silenzio, non è un acquisto */
+  /* i controlli "non è cibo" devono vedere la riga intera: una parola letta
+     male ma decisiva (SHOPPER) sparirebbe dalla sola descrizione ripulita */
+  const l=leggiRiga(grezza, col);
+  if(!l) return;
+  if(l.scarto){ if(l.scarto!=='riga non prodotto') scarti.push({raw:col.desc||grezza,why:l.scarto}); }
+  else buone.push(Object.assign({on:true},l,{raw:col.desc,prezzo:col.prezzo}));
+ });
+ return {lines:buone,other:scarti};
 }
 
 /* tutto insieme: dal testo letto dalla fotocamera alle righe della spesa */
@@ -3085,7 +3185,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261118-1849';
+const VERSIONE='20261118-1857';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
