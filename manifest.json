@@ -1,0 +1,19 @@
+{
+  "name": "Mirtillo",
+  "short_name": "Mirtillo",
+  "description": "La dispensa, le ricette e la spesa, sempre in tasca.",
+  "lang": "it",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F2F8FF",
+  "theme_color": "#F2F8FF",
+  "categories": ["food", "lifestyle", "productivity"],
+  "icons": [
+    { "src": "icona-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icona-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

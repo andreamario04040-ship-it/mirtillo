@@ -1,0 +1,2069 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mirtillo</title>
+<meta name="description" content="La dispensa, le ricette e la spesa, sempre in tasca.">
+<meta name="theme-color" content="#F2F8FF">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icona-192.png" type="image/png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mirtillo">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: colonna singola da 480px, header morbido e tab bar fissa in basso.
+   Niente angoli vivi: raggi larghi, bolle organiche per le emoji, ombre diffuse. Solo tema chiaro. */
+:root{
+  color-scheme: light;
+  --verde:#2A7BE4;        /* principale / CTA */
+  --verde-scuro:#102A4C;  /* titoli ed elementi scuri */
+  --crema:#F2F8FF;        /* fondo */
+  --salvia:#D8E9FB;       /* card e sezioni secondarie */
+  --nero:#102A4C;         /* testo */
+  --terra:#FFA64D;        /* accenti e dettagli */
+  --ambra:#F2711C;        /* accento forte */
+  /* derivati */
+  --su-verde:#FFFFFF;
+  /* "ok" è separato dal brand: così il principale può essere di qualsiasi colore
+     senza che una scorta piena sembri un allarme */
+  --ok:#2F9158; --ok-su:#FFFFFF;
+  --mirtillo:#4A56B5;      /* le bacche piene della difficoltà */
+  --surface:#FFFFFF; --surface-2:#E6EFF9;
+  --ink:#102A4C; --ink-2:#42587A; --ink-3:#8699B2;
+  --line:#DCE7F3; --line-strong:#102A4C;
+  --verde-bg:#DAF0E2; --verde-ink:#1F7045;
+  --terra-bg:#FFEDD8; --terra-ink:#9A5410;
+  --alert:#C2560D; --alert-bg:#FEE3CC;
+  --salvia-soft:#E9F2FC;
+  /* tutto il colore passa da qui: cambiare questo blocco cambia l'app intera */
+  --ombra:20,60,110;
+  --ombra-scura:16,42,76;
+  --verde-rgb:42,123,228;
+  --crema-rgb:242,248,255;
+  --menu-bg:rgba(255,255,255,.86);
+  --velo:rgba(16,42,76,.46);
+  --fuori:#E2EDF8;
+  --bordo-ingr:#CFE2F5; --box-ingr:#B9D6F0; --ingr-on:#E2F0FB;
+  --pat-c1:#6FA8E0; --pat-c2:#E8B35A; --pat-c3:#8FB47A; --pat-c4:#4F8FD6;
+  --pat-o1:.14; --pat-o2:.12; --pat-o3:.11; --pat-o4:.09;
+  --shadow:0 8px 22px rgba(var(--ombra),.13);
+  --shadow-sm:0 4px 14px rgba(var(--ombra),.10);
+  --r-xl:32px; --r-lg:26px; --r-md:20px; --r-sm:16px;
+  --blob:58% 42% 45% 55% / 48% 56% 44% 52%;
+  --blob2:45% 55% 60% 40% / 55% 45% 55% 45%;
+  /* forme larghe: stesso spirito del blob, ma per blocchi bassi e larghi */
+  --blob-w:72px 44px 60px 52px / 46% 55% 45% 54%;
+  --blob-w2:44px 72px 52px 60px / 55% 46% 54% 45%;
+  --blob-t:54px 34px 46px 40px / 44px 58px 36px 52px;
+  --blob-s:34px 16px 28px 20px / 24px 32px 18px 30px;
+  --blob-s2:16px 34px 20px 28px / 32px 20px 30px 22px;
+  --blob-s3:30px 24px 16px 32px / 28px 16px 32px 22px;
+  /* festone: una fila di gobbe, usata sul bordo basso della fascia spesa */
+  --onda:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='40'%20height='13'%20viewBox='0%200%2040%2013'%20preserveAspectRatio='none'%3E%3Cellipse%20cx='20'%20cy='0'%20rx='20'%20ry='13'%20fill='%23000'/%3E%3C/svg%3E");
+  /* i pattern veri li genera lo script: forme sparse, mai la stessa griglia */
+  --font-display:'Baloo 2','Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+body{background-color:var(--crema);
+  color:var(--ink);font-family:var(--font-body);font-weight:600;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--crema)}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;margin:0;letter-spacing:-.01em;
+  color:var(--verde-scuro);text-wrap:balance}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+input,select,textarea{font:inherit;color:inherit}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* ---------- guscio ---------- */
+/* il pattern sta qui, non su body: così scorre insieme al contenuto */
+.app{max-width:480px;margin:0 auto;background-image:var(--pat-bg);
+  min-height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
+  padding-top:calc(22px + env(safe-area-inset-top,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+/* ---------- mattoni ---------- */
+.card{background-color:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
+.soft{background-color:var(--salvia);border-radius:var(--r-lg)}
+.sec{margin-block:24px 0}
+.sec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+.sec-h h2{font-size:20px}
+.sec-h span{font-size:12.5px;color:var(--ink-3);font-weight:700}
+.sec-h .more{margin-left:auto;font-size:13px;font-weight:800;color:var(--verde-ink)}
+.row{display:flex;align-items:center;gap:12px}
+.col{display:flex;flex-direction:column}
+.grow{flex:1;min-width:0}
+.muted{color:var(--ink-3);font-size:13px;font-weight:700}
+.small{font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:800;border-radius:99px;
+  padding:5px 10px;max-width:100%;text-align:left;overflow-wrap:anywhere}
+.pill.ok{background:var(--verde-bg);color:var(--verde-ink)}
+.pill.warn{background:var(--terra-bg);color:var(--terra-ink)}
+.pill.bad{background:var(--alert-bg);color:var(--alert)}
+.pill.flat{background:var(--surface-2);color:var(--ink-2)}
+.pill.dark{background:var(--verde-scuro);color:var(--crema)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--font-display);
+  font-weight:800;font-size:16px;padding:14px 20px;border-radius:99px;background:var(--surface-2);
+  color:var(--verde-scuro);transition:transform .1s,filter .1s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--verde);color:var(--su-verde);box-shadow:0 5px 16px rgba(var(--verde-rgb),.42)}
+.btn.dark{background:var(--verde-scuro);color:var(--crema)}
+.btn.terra{background:var(--terra);color:var(--verde-scuro)}
+.btn.ghost{background:transparent;box-shadow:inset 0 0 0 2px var(--line)}
+.btn.wide{width:100%}
+.btn.sm{font-size:14px;padding:10px 15px}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.blob{flex:0 0 auto;display:grid;place-items:center;border-radius:var(--blob);background:var(--salvia-soft)}
+.blob.b2{border-radius:var(--blob2)}
+.av{width:52px;height:52px;font-size:28px}
+.av-sm{width:42px;height:42px;font-size:22px}
+.av-lg{width:76px;height:76px;font-size:42px}
+.bar{height:9px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--ok)}
+.bar.warn i{background:var(--terra)} .bar.bad i{background:var(--ambra)}
+/* difficoltà: cinque mirtilli, pieni fino al livello della ricetta */
+.diff{display:inline-flex;align-items:center;gap:3px}
+.diff i{width:12px;height:12px;display:block;color:rgba(var(--ombra),.22)}
+.diff i svg{width:100%;height:100%;display:block;fill:currentColor}
+.diff i svg path{fill:rgba(255,255,255,.55)}
+.diff i.on{color:var(--mirtillo)}
+.diff b{margin-left:6px;font-size:11.5px;font-weight:800;color:var(--ink-2)}
+.diff.big{gap:3.5px}
+.diff.big i{width:14px;height:14px}
+.diff.big b{font-size:12.5px;margin-left:7px}
+.scroller{display:flex;gap:12px;overflow-x:auto;padding-block:4px 10px;scroll-snap-type:x mandatory;
+  margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding-inline:max(16px,env(safe-area-inset-left,0px));
+  /* senza questo lo snap allinea la prima card al bordo dello schermo
+     e si mangia il padding di sinistra */
+  scroll-padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.scroller>*{scroll-snap-align:start}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-block:2px 10px;
+  margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.chip{flex:0 0 auto;font-size:13.5px;font-weight:800;padding:9px 15px;border-radius:99px;
+  background:var(--surface-2);color:var(--ink-2)}
+.chip[aria-pressed="true"]{background:var(--verde-scuro);color:var(--crema)}
+.chip[aria-pressed="true"] .diff i{color:rgba(255,255,255,.34)}
+.chip[aria-pressed="true"] .diff i.on{color:#8E97E8}
+.chip[aria-pressed="true"] i.on{background:var(--terra)}
+
+/* ---------- fascia scadenza spesa ---------- */
+.band{position:relative;overflow:hidden;padding:19px 22px 29px;margin-top:4px;
+  border-radius:22px 22px 4px 4px;
+  -webkit-mask-image:linear-gradient(#000,#000),var(--onda);
+  mask-image:linear-gradient(#000,#000),var(--onda);
+  -webkit-mask-size:100% calc(100% - 14px),14.2857% 15px;
+  mask-size:100% calc(100% - 14px),14.2857% 15px;
+  -webkit-mask-position:top left,bottom left;
+  mask-position:top left,bottom left;
+  -webkit-mask-repeat:no-repeat,repeat-x;
+  mask-repeat:no-repeat,repeat-x}
+.band .big{position:absolute;right:-8px;bottom:-6px;font-size:92px;opacity:.35;transform:rotate(-8deg);pointer-events:none}
+.band h3{font-size:19px;line-height:1.2;max-width:72%}
+.band.urgent{background-color:var(--terra-bg)}
+.days{display:flex;gap:5px;margin-top:12px;max-width:78%}
+.days i{flex:1;height:10px;border-radius:99px;background:#FFFFFF9E}
+.days i.on{background:var(--verde-scuro)}
+.days i.today{background:var(--ambra)}
+
+/* ---------- home ---------- */
+.hello{font-size:28px;line-height:1.14;margin-bottom:2px}
+.meal{display:flex;align-items:center;gap:13px;padding:13px 14px;width:100%;text-align:left;
+  border-radius:var(--r-lg);background-color:var(--surface);
+  box-shadow:var(--shadow-sm);margin-bottom:10px}
+.meal .slot{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3)}
+.meal .name{font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.15;color:var(--verde-scuro)}
+.meal .meta{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
+.meal .go{width:34px;height:34px;flex:0 0 auto;border-radius:50%;background:var(--surface-2);
+  display:grid;place-items:center;font-size:15px;color:var(--ink-2)}
+.meal.empty{background:transparent;box-shadow:none;border:2px dashed var(--line);color:var(--ink-3)}
+.meal.miss{background-color:var(--alert-bg);background-image:none}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.stat{padding:15px 8px 16px;border-radius:var(--blob-s);text-align:center;background-color:var(--salvia)}
+.stat:nth-child(2){border-radius:var(--blob-s2)}
+.stat:nth-child(3){border-radius:var(--blob-s3)}
+.stat .ic{display:block;font-size:30px;line-height:1;font-style:normal;margin-bottom:5px}
+.stat b{display:block;font-family:var(--font-display);font-size:23px;line-height:1.1;color:var(--verde-scuro)}
+.stat span{font-size:11px;font-weight:800;line-height:1.25;display:block;margin-top:1px;color:var(--ink-2)}
+.rcard{flex:0 0 216px;padding:15px;display:flex;flex-direction:column;gap:9px;text-align:left}
+.rcard .thumb{height:104px;border-radius:var(--blob2);display:grid;place-items:center;font-size:58px;
+  background-color:var(--salvia-soft)}
+.rcard h4{font-size:16.5px;line-height:1.2}
+
+/* ---------- piano ---------- */
+.day{padding:4px 0 2px;margin-bottom:18px;scroll-margin-top:78px}
+.day-h{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap}
+.day-h h3{font-size:16px;text-transform:capitalize}
+.day-h .tag{font-size:11px;font-weight:800;color:var(--crema);background:var(--verde-scuro);
+  border-radius:99px;padding:3px 10px}
+.alert{padding:18px 26px;background-color:var(--alert-bg);border-radius:var(--blob-w2);margin-top:4px}
+.alert h3{color:var(--alert)}
+/* calendario della settimana */
+.cal{display:flex;gap:6px;overflow-x:auto;padding-block:4px 10px;
+  margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.calday{flex:1 0 44px;min-width:44px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:9px 4px 9px;border-radius:19px;background-color:var(--surface);box-shadow:var(--shadow-sm)}
+.calday .dow{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3)}
+.calday .dnum{font-family:var(--font-display);font-size:18px;line-height:1;color:var(--verde-scuro)}
+.calday.today{background-color:var(--verde-scuro)}
+.calday.sel{box-shadow:0 0 0 2.5px var(--verde), var(--shadow-sm)}
+.piano-list{position:relative;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.piano-inner{background-image:var(--pat-bg);padding-bottom:132px}
+body.no-pad .app{padding-bottom:0;background-image:none}
+.calday.today .dow{color:#FFFFFFA6}
+.calday.today .dnum{color:var(--crema)}
+.dot{width:7px;height:7px;border-radius:50%;background:transparent;display:block;flex:0 0 auto}
+.dot.ko{background:var(--ambra)}
+.dot.free{background:var(--salvia)}
+.calday.today .dot.free{background:#FFFFFF59}
+.callegend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;font-weight:800;color:var(--ink-3);
+  margin:-2px 0 18px}
+.callegend span{display:flex;align-items:center;gap:6px}
+.callegend .dot{width:9px;height:9px}
+
+/* ---------- dispensa ---------- */
+/* la ricerca resta attaccata in alto mentre scorri la dispensa */
+.searchbar{position:sticky;top:0;z-index:28;
+  margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding:10px max(16px,env(safe-area-inset-left,0px)) 12px;
+  background:rgba(var(--crema-rgb),.84);
+  -webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3)}
+.search{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:99px;
+  background-color:var(--surface);box-shadow:var(--shadow-sm)}
+.search input{border:0;background:none;outline:none;width:100%;font-weight:700;font-size:15px}
+.search input::placeholder{color:var(--ink-3)}
+.group-h{display:flex;align-items:center;gap:9px;margin:22px 0 10px}
+.group-h h3{font-size:16px}
+.group-h .count{font-size:12px;font-weight:800;color:var(--ink-2);background:var(--surface-2);
+  border-radius:99px;padding:3px 10px}
+.inv{display:flex;flex-direction:column;gap:10px}
+.item{padding:12px 14px;display:flex;align-items:center;gap:12px;text-align:left;width:100%}
+.item .name{font-family:var(--font-display);font-weight:700;font-size:16.5px;line-height:1.15;color:var(--verde-scuro)}
+.item .meta{display:flex;align-items:center;gap:7px;margin-top:3px;flex-wrap:wrap}
+.item .qty{font-size:13px;font-weight:800;color:var(--ink-2)}
+.item.out{opacity:.7}
+.item .bar{margin-top:8px}
+
+/* ---------- ricetta ---------- */
+.rhero{padding:20px 24px;display:flex;gap:15px;align-items:center;border-radius:var(--blob-w)}
+.stepper{display:flex;align-items:center;gap:4px;border-radius:99px;background:var(--surface-2);padding:4px}
+.stepper button{width:36px;height:36px;border-radius:50%;background:var(--surface);
+  font-size:19px;font-weight:800;display:grid;place-items:center;color:var(--verde-scuro)}
+.stepper b{min-width:58px;text-align:center;font-family:var(--font-display);font-size:15px}
+/* versione compatta, per le righe della spesa a mano */
+.stepper.sm{padding:3px;gap:2px}
+.stepper.sm button{width:30px;height:30px;font-size:17px}
+.stepper.sm b{min-width:24px;font-size:14px}
+.ing{display:flex;align-items:center;gap:12px;padding:11px 0}
+.ing+.ing{border-top:1.5px solid var(--line)}
+.tick{width:28px;height:28px;flex:0 0 auto;border-radius:var(--blob2);display:grid;place-items:center;
+  font-size:14px;font-weight:800}
+.tick.y{background:var(--ok);color:var(--ok-su)}
+.tick.n{background:var(--alert);color:#fff}
+.tick.p{background:var(--terra);color:var(--verde-scuro)}
+.steps{counter-reset:s;display:flex;flex-direction:column;gap:13px;margin-top:4px;padding:0}
+.steps li{list-style:none;display:flex;gap:12px;font-size:14.5px;font-weight:600;line-height:1.55;color:var(--ink-2)}
+.steps li::before{counter-increment:s;content:counter(s);flex:0 0 auto;width:28px;height:28px;
+  border-radius:var(--blob);background:var(--salvia);color:var(--verde-scuro);
+  font-family:var(--font-display);font-size:14px;display:grid;place-items:center}
+
+/* ---------- proposte ---------- */
+.deck{padding:24px 20px 20px;text-align:center;position:relative;overflow:hidden;
+  border-radius:var(--blob-t)}
+.deck .thumb{width:118px;height:118px;margin:0 auto 12px;font-size:64px}
+.deck h2{font-size:25px;line-height:1.15}
+.deck .ings{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0 4px}
+.deck .why{background:var(--salvia-soft);border-radius:var(--r-md);padding:11px 13px;margin-top:14px;
+  font-size:13px;font-weight:700;color:var(--ink-2);text-align:left;display:flex;gap:9px;align-items:flex-start}
+.facts{display:flex;justify-content:center;gap:9px;margin-top:10px;flex-wrap:wrap}
+.fact{background:var(--surface-2);border-radius:99px;padding:7px 13px;font-size:13px;font-weight:800;
+  color:var(--verde-scuro)}
+.swipe{display:flex;gap:14px;justify-content:center;margin-top:18px}
+.swipe button{width:72px;height:72px;border-radius:var(--blob);font-size:30px;display:grid;place-items:center;
+  box-shadow:var(--shadow);transition:transform .1s}
+.swipe button:active{transform:scale(.93)}
+.swipe .no{background:var(--surface);color:var(--alert)}
+.swipe .si{background:var(--ok);color:var(--ok-su)}
+.rng{width:100%;accent-color:var(--verde-scuro);height:30px}
+
+/* ---------- spesa ---------- */
+.sitem{padding:12px 14px;display:flex;align-items:center;gap:12px;width:100%;text-align:left}
+.box{width:28px;height:28px;flex:0 0 auto;border-radius:var(--blob2);background:var(--surface-2);
+  display:grid;place-items:center;font-size:14px;font-weight:800;color:var(--verde-scuro)}
+.sitem[aria-pressed="true"] .box{background:var(--ok);color:var(--ok-su)}
+.sitem[aria-pressed="true"] .name{text-decoration:line-through;color:var(--ink-3)}
+.why{font-size:12px;font-weight:700;color:var(--verde-ink)}
+.budget{padding:16px}
+.budget .num{font-family:var(--font-display);font-size:30px;line-height:1;color:var(--verde-scuro)}
+
+/* ---------- scontrino ---------- */
+.flow{display:flex;gap:6px;margin-block:6px 16px}
+.flow i{flex:1;height:7px;border-radius:99px;background:var(--surface-2)}
+.flow i.on{background:var(--verde)}
+.drop{padding:32px 22px;text-align:center;border-radius:var(--blob-t)}
+.drop .ic{font-size:70px}
+.scan{position:relative;height:230px;border-radius:var(--r-lg);background:var(--surface-2);
+  overflow:hidden;display:flex;flex-direction:column;gap:8px;padding:18px 20px}
+.scan .l{height:9px;border-radius:99px;background:#FFFFFFB0}
+.scan .beam{position:absolute;left:0;right:0;height:60px;
+  background:linear-gradient(180deg,transparent,rgba(var(--verde-rgb),.6),transparent);animation:beam 1.5s linear infinite}
+@keyframes beam{0%{top:-62px}100%{top:232px}}
+.scan img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pline{padding:12px 14px;display:flex;align-items:flex-start;gap:11px}
+.pline .raw{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;font-weight:700;
+  color:var(--ink-3);letter-spacing:-.02em;word-break:break-word}
+.pline .name{font-family:var(--font-display);font-weight:700;font-size:16px;line-height:1.2;color:var(--verde-scuro)}
+.pline.off{opacity:.55}
+.sw{width:48px;height:29px;flex:0 0 auto;border-radius:99px;background:var(--surface-2);
+  position:relative;transition:background .15s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:23px;height:23px;border-radius:50%;
+  background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .15s}
+.sw[aria-pressed="true"]{background:var(--ok)}
+.sw[aria-pressed="true"]::after{transform:translateX(19px)}
+.done{text-align:center;padding:28px 20px}
+.done .ic{font-size:82px}
+
+/* ---------- nuova ricetta ---------- */
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
+.field label{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)}
+.field input,.field select,.field textarea{background:var(--surface);border:0;border-radius:var(--r-sm);
+  padding:12px 15px;font-weight:700;font-size:15px;outline:none;font-family:var(--font-body);width:100%;
+  box-shadow:inset 0 0 0 2px var(--line)}
+.field input:focus-visible,.field textarea:focus-visible{box-shadow:inset 0 0 0 2px var(--verde-scuro)}
+.nr-step{padding:16px;margin-bottom:13px}
+.nr-num{width:30px;height:30px;border-radius:var(--blob);background:var(--verde);color:var(--su-verde);
+  font-family:var(--font-display);display:grid;place-items:center;font-size:15px;flex:0 0 auto}
+.ingrow{display:grid;grid-template-columns:1fr 68px 78px 34px;gap:7px;align-items:center;margin-bottom:8px}
+.ingrow input,.ingrow select{padding:10px 12px;font-size:14px;border-radius:14px;background:var(--surface);
+  border:0;box-shadow:inset 0 0 0 2px var(--line);outline:none;font-family:var(--font-body);font-weight:700;width:100%}
+.ingrow .del{display:grid;place-items:center;height:40px;border-radius:50%;color:var(--ink-3)}
+.ingnote{font-size:11.5px;font-weight:800;margin:-4px 0 10px 4px}
+.ingnote:empty{display:none}
+.feas{position:sticky;bottom:calc(124px + env(safe-area-inset-bottom,0px));padding:14px 16px}
+.cta-scontrino{display:flex;align-items:center;gap:13px;padding:17px 24px;width:100%;text-align:left;
+  border-radius:var(--blob-w2);background-color:var(--salvia);
+  box-shadow:var(--shadow-sm);margin-top:4px}
+.cta-scontrino strong{font-family:var(--font-display);font-size:17.5px;color:var(--verde-scuro);display:block;line-height:1.2}
+
+/* ---------- sheet ---------- */
+.sheet-wrap{position:fixed;inset:0;z-index:60;background:var(--velo);display:flex;align-items:flex-end}
+.sheet{width:100%;max-width:480px;margin:0 auto;background:var(--crema);border-radius:var(--r-xl) var(--r-xl) 0 0;
+  padding:10px max(18px,env(safe-area-inset-left,0px)) calc(22px + env(safe-area-inset-bottom,0px));
+  max-height:82vh;overflow-y:auto;animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:.5}to{transform:none;opacity:1}}
+.grab{width:46px;height:5px;border-radius:99px;background:var(--line);margin:0 auto 14px}
+
+/* ---------- tab bar ---------- */
+/* menu flottante */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:35;pointer-events:none;
+  padding-left:max(14px,env(safe-area-inset-left,0px));
+  padding-right:max(14px,env(safe-area-inset-right,0px));
+  padding-bottom:calc(7px + env(safe-area-inset-bottom,0px))}
+.tabbar .in{max-width:452px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);
+  align-items:end;background:var(--menu-bg);border-radius:30px;padding:9px 6px 10px;
+  box-shadow:0 12px 32px rgba(var(--ombra),.22);pointer-events:auto;
+  -webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4)}
+/* sotto il menu l'app resta sfocata, così il menu si stacca */
+.tabblur{position:fixed;left:0;right:0;bottom:0;z-index:34;pointer-events:none;
+  height:calc(126px + env(safe-area-inset-bottom,0px));
+  -webkit-backdrop-filter:blur(13px);backdrop-filter:blur(13px);
+  background:linear-gradient(to top, rgba(var(--crema-rgb),.62), rgba(var(--crema-rgb),0));
+  -webkit-mask-image:linear-gradient(to top, #000 48%, rgba(0,0,0,.55) 74%, transparent 100%);
+  mask-image:linear-gradient(to top, #000 48%, rgba(0,0,0,.55) 74%, transparent 100%)}
+.tab{padding:4px 2px 2px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  gap:5px;font-size:10.5px;font-weight:800;color:var(--ink-3);border-radius:20px}
+.tab .ic{font-size:24px;line-height:1;filter:grayscale(1);opacity:.45}
+/* il tasto Spesa usa un'icona disegnata: l'emoji carrello spariva sul colore pieno */
+.svgic{width:31px;height:31px;display:block;color:var(--su-verde)}
+.cam .svgic{width:14px;height:14px;color:inherit}
+.tab[aria-current="page"]{color:var(--verde-scuro)}
+.tab[aria-current="page"] .ic{filter:none;opacity:1;transform:translateY(-3px) scale(1.14);
+  animation:hop .55s cubic-bezier(.34,1.56,.64,1)}
+@keyframes hop{
+  0%{transform:translateY(0) scale(1) rotate(0)}
+  35%{transform:translateY(-11px) scale(1.26) rotate(-9deg)}
+  62%{transform:translateY(-1px) scale(1.04) rotate(5deg)}
+  82%{transform:translateY(-6px) scale(1.17) rotate(-2deg)}
+  100%{transform:translateY(-3px) scale(1.14) rotate(0)}}
+.tab.key{color:var(--verde-scuro)}
+.tab.key .ring{width:60px;height:60px;margin-top:-28px;border-radius:var(--blob);background:var(--verde);
+  display:grid;place-items:center;font-size:28px;position:relative;
+  box-shadow:0 10px 22px rgba(var(--verde-rgb),.55), 0 0 0 5px var(--surface)}
+.tab.key[aria-current="page"] .ring{animation:hop .55s cubic-bezier(.34,1.56,.64,1)}
+.tab.key .cam{position:absolute;right:-4px;bottom:-2px;width:25px;height:25px;border-radius:50%;
+  background:var(--verde-scuro);color:var(--crema);font-size:12px;display:grid;place-items:center;
+  animation:pulse 2.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.16)}}
+
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(-18px);
+  top:calc(12px + env(safe-area-inset-top,0px));z-index:70;box-shadow:0 10px 26px rgba(var(--ombra-scura),.30);
+  max-width:min(420px,calc(100vw - 32px));background:var(--verde-scuro);color:var(--crema);
+  font-weight:800;font-size:13.5px;padding:12px 18px;border-radius:99px;text-align:center;
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.pop{animation:pop .3s ease-out}
+@keyframes pop{0%{transform:scale(.93);opacity:.4}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media (min-width:720px){
+  body{background-color:var(--fuori)}
+  .app{background-color:var(--crema)}
+}
+/* ---------- due identità: il pasto è una carta, l'ingrediente è un'etichetta ---------- */
+/* pasto: carta chiara sollevata, emoji in una bolla, titolo nel font display */
+.dish{background-color:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
+/* ingrediente: etichetta salvia piatta, bordino, emoji in un quadratino, nome nel font di testo */
+.ingr{background-color:var(--salvia-soft);border-radius:14px;box-shadow:inset 0 0 0 1.5px var(--bordo-ingr)}
+.ingr .name,.ing .name{font-family:var(--font-body);font-weight:800;font-size:15.5px;color:var(--nero)}
+.ingr .raw{color:var(--ink-3)}
+.tile{flex:0 0 auto;display:grid;place-items:center;border-radius:12px;background:var(--surface);
+  box-shadow:0 1px 3px rgba(var(--ombra),.10)}
+.tile.av{width:46px;height:46px;font-size:25px;border-radius:14px}
+.tile.av-sm{width:38px;height:38px;font-size:20px;border-radius:11px}
+.ingr .box{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--box-ingr)}
+.ingr[aria-pressed="true"]{background-color:var(--ingr-on)}
+.ingr[aria-pressed="true"] .box{background:var(--ok);color:var(--ok-su);box-shadow:none}
+</style>
+
+<div class="app">
+  <main id="view"></main>
+</div>
+
+<div class="tabblur"></div>
+<nav class="tabbar"><div class="in" id="tabs"></div></nav>
+<div id="sheet"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ===================== dati di esempio ===================== */
+/* q = quantità in casa, f = confezione piena, pr = prezzo della confezione, fav = la compri spesso */
+const ING = {
+  uova:{n:'Uova',e:'🥚',u:'pz',q:6,f:10,pr:3.20,l:'frigo',exp:9,fav:1},
+  latte:{n:'Latte intero',e:'🥛',u:'ml',q:700,f:1000,pr:1.35,l:'frigo',exp:5,fav:1},
+  yogurt:{n:'Yogurt bianco',e:'🥣',u:'pz',q:5,f:8,pr:3.60,l:'frigo',exp:11,fav:1},
+  mozzarella:{n:'Mozzarella',e:'🧆',u:'g',q:125,f:250,pr:1.60,l:'frigo',exp:2,fav:1},
+  parmigiano:{n:'Parmigiano',e:'🧀',u:'g',q:180,f:300,pr:7.20,l:'frigo',fav:1},
+  pecorino:{n:'Pecorino romano',e:'🧀',u:'g',q:0,f:200,pr:4.90,l:'frigo'},
+  guanciale:{n:'Guanciale',e:'🥓',u:'g',q:0,f:150,pr:3.80,l:'frigo'},
+  burro:{n:'Burro',e:'🧈',u:'g',q:45,f:250,pr:2.60,l:'frigo'},
+  panna:{n:'Panna fresca',e:'🥛',u:'ml',q:200,f:200,pr:1.40,l:'frigo',exp:7},
+  pomodorini:{n:'Pomodorini',e:'🍅',u:'g',q:220,f:500,pr:2.20,l:'frigo',exp:4,fav:1},
+  pollo:{n:'Petto di pollo',e:'🍗',u:'g',q:0,f:400,pr:4.50,l:'frigo',fav:1},
+  macinato:{n:'Carne macinata',e:'🥩',u:'g',q:0,f:400,pr:4.20,l:'frigo'},
+  piselli:{n:'Piselli',e:'🫛',u:'g',q:400,f:750,pr:2.40,l:'freezer',fav:1},
+  salmone:{n:'Filetti di salmone',e:'🐟',u:'pz',q:2,f:4,pr:7.90,l:'freezer',only:'Esselunga'},
+  spinaci:{n:'Spinaci',e:'🥬',u:'g',q:300,f:600,pr:2.10,l:'freezer'},
+  spaghetti:{n:'Spaghetti',e:'🍝',u:'g',q:500,f:500,pr:1.10,l:'credenza',fav:1},
+  pasta_mista:{n:'Pasta mista',e:'🍜',u:'g',q:320,f:500,pr:1.20,l:'credenza',fav:1},
+  riso:{n:'Riso carnaroli',e:'🍚',u:'g',q:1000,f:1000,pr:2.80,l:'credenza',fav:1},
+  farro:{n:'Farro perlato',e:'🌾',u:'g',q:0,f:500,pr:2.30,l:'credenza'},
+  fagioli:{n:'Fagioli borlotti',e:'🫘',u:'scatole',q:2,f:2,pr:1.60,l:'credenza',fav:1},
+  ceci:{n:'Ceci',e:'🫛',u:'scatole',q:1,f:2,pr:1.50,l:'credenza',fav:1},
+  tonno:{n:'Tonno',e:'🐟',u:'scatole',q:3,f:3,pr:3.30,l:'credenza',fav:1},
+  passata:{n:'Passata di pomodoro',e:'🥫',u:'g',q:700,f:1400,pr:2.00,l:'credenza',fav:1},
+  pelati:{n:'Pomodori pelati',e:'🥫',u:'g',q:0,f:800,pr:1.40,l:'credenza',fav:1},
+  olio:{n:'Olio EVO',e:'🫒',u:'ml',q:120,f:1000,pr:7.50,l:'credenza',fav:1},
+  farina:{n:'Farina 00',e:'🌾',u:'g',q:480,f:1000,pr:0.90,l:'credenza'},
+  zucchero:{n:'Zucchero',e:'🍬',u:'g',q:120,f:1000,pr:1.10,l:'credenza'},
+  lievito:{n:'Lievito per dolci',e:'🧂',u:'bustine',q:3,f:4,pr:1.20,l:'credenza'},
+  caffe:{n:'Caffè macinato',e:'☕',u:'g',q:60,f:250,pr:3.40,l:'credenza',fav:1},
+  fette:{n:'Fette biscottate',e:'🍞',u:'pz',q:18,f:30,pr:1.40,l:'credenza',fav:1},
+  biscotti:{n:'Biscotti',e:'🍪',u:'pz',q:14,f:30,pr:2.20,l:'credenza',fav:1},
+  marmellata:{n:'Marmellata',e:'🍓',u:'g',q:260,f:400,pr:2.10,l:'credenza',fav:1},
+  dado:{n:'Brodo vegetale',e:'🧂',u:'cubetti',q:6,f:10,pr:1.50,l:'credenza'},
+  vino_bianco:{n:'Vino bianco',e:'🍷',u:'ml',q:500,f:750,pr:3.50,l:'credenza',only:'Esselunga'},
+  sale:{n:'Sale',e:'🧂',u:'g',q:400,f:1000,pr:0.50,l:'credenza',staple:1},
+  pepe:{n:'Pepe nero',e:'⚫',u:'g',q:40,f:50,pr:1.80,l:'credenza',staple:1},
+  peperoncino:{n:'Peperoncino',e:'🌶️',u:'g',q:20,f:30,pr:1.20,l:'credenza',staple:1},
+  cipolla:{n:'Cipolle',e:'🧅',u:'pz',q:3,f:4,pr:1.30,l:'ortofrutta',fav:1},
+  aglio:{n:'Aglio',e:'🧄',u:'spicchi',q:5,f:8,pr:0.70,l:'ortofrutta',fav:1,staple:1},
+  carote:{n:'Carote',e:'🥕',u:'g',q:350,f:500,pr:1.10,l:'ortofrutta',fav:1},
+  sedano:{n:'Sedano',e:'🥬',u:'g',q:200,f:400,pr:1.20,l:'ortofrutta'},
+  patate:{n:'Patate',e:'🥔',u:'g',q:900,f:1500,pr:2.20,l:'ortofrutta',fav:1},
+  limoni:{n:'Limoni',e:'🍋',u:'pz',q:3,f:5,pr:1.90,l:'ortofrutta',fav:1},
+  basilico:{n:'Basilico',e:'🌿',u:'vaso',q:1,f:1,pr:1.50,l:'ortofrutta',fav:1,staple:1},
+  rosmarino:{n:'Rosmarino',e:'🌿',u:'rametti',q:4,f:6,pr:1.00,l:'ortofrutta',staple:1},
+  prezzemolo:{n:'Prezzemolo',e:'🌿',u:'mazzetto',q:1,f:1,pr:0.90,l:'ortofrutta',staple:1},
+  scalogno:{n:'Scalogno',e:'🧅',u:'pz',q:2,f:4,pr:1.60,l:'ortofrutta'},
+  melanzane:{n:'Melanzane',e:'🍆',u:'g',q:0,f:700,pr:2.40,l:'ortofrutta'},
+  zucca:{n:'Zucca',e:'🎃',u:'g',q:0,f:600,pr:2.00,l:'ortofrutta'},
+  porro:{n:'Porro',e:'🧅',u:'pz',q:0,f:2,pr:1.50,l:'ortofrutta'},
+  funghi:{n:'Funghi champignon',e:'🍄',u:'g',q:0,f:500,pr:2.60,l:'ortofrutta'},
+  zucchine:{n:'Zucchine',e:'🥒',u:'g',q:0,f:500,pr:1.80,l:'ortofrutta',fav:1}
+};
+const LOCS={frigo:{n:'In frigo',e:'🧊'},freezer:{n:'In freezer',e:'❄️'},
+  credenza:{n:'In credenza',e:'🫙'},ortofrutta:{n:'Frutta e verdura',e:'🥕'}};
+const REPARTI={ortofrutta:'Frutta e verdura',frigo:'Banco frigo',freezer:'Surgelati',credenza:'Scaffali'};
+
+let RECIPES=[
+ {id:'colaz1',n:'Yogurt, caffè e marmellata',e:'🥣',min:5,d:1,serv:1,tag:'Svelta',slots:['colazione'],
+  ing:[['yogurt',1],['caffe',14],['fette',3],['marmellata',25]],
+  steps:['Caffè sul fuoco.','Yogurt in una ciotola, fette biscottate con la marmellata.']},
+ {id:'pancakes',n:'Pancakes della domenica',e:'🥞',min:20,d:2,serv:2,tag:'Coccola',slots:['colazione'],
+  ing:[['farina',200],['latte',250],['uova',2],['zucchero',40],['lievito',1],['burro',25]],
+  steps:['Mescola farina, zucchero e lievito.','Unisci uova e latte, poi il burro fuso. Riposo 10 minuti.',
+         'Cuoci un mestolino per volta finché si formano le bollicine.']},
+ {id:'uovastrap',n:'Uova strapazzate',e:'🍳',min:10,d:1,serv:2,tag:'Proteica',slots:['colazione'],
+  ing:[['uova',4],['burro',10],['fette',2]],
+  steps:['Sbatti le uova con un pizzico di sale.','Burro in padella a fuoco basso, poi le uova.',
+         'Mescola di continuo e togli dal fuoco quando sono ancora morbide.']},
+ {id:'panebur',n:'Pane, burro e marmellata',e:'🍞',min:5,d:1,serv:2,tag:'Svelta',slots:['colazione'],
+  ing:[['fette',4],['burro',20],['marmellata',40],['caffe',14]],
+  steps:['Caffè sul fuoco.','Burro e marmellata sulle fette biscottate.']},
+ {id:'caffelatte',n:'Caffellatte e biscotti',e:'🍪',min:5,d:1,serv:2,tag:'Classica',slots:['colazione'],
+  ing:[['latte',300],['caffe',14],['biscotti',8]],
+  steps:['Scalda il latte.','Caffè nella tazza e latte sopra.','Biscotti a parte.']},
+ {id:'pastatonno',n:'Pasta al tonno',e:'🐟',min:20,d:1,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
+  ing:[['spaghetti',180],['tonno',1],['passata',200],['aglio',2],['olio',20]],
+  steps:['Scalda l’olio con l’aglio, unisci la passata e cuoci 10 minuti.',
+         'Aggiungi il tonno sgocciolato negli ultimi 2 minuti.','Salta la pasta nel sugo.']},
+ {id:'tonnoceci',n:'Insalata tonno e ceci',e:'🥗',min:10,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['tonno',1],['ceci',1],['cipolla',1],['olio',20],['limoni',1],['prezzemolo',1]],
+  steps:['Sciacqua i ceci.','Affetta la cipolla sottile e lasciala 10 minuti in acqua fredda.',
+         'Condisci con olio, limone, prezzemolo e sale.']},
+ {id:'pastafagioli',n:'Pasta e fagioli',e:'🍲',min:45,d:3,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['pasta_mista',160],['fagioli',1],['passata',150],['cipolla',1],['carote',60],['sedano',50],['olio',20],['rosmarino',1]],
+  steps:['Soffritto di cipolla, carota e sedano, 8 minuti.',
+         'Fagioli con la loro acqua, passata e rosmarino. Cuoci 20 minuti.',
+         'Frulla metà fagioli per dare cremosità.','Butta la pasta nel brodo. Riposo 5 minuti.']},
+ {id:'aglioolio',n:'Spaghetti aglio e olio',e:'🧄',min:15,d:2,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['spaghetti',160],['aglio',3],['olio',40],['prezzemolo',1],['peperoncino',1]],
+  steps:['Olio, aglio in camicia e peperoncino a fuoco bassissimo.','Spaghetti molto al dente.',
+         'Salta con due cucchiai di acqua di cottura e prezzemolo.']},
+ {id:'risopiselli',n:'Riso e piselli',e:'🍚',min:30,d:2,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['riso',160],['piselli',150],['cipolla',1],['dado',1],['parmigiano',30],['burro',20]],
+  steps:['Stufa la cipolla nel burro, unisci i piselli.','Aggiungi il riso e il brodo caldo poco per volta.',
+         'Manteca con il parmigiano.']},
+ {id:'salmonepatate',n:'Salmone e patate al forno',e:'🐟',min:40,d:3,serv:2,tag:'Della domenica',slots:['cena'],
+  ing:[['salmone',2],['patate',400],['limoni',1],['olio',20],['rosmarino',1]],
+  steps:['Patate a fettine sottili con olio e rosmarino, forno 200° per 20 minuti.',
+         'Appoggia i filetti sulle patate e cuoci altri 12 minuti.','Limone a crudo.']},
+ {id:'carbonara',n:'Carbonara',e:'🍝',min:20,d:4,serv:2,tag:'Classico',slots:['pranzo','cena'],
+  ing:[['spaghetti',180],['guanciale',100],['uova',2],['pecorino',60],['pepe',2]],
+  steps:['Rosola il guanciale a listarelle senza grassi aggiunti.','Tuorli e pecorino con molto pepe.',
+         'Manteca fuori dal fuoco con l’acqua di cottura.']},
+ {id:'parmigiana',n:'Parmigiana di melanzane',e:'🍆',min:75,d:5,serv:4,tag:'Della domenica',slots:['cena'],
+  ing:[['melanzane',700],['passata',500],['mozzarella',250],['parmigiano',80],['basilico',1],['olio',40]],
+  steps:['Melanzane a fette, sale, spurgo 30 minuti.','Grigliale e asciugale.',
+         'Sugo semplice con passata, olio e basilico.','Alterna gli strati. Forno 190° per 35 minuti.']},
+ {id:'risottofunghi',n:'Risotto ai funghi',e:'🍄',min:35,d:4,serv:2,tag:'Della domenica',slots:['cena'],
+  ing:[['riso',180],['funghi',250],['dado',1],['burro',30],['parmigiano',40],['scalogno',1],['vino_bianco',60]],
+  steps:['Trifola i funghi con lo scalogno.','Tosta il riso e sfuma con il vino.',
+         'Brodo caldo un mestolo alla volta, 16 minuti.','Manteca con burro freddo e parmigiano.']},
+ {id:'pollolimone',n:'Pollo al limone',e:'🍋',min:30,d:3,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['pollo',400],['limoni',1],['farina',30],['burro',20],['prezzemolo',1]],
+  steps:['Petto a fettine, infarinate leggermente.','Rosola nel burro 2 minuti per lato.',
+         'Sfuma con il limone, copri e cuoci 5 minuti.']},
+ {id:'insalatafarro',n:'Insalata di farro',e:'🌾',min:25,d:2,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['farro',180],['pomodorini',200],['mozzarella',125],['basilico',1],['olio',20]],
+  steps:['Farro in acqua salata 18 minuti, poi raffredda.','Pomodorini e mozzarella a cubetti.',
+         'Condisci con olio e basilico spezzato a mano.']},
+ {id:'frittatazucchine',n:'Frittata di zucchine',e:'🍳',min:20,d:2,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['uova',4],['zucchine',300],['parmigiano',30],['olio',15]],
+  steps:['Zucchine a rondelle, rosolate 8 minuti.','Uova sbattute con il parmigiano.',
+         'Cuoci a fuoco basso, girala con un piatto.']},
+ {id:'vellutatazucca',n:'Vellutata di zucca',e:'🎃',min:40,d:3,serv:2,tag:'Comfort',slots:['cena'],
+  ing:[['zucca',600],['patate',200],['porro',1],['dado',1],['olio',20]],
+  steps:['Taglia tutto a pezzi regolari.','Stufa il porro, aggiungi il resto e copri di brodo.',
+         'Cuoci 25 minuti e frulla.']},
+ {id:'zuppaceci',n:'Zuppa di ceci',e:'🫘',min:35,d:3,serv:2,tag:'Comfort',slots:['cena'],
+  ing:[['ceci',1],['pasta_mista',80],['rosmarino',1],['aglio',2],['olio',20]],
+  steps:['Scalda olio, aglio e rosmarino.','Unisci i ceci con la loro acqua e frulla metà.',
+         'Butta la pasta e cuoci nella zuppa.']},
+ {id:'polpette',n:'Polpette al sugo',e:'🍖',min:50,d:4,serv:4,tag:'Della domenica',slots:['cena'],
+  ing:[['macinato',400],['uova',1],['parmigiano',40],['passata',400],['cipolla',1],['olio',20]],
+  steps:['Impasta carne, uovo e parmigiano.','Forma le polpette e rosolale.',
+         'Passata e cipolla, cuoci coperto 30 minuti.']},
+ {id:'pastazucchine',n:'Pasta e zucchine',e:'🥒',min:25,d:2,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
+  ing:[['spaghetti',160],['zucchine',250],['parmigiano',30],['olio',20],['basilico',1]],
+  steps:['Zucchine a rondelle in padella con olio, 10 minuti.','Frulla metà zucchine con un po’ di acqua di cottura.',
+         'Manteca la pasta con la crema e il parmigiano.']}
+];
+
+/* piano dei prossimi 7 giorni */
+let PLAN=[
+ {meals:{colazione:'colaz1', pranzo:'pastatonno',   cena:'pastafagioli'}},
+ {meals:{colazione:'colaz1', pranzo:'tonnoceci',    cena:'risopiselli'}},
+ {meals:{colazione:null,     pranzo:'aglioolio',    cena:'salmonepatate'}},
+ {meals:{colazione:'colaz1', pranzo:'insalatafarro',cena:'carbonara'}},
+ {meals:{colazione:null,     pranzo:'frittatazucchine', cena:'parmigiana'}},
+ {meals:{colazione:null,     pranzo:'pastatonno',   cena:null}},
+ {meals:{colazione:'pancakes', pranzo:null,         cena:null}}
+];
+
+const SPESA_FATTA={store:"In's Mercato",data:'7 nov',tot:48.60,righe:21};
+
+/* scontrino di esempio: niente guanciale e niente melanzane, così due ricette saltano */
+const RECEIPT={
+ store:"In's Mercato", date:'11/11/2026', tot:'47,30', nlines:21,
+ lines:[
+  {raw:'SPAGHETTI N.5 500 x2',  id:'spaghetti',  q:1000,u:'g',       c:.98},
+  {raw:'PASSATA POMOD 700 x2',  id:'passata',    q:1400,u:'g',       c:.96},
+  {raw:'FARRO PERLATO 500G',    id:'farro',      q:500, u:'g',       c:.96},
+  {raw:'PECORINO ROM. 200',     id:'pecorino',   q:200, u:'g',       c:.93},
+  {raw:'ZUCCHINE SFUSE 0,610',  id:'zucchine',   q:610, u:'g',       c:.98},
+  {raw:'CHAMPIGNON VASCH 500',  id:'funghi',     q:500, u:'g',       c:.97},
+  {raw:'PETTO POLLO 0,450',     id:'pollo',      q:450, u:'g',       c:.95},
+  {raw:'MOZZARELLA 250G x2',    id:'mozzarella', q:500, u:'g',       c:.96},
+  {raw:'CECI LESSATI 400 x2',   id:'ceci',       q:2,   u:'scatole', c:.94},
+  {raw:'POM PELATI 400 x2',     id:'pelati',     q:800, u:'g',       c:.95},
+  {raw:'OLIO EXTRAV 1LT',       id:'olio',       q:1000,u:'ml',      c:.97},
+  {raw:'BURRO 250G',            id:'burro',      q:250, u:'g',       c:.96},
+  {raw:'LATTE INT 1L x2',       id:'latte',      q:2000,u:'ml',      c:.97},
+  {raw:'UOVA FRESCHE 6',        id:'uova',       q:6,   u:'pz',      c:.99},
+  {raw:'ZUCCHERO SEMOL 1KG',    id:'zucchero',   q:1000,u:'g',       c:.96},
+  {raw:'CAFFE MACIN 250',       id:'caffe',      q:250, u:'g',       c:.95},
+  {raw:'PREP X DOLCI 3 BUST',   id:'lievito',    q:3,   u:'bustine', c:.52},
+  {raw:'BANCO GASTR 0,280',     id:null,         q:280, u:'g',       c:.26, guess:'Qualcosa dal banco?'}
+ ],
+ other:[
+  {raw:'DEOD ROLL ON 50ML',  why:'cura persona'},
+  {raw:'CARTA CUCINA 3 ROT', why:'casa'},
+  {raw:'DETERSIVO PIATTI',   why:'pulizia'},
+  {raw:'TOT. EUR 41,85',     why:'riga non prodotto'},
+  {raw:'PAGAM. BANCOMAT',    why:'riga non prodotto'}
+ ]
+};
+
+/* ===================== stato ===================== */
+const S={
+ screen:'oggi', recipe:null, serv:2,
+ invFilter:'tutto', invQuery:'', recFilter:'tutte',
+ budget:4.50, weeks:1, store:"In's Mercato", diffMax:5, newDiff:2, people:2, planDate:null,
+ step:0, photo:null, lines:[], others:[], shopped:false,
+ checked:{}, extra:[], man:{sel:{},q:''}, azzera:0,
+ prop:null, sheet:null,
+ newIng:[{name:'',q:'',u:'g'},{name:'',q:'',u:'g'}]
+};
+const STORES=["In's Mercato",'Conad','Lidl','Esselunga','Carrefour'];
+
+/* ===================== utilità ===================== */
+const el=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const R=id=>RECIPES.find(x=>x.id===id);
+function qty(n,u){
+ if(u==='g'&&n>=1000) return (n/1000).toFixed(n%1000?1:0).replace('.',',')+' kg';
+ if(u==='ml'&&n>=1000) return (n/1000).toFixed(n%1000?1:0).replace('.',',')+' L';
+ return String(Math.round(n*10)/10).replace('.',',')+' '+u;
+}
+const eur=n=>n.toFixed(2).replace('.',',')+' €';
+function cost(r){ // costo totale della ricetta
+ return r.ing.reduce((t,[k,q])=>{const i=ING[k];return i&&!i.staple?t+(q/i.f)*i.pr:t;},0);
+}
+const perPorz=r=>cost(r)/r.serv;
+function level(k){const i=ING[k];return i?Math.min(1,i.q/Math.max(i.f,1)):0;}
+function stato(k){const i=ING[k];if(!i||i.q<=0)return 'out';return level(k)<=.25?'low':'ok';}
+const inCasa=()=>Object.keys(ING).filter(k=>ING[k].q>0);
+const finiti=()=>Object.keys(ING).filter(k=>ING[k].q<=0);
+const inEsaurimento=()=>Object.keys(ING).filter(k=>stato(k)==='low');
+const SLOTS=['colazione','pranzo','cena'];
+/* difficoltà 1-5: pallini pieni, più la parola dove c'è spazio */
+const DIFF=['','Facilissima','Facile','Media','Impegnativa','Da chef'];
+const dOf=r=>(r&&r.d)?r.d:2;
+/* le ricette sono scritte per due: con più persone le quantità scalano in proporzione */
+const fattore=()=>S.people/2;
+/* bacca: tondo pieno più la coroncina a stella in cima, come un mirtillo vero */
+const BACCA='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/>'
+ +'<path transform="translate(12 12) scale(.84) translate(-12 -12)"'
+ +' d="M12 5.4l1.62 3.46 3.78.45-2.83 2.55.77 3.74L12 13.76l-3.34 1.84.77-3.74-2.83-2.55 3.78-.45z"/></svg>';
+const pallini=d=>[1,2,3,4,5].map(n=>`<i class="${n<=d?'on':''}">${BACCA}</i>`).join('');
+const diffPip=r=>{const d=dOf(r);
+ return `<span class="diff" role="img" aria-label="difficoltà ${d} su 5: ${DIFF[d]}">${pallini(d)}</span>`;};
+const diffEti=(r,big)=>{const d=dOf(r);
+ return `<span class="diff ${big?'big':''}" role="img" aria-label="difficoltà ${d} su 5">${pallini(d)}<b>${DIFF[d]}</b></span>`;};
+const SLOTNAME={colazione:'Colazione',pranzo:'Pranzo',cena:'Cena'};
+const SLOTIC={colazione:'☕',pranzo:'🍽️',cena:'🌙'};
+
+function dayLabel(i){
+ const d=new Date(); d.setDate(d.getDate()+i);
+ if(i===0) return 'Oggi'; if(i===1) return 'Domani';
+ return d.toLocaleDateString('it-IT',{weekday:'long'});
+}
+function dayShort(i){
+ const d=new Date(); d.setDate(d.getDate()+i);
+ return d.toLocaleDateString('it-IT',{day:'numeric',month:'short'});
+}
+
+/* simula il piano consumando la dispensa giorno per giorno */
+function simula(){
+ const sim={}; Object.keys(ING).forEach(k=>sim[k]=ING[k].q);
+ const out=[];
+ PLAN.forEach((d,di)=>SLOTS.forEach(slot=>{
+  const id=d.meals[slot]; if(!id) return;
+  const r=R(id); if(!r) return;
+  const manca=[], f=fattore();
+  r.ing.forEach(([k,q0])=>{
+   const q=Math.round(q0*f*10)/10, i=ING[k];
+   if(!i){manca.push([k,q]);return;}
+   if(i.staple) return;
+   if((sim[k]||0)<q) manca.push([k, Math.round((q-(sim[k]||0))*10)/10]);
+  });
+  r.ing.forEach(([k,q0])=>{const i=ING[k];
+   if(i&&!i.staple) sim[k]=Math.max(0,(sim[k]||0)-q0*f);});
+  out.push({di,slot,r,manca});
+ }));
+ return out;
+}
+function copertura(){
+ const s=simula();
+ const primo=s.find(m=>m.manca.length);
+ return {giorni: primo?primo.di:PLAN.length, primo};
+}
+function problemi(){ return simula().filter(m=>m.manca.length); }
+
+/* lista della spesa: tutto ciò che manca al piano + quello che sta finendo */
+function listaSpesa(){
+ const need={}, perche={};
+ problemi().forEach(m=>m.manca.forEach(([k,q])=>{
+  need[k]=(need[k]||0)+q;
+  (perche[k]=perche[k]||[]).push(r_name(m));
+ }));
+ const righe=Object.keys(need).map(k=>{
+  const i=ING[k]||{n:k,e:'🛒',u:'pz',f:1,pr:2,l:'credenza'};
+  const conf=Math.max(1,Math.ceil(need[k]/i.f));
+  return {k,i,conf,prezzo:conf*i.pr,perche:perche[k],gruppo:i.l};
+ });
+ inEsaurimento().forEach(k=>{
+  if(need[k]) return; const i=ING[k];
+  righe.push({k,i,conf:1,prezzo:i.pr,perche:null,gruppo:i.l,basso:1});
+ });
+ S.extra.forEach(k=>{
+  if(need[k]||righe.some(r=>r.k===k)) return; const i=ING[k]; if(!i) return;
+  righe.push({k,i,conf:1,prezzo:i.pr,perche:null,gruppo:i.l,mano:1});
+ });
+ return righe;
+}
+const r_name=m=>`${dayLabel(m.di)} a ${m.slot==='cena'?'cena':m.slot==='pranzo'?'pranzo':'colazione'}`;
+
+function toast(msg){const t=el('toast');t.textContent=msg;t.classList.add('on');
+ clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2800);}
+
+/* ===================== pattern generati ===================== */
+/* forme sparse, posizionate a caso: ogni tessera è grande e le tessere sono di misure diverse,
+   così la ripetizione non si legge. Il seme cambia a ogni apertura. */
+function semeRnd(s){let a=s>>>0;return function(){a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);
+ t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+/* ortaggi disegnati in una scatola 100x100, poi sparsi nelle tessere */
+const ORTAGGI={
+ carota:'<path d="M50,97c-1.7,0-2.8-1.1-3.3-3.2L38,37c4.2-3.4 19.8-3.4 24,0l-8.7,56.8c-.5,2.1-1.6,3.2-3.3,3.2z"/>'
+   +'<path d="M50,35C46,25 40,18 31,13c3,10 9,18 19,22z"/>'
+   +'<path d="M50,35C54,25 60,18 69,13c-3,10-9,18-19,22z"/>'
+   +'<path d="M50,35C50.5,25 50.5,16 50,7c4.5,9 4.5,19 0,28z"/>',
+ pomodoro:'<circle cx="50" cy="61" r="29"/>'
+   +'<path d="M50,24c-5,0-9.2,2.8-11.2,6.9L27,27l7,9.2c-2.6,1.9-4.3,4.5-4.5,7.4h41c-.2-2.9-1.9-5.5-4.5-7.4l7-9.2-11.8,3.9C59.2,26.8 55,24 50,24z"/>',
+ melanzana:'<path d="M50,96C34,96 23,83 23,67c0-12 7-22.5 16-28.5 5-3.5 8-7.5 8-12.5h6c0,5 3,9 8,12.5 9,6 16,16.5 16,28.5 0,16-11,29-27,29z"/>'
+   +'<path d="M50,41c-8.5,0-15.5-6.5-17.5-16 9.5,1 15.5,5.5 17.5,12 2-6.5 8-11 17.5-12-2,9.5-9,16-17.5,16z"/>'
+   +'<path d="M47,28h6l-1.2-15h-3.6z"/>',
+ broccolo:'<circle cx="33" cy="38" r="14"/><circle cx="51" cy="28" r="16"/><circle cx="68" cy="40" r="13"/>'
+   +'<circle cx="50" cy="49" r="15"/><path d="M42.5,57h15l1.5,33c0,5.5-18,5.5-18,0z"/>',
+ fungo:'<path d="M50,15c-17.5,0-31.5,15.5-31.5,35 0,4.8 3.8,8 9.5,8h44c5.7,0 9.5-3.2 9.5-8 0-19.5-14-35-31.5-35z"/>'
+   +'<path d="M41,58h18l-1.8,26.5c0,7-14.4,7-14.4,0z"/>',
+ peperone:'<path d="M50,34c-4.2-3.2-9.3-4.1-13.5-2-7.2,3.5-10.2,11.5-9.2,20.5 1.8,19.5 9.5,36.5 22.7,36.5s20.9-17 22.7-36.5c1-9-2-17-9.2-20.5-4.2-2.1-9.3-1.2-13.5,2z"/>'
+   +'<path d="M47,34c0-8.5-3-14.8-8.5-19 9.5,0 15,7.2 15,17.5z"/>',
+ cipolla:'<path d="M50,93C33,93 23,79 23,63 23,46 36.5,31 50,31s27,15 27,32c0,16-10,30-27,30z"/>'
+   +'<path d="M50,31c0-11.5-2.5-19.5-7.5-25.5 9.5,4 13.5,12.5 13.5,25.5z"/>',
+ limone:'<path d="M50,25C31,25 16,36 16,50.5S31,76 50,76 84,65 84,50.5 69,25 50,25z"/>'
+   +'<path d="M58,24c6-8.5 15-12 24.5-10-3,8.5-11.5,13-21,13z"/>',
+ foglia:'<path d="M23,79C14,57 26,26 54,15c14-5.5 27,2 29,14.5 3.5,21-14,45-38.5,51.5-4,1-7.5,1-10.5,.5z"/>'
+   +'<path d="M18,88c2-9 6-17 11-24l4,3c-5,7-9,14-11,22z"/>',
+ zucchina:'<path d="M27,79C16.5,68.5 21,48 36,35.5 50.5,23.5 68.5,19.5 77,27s5.5,25.5-9,38C53,77.5 37,87 27,79z"/>'
+   +'<path d="M74,26l5.5-10 6.5,3.5-6,9.5z"/>',
+ aglio:'<path d="M50,93C34,93 24,81 24,67c0-13 9-24.5 20-28.5L50,16l6,22.5c11,4 20,15.5 20,28.5 0,14-10,26-26,26z"/>',
+ baccello:'<path d="M20,62C20,40 40,21 64,21c9,0 15,5.5 15,13.5 0,22-20,41-44,41-9,0-15-5.5-15-13.5z"/>'
+   +'<path d="M78,31l9-7 3.5,5-9,7z"/>',
+ mais:'<path d="M50,14C62.5,14 70,29 70,51.5 70,74 62.5,88 50,88 37.5,88 30,74 30,51.5 30,29 37.5,14 50,14z"/>'
+   +'<path d="M50,87C36,85 26,75 21,59 35,62.5 45,72.5 50,87z"/>'
+   +'<path d="M50,87C64,85 74,75 79,59 65,62.5 55,72.5 50,87z"/>',
+ patata:'<path d="M24,65C20,51 28.5,35 44,28.5c14-6 32.5-4 38.5,7.5 6,11.5 .5,28.5-12.5,37.5C57,82.5 39,84.5 30,77c-3-2.5-5-7-6-12z"/>'
+};
+function disegnaOrto(f,x,y,s,rot,c,o){
+ return `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${rot.toFixed(0)}) scale(${(s/100).toFixed(3)}) translate(-50,-50)"`
+  +` fill="${c}" fill-opacity="${o}">${ORTAGGI[f]||ORTAGGI.foglia}</g>`;
+}
+/* griglia sfalsata: una forma per cella, spostata a caso dentro la cella.
+   Niente grumi, niente allineamenti: sparse ma distribuite. */
+function tessera(w,h,seme,gruppi){
+ const rnd=semeRnd(seme); let body='';
+ gruppi.forEach(g=>{
+  const cols=Math.max(1,Math.round(Math.sqrt(g.n*w/h)));
+  const rows=Math.max(1,Math.ceil(g.n/cols));
+  const cw=w/cols, ch=h/rows;
+  let k=0;
+  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+   if(k++>=g.n) continue;
+   const s=g.min+rnd()*(g.max-g.min);
+   const x=(c+.1+rnd()*.8)*cw, y=(r+.1+rnd()*.8)*ch;
+   const rot=(rnd()-.5)*2*(g.rot||28);
+   const f=g.forme[Math.floor(rnd()*g.forme.length)];
+   for(const dx of [-w,0,w]) for(const dy of [-h,0,h]){
+    const X=x+dx, Y=y+dy;
+    if(X<-s||X>w+s||Y<-s||Y>h+s) continue;
+    body+=disegnaOrto(f,X,Y,s,rot,g.c,g.o);
+   }
+  }
+ });
+ return `url("data:image/svg+xml,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${body}</svg>`)}")`;
+}
+/* quattro strati di misura e colore diversi: il periodo comune è enorme,
+   quindi la ripetizione non si legge mai */
+function installaPattern(){
+ const z=Math.floor(Math.random()*99999);
+ const cs=getComputedStyle(document.documentElement);
+ const pc=n=>(cs.getPropertyValue('--pat-c'+n)||'').trim()||'#6E9A2E';
+ const po=n=>parseFloat(cs.getPropertyValue('--pat-o'+n))||.13;
+ const bg=[
+  tessera(330,350,z+1,[{forme:['carota','broccolo','foglia','zucchina','baccello'],
+    c:pc(1),o:po(1),min:24,max:58,n:6}]),
+  tessera(395,365,z+2,[{forme:['fungo','cipolla','melanzana','aglio','patata'],
+    c:pc(2),o:po(2),min:22,max:50,n:5}]),
+  tessera(465,485,z+3,[{forme:['pomodoro','peperone','limone','mais'],
+    c:pc(3),o:po(3),min:24,max:54,n:5}]),
+  tessera(285,310,z+4,[{forme:['aglio','foglia','baccello','limone','carota'],
+    c:pc(4),o:po(4),min:16,max:32,n:4}])
+ ].join(',');
+ document.documentElement.style.setProperty('--pat-bg',bg);
+}
+
+/* ===================== fascia scadenza spesa ===================== */
+function bandHTML(){
+ const c=copertura(), g=c.giorni, urgente=g<=2;
+ const testo = g<=0 ? 'Devi fare la spesa oggi'
+   : g===1 ? 'La spesa copre ancora 1 giorno'
+   : `La spesa copre ancora ${g} giorni`;
+ const sotto = c.primo
+   ? `${r_name(c.primo)} ti serve ${c.primo.manca.slice(0,2).map(([k])=>ING[k]?ING[k].n.toLowerCase():k).join(' e ')}`
+   : 'Il piano della settimana è coperto';
+ return `<div class="band soft ${urgente?'urgent':''}">
+   <span class="big">${urgente?'🛒':'🧺'}</span>
+   <h3>${testo}</h3>
+   <div class="small" style="margin-top:4px;max-width:72%">${esc(sotto)}</div>
+   <div class="days">${PLAN.map((_,i)=>
+     `<i class="${i<g?'on':''} ${i===g?'today':''}"></i>`).join('')}</div>
+ </div>`;
+}
+
+/* calendario della settimana: pallino terracotta dove mancano ingredienti */
+function calendarHTML(){
+ const probl=problemi();
+ const conKo=new Set(probl.map(p=>p.di));
+ const liberi=PLAN.map(d=>(!d.meals.pranzo?1:0)+(!d.meals.cena?1:0));
+ return `<div class="cal">
+   ${PLAN.map((d,i)=>{
+     const dt=new Date(); dt.setDate(dt.getDate()+i);
+     const ko=conKo.has(i);
+     return `<button class="calday ${i===0?'today':''}" data-a="scrollday" data-i="${i}"
+       aria-label="${dayLabel(i)}${ko?', mancano ingredienti':liberi[i]?', pasti da decidere':''}">
+       <span class="dow">${dt.toLocaleDateString('it-IT',{weekday:'short'}).replace('.','')}</span>
+       <span class="dnum tnum">${dt.getDate()}</span>
+       <span class="dot ${ko?'ko':liberi[i]?'free':''}"></span>
+     </button>`;}).join('')}
+ </div>
+ <div class="callegend">
+   <span><i class="dot ko"></i> serve comprare</span>
+   <span><i class="dot free"></i> pasti da decidere</span>
+ </div>`;
+}
+
+/* ===================== Home ===================== */
+function vOggi(){
+ const probl=problemi();
+ const oggi=PLAN[0].meals;
+ const pronte=RECIPES.filter(r=>r.slots[0]!=='colazione'&&!check(r).gap).length;
+ return `
+ <h1 class="hello">Il menu di oggi</h1>
+ <p class="muted" style="margin:2px 0 14px">${dayShort(0)} · spesa fatta da ${SPESA_FATTA.store}</p>
+ ${bandHTML()}
+ ${S.shopped&&probl.length?`<div class="alert" style="margin-top:12px">
+   <div class="row"><span class="blob av" style="background:#fff">⚠️</span>
+     <span class="col grow"><h3 style="font-size:17px">${probl.length} ricette non si possono più fare</h3>
+     <span class="small">Nello scontrino mancava qualcosa che serviva.</span></span></div>
+   <div style="margin-top:12px"><button class="btn sm dark" data-a="go" data-s="piano">Sostituiscile →</button></div>
+ </div>`:''}
+
+ <section class="sec">
+   <div class="sec-h"><h2>Oggi si mangia</h2><span>tocca per vedere come si fa</span></div>
+   ${SLOTS.map(slot=>mealRow(0,slot,'cucina')).join('')}
+ </section>
+
+ <div class="stats">
+   <div class="stat"><i class="ic">🫙</i><b class="tnum">${inCasa().length}</b><span>in dispensa</span></div>
+   <div class="stat"><i class="ic">⏳</i><b class="tnum">${inEsaurimento().length}</b><span>sta finendo</span></div>
+   <div class="stat"><i class="ic">🍳</i><b class="tnum">${pronte}</b><span>ricette pronte</span></div>
+ </div>
+
+ <section class="sec">
+   <div class="sec-h"><h2>Nei prossimi giorni</h2>
+     <button class="more" data-a="go" data-s="piano">tutto il piano</button></div>
+   <div class="scroller">
+     ${PLAN.slice(1,5).map((d,n)=>{
+       const i=n+1, id=d.meals.cena||d.meals.pranzo; const r=id?R(id):null;
+       const ko=probl.some(p=>p.di===i);
+       return `<button class="rcard dish" data-a="day" data-i="${i}">
+         <div class="thumb">${r?r.e:'➕'}</div>
+         <div class="small" style="text-transform:capitalize">${dayLabel(i)}</div>
+         <h4>${r?esc(r.n):'Da decidere'}</h4>
+         ${r?`<span>${diffEti(r,1)}</span>`:''}
+         ${ko?`<span class="pill ${S.shopped?'bad':'warn'}">${S.shopped?'ingredienti mancanti':'serve la spesa'}</span>`
+            :r?`<span class="pill ok">${r.min} min · ${eur(perPorz(r))}</span>`
+             :'<span class="pill flat">libero</span>'}
+       </button>`;}).join('')}
+   </div>
+ </section>
+
+ <div style="margin-top:18px">
+   <button class="btn primary wide" data-a="go" data-s="spesa">🛒 Vai alla spesa</button>
+ </div>`;
+}
+
+function mealRow(di,slot,modo){
+ const id=PLAN[di].meals[slot], r=id?R(id):null;
+ const p=problemi().find(x=>x.di===di&&x.slot===slot);
+ if(!r) return `<button class="meal empty" data-a="swap" data-d="${di}" data-s="${slot}">
+   <span class="blob av" style="background:var(--surface-2)">${SLOTIC[slot]}</span>
+   <span class="col grow"><span class="slot">${SLOTNAME[slot]}</span>
+   <span class="name" style="color:var(--ink-3)">Aggiungi ${slot==='colazione'?'la colazione':'un piatto'}</span></span>
+   <span class="go">＋</span></button>`;
+ const ko=p&&S.shopped;
+ const cucina = modo==='cucina';
+ return `<button class="meal ${ko?'miss':''}" ${cucina
+   ? `data-a="recipe" data-id="${r.id}"`
+   : `data-a="swap" data-d="${di}" data-s="${slot}"`}>
+   <span class="blob av" style="background:${ko?'#fff':'var(--salvia-soft)'}">${r.e}</span>
+   <span class="col grow">
+     <span class="slot">${SLOTNAME[slot]}</span>
+     <span class="name">${esc(r.n)}</span>
+     <span class="meta">
+       ${p?`<span class="pill ${S.shopped?'bad':'warn'}">${S.shopped?'manca':'da comprare'}: ${p.manca.map(([k])=>ING[k]?ING[k].n.toLowerCase():k).join(', ')}</span>`
+          :`<span class="pill ok">✓ hai tutto</span>`}
+       <span class="small">${r.min} min · ${eur(perPorz(r))} a porzione</span>
+       ${diffEti(r)}
+     </span>
+   </span>
+   <span class="go">${cucina?'›':'↻'}</span></button>`;
+}
+
+/* ===================== Piano ===================== */
+function vPiano(){
+ const probl=problemi();
+ const vuoti=PLAN.reduce((t,d)=>t+(d.meals.pranzo?0:1)+(d.meals.cena?0:1),0);
+ return `
+ <h1 style="font-size:26px">I prossimi giorni</h1>
+ <p class="muted" style="margin:3px 0 13px">${PLAN.length} giorni pianificati · ${vuoti} pasti ancora liberi</p>
+ ${calendarHTML()}
+
+ <div class="piano-list" id="planlist"><div class="piano-inner">
+ ${PLAN.map((d,i)=>`
+   <div class="day" id="day-${i}">
+     <div class="day-h"><h3>${dayLabel(i)}</h3>
+       ${i===0?'<span class="tag">oggi</span>':''}
+       <span class="muted">${dayShort(i)}</span></div>
+     ${SLOTS.filter(s=>s!=='colazione'||d.meals.colazione).map(s=>mealRow(i,s,'cambia')).join('')}
+     ${!d.meals.colazione?`<button class="btn sm ghost" data-a="swap" data-d="${i}" data-s="colazione"
+        style="margin:-2px 0 2px">＋ colazione</button>`:''}
+   </div>`).join('')}
+   <button class="btn wide" data-a="go" data-s="spesa">🛒 Aggiorna la lista della spesa</button>
+ </div></div>`;
+}
+
+/* ===================== Dispensa ===================== */
+function vDispensa(){
+ const f=S.invFilter, q=S.invQuery.trim().toLowerCase();
+ let keys=inCasa();
+ if(f!=='tutto') keys=keys.filter(k=>ING[k].l===f);
+ if(q) keys=keys.filter(k=>ING[k].n.toLowerCase().includes(q));
+ const gruppi=Object.keys(LOCS).filter(l=>keys.some(k=>ING[k].l===l));
+ const fin=finiti().filter(k=>!q||ING[k].n.toLowerCase().includes(q));
+ return `
+ <h1 style="font-size:26px">La dispensa</h1>
+ <p class="muted" style="margin:3px 0 13px">${inCasa().length} cose in casa, aggiornate dall’ultimo scontrino</p>
+ <div class="searchbar"><div class="search"><span>🔍</span>
+   <input id="q" placeholder="Cerca un ingrediente…" value="${esc(S.invQuery)}" autocomplete="off"></div></div>
+ <div class="chips" style="margin-top:12px">
+   ${[['tutto','Tutto '+inCasa().length],...Object.keys(LOCS).map(l=>[l,LOCS[l].e+' '+LOCS[l].n])]
+     .map(([k,label])=>`<button class="chip" aria-pressed="${f===k}" data-a="invf" data-f="${k}">${label}</button>`).join('')}
+ </div>
+ ${gruppi.map(l=>`
+   <div class="group-h"><h3>${LOCS[l].e} ${LOCS[l].n}</h3>
+     <span class="count tnum">${keys.filter(k=>ING[k].l===l).length}</span></div>
+   <div class="inv">${keys.filter(k=>ING[k].l===l).map(itemRow).join('')}</div>`).join('')}
+ ${fin.length?`<div class="group-h"><h3>🫗 Finiti</h3><span class="count tnum">${fin.length}</span></div>
+   <p class="muted" style="margin:-4px 0 10px">Li conosco, ma in casa non ce n’è più.</p>
+   <div class="inv">${fin.map(itemRow).join('')}</div>`:''}
+ <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">
+   <button class="btn primary wide" data-a="go" data-s="scontrino">📸 Aggiungi con uno scontrino</button>
+   <button class="btn wide" data-a="manuale">✍️ Aggiungi a mano quello che hai comprato</button>
+ </div>
+
+ <section class="sec">
+   <div class="sec-h"><h2>I vostri dati</h2><span>restano su questo telefono</span></div>
+   <div class="card" style="padding:16px">
+     <p class="small" style="margin:0 0 12px">${S.senzaMemoria
+       ? '⚠️ Questo browser non mi lascia salvare nulla: quando chiudi, l’app dimentica tutto.'
+       : 'Dispensa, ricette e piano sono salvati qui dentro. Nessun account, nessun server.'}</p>
+     <div style="display:flex;flex-direction:column;gap:9px">
+       <button class="btn sm ghost wide" data-a="svuota">Svuota la dispensa e riparti dalla vostra spesa</button>
+       <button class="btn sm ghost wide" data-a="esporta">⬇️ Salva una copia dei dati</button>
+       <label class="btn sm ghost wide" style="display:flex">⬆️ Ripristina da una copia
+         <input id="backup" type="file" accept="application/json,.json" hidden></label>
+       <button class="btn sm ${S.azzera?'terra':'ghost'} wide" data-a="azzera">${S.azzera
+         ? 'Sicuro? Tocca di nuovo per cancellare tutto'
+         : 'Cancella tutto e torna ai dati di esempio'}</button>
+     </div>
+   </div>
+ </section>`;
+}
+function itemRow(k){
+ const i=ING[k], st=stato(k), pct=Math.round(level(k)*100);
+ const cls=st==='out'?'bad':st==='low'?'warn':'';
+ return `<button class="item ingr ${st==='out'?'out':''}" data-a="use" data-id="${k}">
+   <span class="tile av">${i.e}</span>
+   <span class="col grow">
+     <span class="name">${esc(i.n)}</span>
+     <span class="meta">
+       <span class="qty tnum">${i.q>0?qty(i.q,i.u):'finito'}</span>
+       ${i.q>0?`<span class="muted tnum">di ${qty(i.f,i.u)}</span>`:''}
+       ${st==='low'?'<span class="pill warn">sta finendo</span>':''}
+       ${st==='out'?'<span class="pill bad">da comprare</span>':''}
+       ${i.exp!==undefined&&i.q>0&&i.exp<=5?`<span class="pill bad">scade in ${i.exp} gg</span>`:''}
+       ${i.fav?'<span class="pill flat">la prendi spesso</span>':''}
+     </span>
+     ${i.q>0?`<span class="bar ${cls}"><i style="width:${Math.max(3,pct)}%"></i></span>`:''}
+   </span>
+   <span class="go" style="width:30px;height:30px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;color:var(--ink-3)">›</span>
+ </button>`;
+}
+
+/* ===================== Spesa ===================== */
+function vSpesa(){
+ if(S.step>0) return vScontrino();
+ const righe=listaSpesa();
+ const totale=righe.reduce((t,r)=>t+r.prezzo,0);
+ const pasti=PLAN.reduce((t,d)=>t+(d.meals.pranzo?1:0)+(d.meals.cena?1:0),0);
+ const tetto=S.budget*pasti*S.people;
+ const fatti=righe.filter(r=>S.checked[r.k]).length;
+ const gruppi=['ortofrutta','frigo','freezer','credenza'].filter(g=>righe.some(r=>r.gruppo===g));
+ return `
+ <h1 style="font-size:26px">La spesa</h1>
+ <p class="muted" style="margin:3px 0 13px">Si aggiorna da sola quando cambi le ricette</p>
+
+ <button class="cta-scontrino" data-a="go" data-s="scontrino">
+   <span class="blob av-lg" style="background:#FFFFFF8C;font-size:38px;width:64px;height:64px">🧾</span>
+   <span class="col grow" style="gap:3px">
+     <strong>Hai già fatto la spesa?</strong>
+     <span class="small">Fotografa lo scontrino: riempio la dispensa e spunto la lista da solo.</span>
+   </span>
+   <span class="pill dark">📸</span>
+ </button>
+ <button class="btn sm ghost wide" data-a="manuale" style="margin-top:10px">
+   Non ho lo scontrino: inserisco a mano</button>
+
+ <div class="budget card" style="margin-top:14px">
+   <div class="row">
+     <span class="col grow"><span class="small">Stima di questa lista</span>
+       <span class="num tnum">${eur(totale)}</span></span>
+     <span class="blob av-lg" style="background:var(--verde-bg)">🧾</span>
+   </div>
+   <div class="bar ${totale>tetto?'warn':''}" style="margin-top:12px"><i style="width:${Math.min(100,totale/tetto*100)}%"></i></div>
+   <div class="row" style="margin-top:8px">
+     <span class="small grow">Budget: ${eur(S.budget)} a pasto × ${pasti} pasti per ${S.people===1?'una persona':S.people+' persone'}</span>
+     <span class="small tnum" style="color:${totale>tetto?'var(--alert)':'var(--verde-ink)'}">${eur(tetto)}</span>
+   </div>
+   <div class="row" style="gap:8px;margin-top:13px;flex-wrap:wrap">
+     <span class="pill flat">🏪 ${esc(S.store)}</span>
+     <span class="pill flat">📅 ${S.weeks} settiman${S.weeks>1?'e':'a'}</span>
+     <button class="pill dark" data-a="setup">cambia</button>
+   </div>
+ </div>
+
+ <div class="row" style="margin-top:18px">
+   <h2 class="grow" style="font-size:19px">Da comprare</h2>
+   <span class="muted tnum">${fatti}/${righe.length} presi</span>
+ </div>
+ ${gruppi.map(g=>`
+   <div class="group-h"><h3>${REPARTI[g]}</h3>
+     <span class="count tnum">${righe.filter(r=>r.gruppo===g).length}</span></div>
+   <div class="inv">
+     ${righe.filter(r=>r.gruppo===g).map(r=>`
+       <button class="sitem ingr" aria-pressed="${!!S.checked[r.k]}" data-a="tick" data-id="${r.k}">
+         <span class="box">${S.checked[r.k]?'✓':''}</span>
+         <span class="tile av-sm">${r.i.e}</span>
+         <span class="col grow">
+           <span class="name">${esc(r.i.n)}</span>
+           ${r.perche?`<span class="why">per ${esc(r.perche.slice(0,2).join(', '))}${r.perche.length>2?' +'+(r.perche.length-2):''}</span>`
+             :r.basso?'<span class="small">sta finendo in dispensa</span>'
+             :'<span class="small">aggiunto a mano</span>'}
+         </span>
+         <span class="col" style="align-items:flex-end;gap:3px">
+           <span class="tnum" style="font-weight:800;font-size:14px;color:var(--verde-scuro)">${eur(r.prezzo)}</span>
+           <span class="muted tnum">${r.conf>1?r.conf+' conf.':qty(r.i.f,r.i.u)}</span>
+         </span>
+       </button>`).join('')}
+   </div>`).join('')}
+
+ <section class="sec">
+   <div class="sec-h"><h2>Spesa precedente</h2><span>ancora in dispensa</span></div>
+   <div class="card" style="padding:15px 16px">
+     <div class="row"><span class="blob av" style="background:var(--salvia)">🧾</span>
+       <span class="col grow"><strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">${esc(SPESA_FATTA.store)} · ${SPESA_FATTA.data}</strong>
+       <span class="small">${SPESA_FATTA.righe} righe · ${eur(SPESA_FATTA.tot)}</span></span>
+       <span class="pill ok">chiusa</span></div>
+   </div>
+ </section>
+
+ <div style="margin-top:18px">
+   <button class="btn wide" data-a="proposte">✨ Cambia le ricette della settimana</button>
+ </div>`;
+}
+
+/* ===================== Ricette ===================== */
+function check(r,scale){
+ const f=(scale||r.serv)/r.serv, miss=[],part=[],have=[];
+ r.ing.forEach(([k,q0])=>{
+  const q=Math.round(q0*f*10)/10, i=ING[k];
+  if(!i){miss.push({k,q});return;}
+  if(i.staple&&i.q>0){have.push({k,q});return;}
+  if(i.q<=0) miss.push({k,q}); else if(i.q<q) part.push({k,q}); else have.push({k,q});
+ });
+ return {miss,part,have,gap:miss.length+part.length,
+   need:r.ing.map(([k,q])=>({k,q:Math.round(q*f*10)/10}))};
+}
+function vRicette(){
+ const dati=RECIPES.map(r=>({r,c:check(r)}));
+ const F=S.recFilter;
+ const list=F==='pronte'?dati.filter(x=>!x.c.gap)
+   :F==='colazione'?dati.filter(x=>x.r.slots.includes('colazione'))
+   :F==='economiche'?dati.filter(x=>perPorz(x.r)<=2.5)
+   :dati;
+ list.sort((a,b)=>a.c.gap-b.c.gap);
+ return `
+ <div class="row" style="margin-bottom:4px">
+   <h1 class="grow" style="font-size:26px">Le ricette</h1>
+   <button class="btn sm primary" data-a="go" data-s="nuova">＋ Nuova</button>
+ </div>
+ <p class="muted" style="margin:3px 0 13px">${dati.length} ricette vostre · ${dati.filter(x=>!x.c.gap).length} fattibili adesso</p>
+ <div class="chips">
+   ${[['tutte','Tutte'],['pronte','✓ Fattibili'],['economiche','💰 Sotto 2,50 €'],['colazione','☕ Colazione']]
+     .map(([k,l])=>`<button class="chip" aria-pressed="${F===k}" data-a="recf" data-f="${k}">${l}</button>`).join('')}
+ </div>
+ <div class="inv">
+   ${list.map(({r,c})=>`
+     <button class="item dish" data-a="recipe" data-id="${r.id}">
+       <span class="blob av-lg" style="font-size:38px;width:62px;height:62px">${r.e}</span>
+       <span class="col grow">
+         <span class="name" style="font-size:17px">${esc(r.n)}</span>
+         <span class="meta">
+           ${c.gap?`<span class="pill ${c.gap<=2?'warn':'bad'}">mancano ${c.gap}</span>`
+                  :'<span class="pill ok">✓ puoi farla</span>'}
+           <span class="small">${r.min} min · ${eur(perPorz(r))} a porz.</span>
+           ${diffPip(r)}
+         </span>
+         ${c.gap?`<span class="small" style="margin-top:4px;color:var(--ink-3)">ti serve: ${[...c.miss,...c.part].map(x=>ING[x.k]?ING[x.k].n.toLowerCase():x.k).join(', ')}</span>`:''}
+       </span>
+     </button>`).join('')}
+ </div>`;
+}
+function vRicetta(){
+ const r=R(S.recipe), scale=S.serv, c=check(r,scale);
+ return `
+ <button class="btn sm" data-a="back" style="margin-bottom:12px">← Indietro</button>
+ <div class="rhero soft">
+   <span class="blob av-lg b2" style="background:#FFFFFF9E;font-size:46px">${r.e}</span>
+   <span class="col grow">
+     <h2 style="font-size:23px">${esc(r.n)}</h2>
+     <span class="small">${r.min} minuti · ${r.tag}</span>
+     <span style="margin-top:7px">${diffEti(r,1)}</span>
+     <span style="margin-top:8px">${c.gap?`<span class="pill bad">ti mancano ${c.gap} ingredienti</span>`
+       :'<span class="pill ok">✓ hai tutto in casa</span>'}</span>
+   </span>
+ </div>
+
+ <div class="row" style="margin-top:18px">
+   <span class="col grow"><strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Porzioni</strong>
+     <span class="small">${eur(cost(r)*scale/r.serv)} in tutto · ${eur(perPorz(r))} a porzione</span></span>
+   <span class="stepper">
+     <button data-a="serv" data-d="-1" aria-label="Meno porzioni">−</button>
+     <b class="tnum">${scale}</b>
+     <button data-a="serv" data-d="1" aria-label="Più porzioni">+</button>
+   </span>
+ </div>
+
+ <section class="sec">
+   <div class="sec-h"><h2>Ingredienti</h2><span>${c.have.length} su ${c.need.length} in casa</span></div>
+   <div class="card" style="padding:14px 16px">
+     ${c.need.map(x=>{
+       const i=ING[x.k], m=c.miss.find(y=>y.k===x.k), p=c.part.find(y=>y.k===x.k);
+       const t=m?'n':p?'p':'y';
+       return `<div class="ing">
+         <span class="tick ${t}">${t==='y'?'✓':t==='p'?'!':'✕'}</span>
+         <span class="col grow">
+           <span class="name">${esc(i?i.n:x.k)}</span>
+           <span class="small">${m?'non ce l’hai':p?`ne hai solo ${qty(i.q,i.u)}`:`in dispensa ${qty(i.q,i.u)}`}</span>
+         </span>
+         <span class="tnum" style="font-weight:800;font-size:14.5px;color:var(--verde-scuro)">${qty(x.q,i?i.u:'g')}</span>
+       </div>`;}).join('')}
+   </div>
+ </section>
+
+ <section class="sec">
+   <div class="sec-h"><h2>Come si fa</h2></div>
+   <ol class="steps">${r.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+ </section>
+
+ <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">
+   <button class="btn primary wide" data-a="plan" data-id="${r.id}">📅 Mettila nel piano</button>
+   <button class="btn wide ${c.gap?'':'dark'}" data-a="cooked" data-id="${r.id}" ${c.gap?'disabled':''}>
+     🍽️ L’ho cucinata — scala dalla dispensa</button>
+ </div>`;
+}
+
+/* ===================== proposte ===================== */
+function candidati(){
+ const usate=new Set(); PLAN.forEach(d=>SLOTS.forEach(s=>d.meals[s]&&usate.add(d.meals[s])));
+ return RECIPES.filter(r=>{
+  if(r.slots.includes('colazione')) return false;
+  if(usate.has(r.id)) return false;
+  if(perPorz(r)>S.budget*1.25) return false;
+  if(dOf(r)>S.diffMax) return false;
+  if(r.ing.some(([k])=>ING[k]&&ING[k].only&&ING[k].only!==S.store)) return false;
+  return true;
+ }).sort((a,b)=>abitudine(b)-abitudine(a));
+}
+function esclusi(){
+ return RECIPES.filter(r=>!r.slots.includes('colazione') &&
+   (perPorz(r)>S.budget*1.25 || dOf(r)>S.diffMax ||
+    r.ing.some(([k])=>ING[k]&&ING[k].only&&ING[k].only!==S.store)));
+}
+function abitudine(r){
+ const n=r.ing.filter(([k])=>ING[k]&&ING[k].fav).length;
+ return n/r.ing.length;
+}
+function perche(r){
+ const fav=r.ing.filter(([k])=>ING[k]&&ING[k].fav).map(([k])=>ING[k].n.toLowerCase());
+ const incasa=r.ing.filter(([k])=>ING[k]&&ING[k].q>0).length;
+ if(fav.length>=2) return `Usi spesso ${fav.slice(0,2).join(' e ')}, e ${incasa} ingredienti ce li hai già.`;
+ if(perPorz(r)<=2) return `Costa ${eur(perPorz(r))} a porzione: ben sotto il tuo budget.`;
+ return `${incasa} ingredienti su ${r.ing.length} sono già in dispensa.`;
+}
+function slotLiberi(){
+ const out=[];
+ PLAN.forEach((d,i)=>['pranzo','cena'].forEach(s=>{if(!d.meals[s]) out.push({i,s});}));
+ return out;
+}
+/* proposte per un singolo pasto, partendo dal pop-up */
+function proposteSlot(di,slot){
+ const attuale=PLAN[di].meals[slot];
+ const usate=new Set(); PLAN.forEach(d=>SLOTS.forEach(s=>d.meals[s]&&usate.add(d.meals[s])));
+ const ok=r=>perPorz(r)<=S.budget*1.6 && dOf(r)<=S.diffMax
+   && !r.ing.some(([k])=>ING[k]&&ING[k].only&&ING[k].only!==S.store);
+ let pool=RECIPES.filter(r=>r.slots.includes(slot)&&r.id!==attuale&&ok(r));
+ if(!pool.length) pool=RECIPES.filter(r=>r.slots.includes(slot)&&r.id!==attuale);
+ pool.sort((a,b)=>(usate.has(a.id)-usate.has(b.id))||(abitudine(b)-abitudine(a)));
+ const from=S.screen;
+ closeSheet();
+ S.prop={mode:'slot',di,slot,pool,i:0,accepted:[],rejected:[],step:'deck',from};
+ S.screen='proposte'; render();
+}
+function deckCard(r){
+ return `<div class="deck card pop">
+   <div class="blob thumb b2" style="background:var(--salvia)">${r.e}</div>
+   <h2>${esc(r.n)}</h2>
+   <div class="facts">
+     <span class="fact">⏱ ${r.min} min</span>
+     <span class="fact">💶 ${eur(perPorz(r))} a porz.</span>
+     <span class="fact" style="display:inline-flex;align-items:center;gap:7px">${diffPip(r)}${DIFF[dOf(r)]}</span>
+     <span class="fact">${r.tag}</span>
+   </div>
+   <div class="ings">
+     ${r.ing.slice(0,5).map(([k])=>{const i=ING[k];
+       return `<span class="pill ${i&&i.q>0?'ok':'flat'}">${i?i.e+' '+i.n.toLowerCase():k}</span>`;}).join('')}
+     ${r.ing.length>5?`<span class="pill flat">+${r.ing.length-5}</span>`:''}
+   </div>
+   <div class="why"><span style="font-size:17px">💡</span><span>${esc(perche(r))}</span></div>
+   <div class="swipe">
+     <button class="no" data-a="no" aria-label="No, questa no">✕</button>
+     <button class="si" data-a="si" aria-label="Sì, mi va">✓</button>
+   </div>
+ </div>`;
+}
+function vProposteSlot(){
+ const P=S.prop, r=P.pool[P.i];
+ const titolo=`${SLOTNAME[P.slot]} di ${dayLabel(P.di).toLowerCase()}`;
+ if(P.step==='fatto'){
+  const s=P.accepted[0];
+  return `<div class="done soft pop">
+    <div class="ic">${s.r.e}</div>
+    <h2 style="font-size:23px;margin:8px 0 6px">${esc(s.r.n)}</h2>
+    <p class="small" style="max-width:30ch;margin:0 auto">Messa a ${esc(titolo.toLowerCase())}. La lista della spesa si è già aggiornata.</p>
+    <div style="margin-top:18px"><button class="btn primary wide" data-a="back">Torna indietro</button></div>
+  </div>`;
+ }
+ if(!r) return `<div class="done card">
+   <div class="ic">🤷</div>
+   <h2 style="font-size:22px;margin:8px 0 6px">Non ho altre idee</h2>
+   <p class="small" style="max-width:33ch;margin:0 auto">Ho finito le proposte per ${esc(titolo.toLowerCase())}
+     dentro il tuo budget e con quello che trovi da ${esc(S.store)}.</p>
+   <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px">
+     <button class="btn primary wide" data-a="back">Torna indietro</button>
+     <button class="btn wide" data-a="go" data-s="ricette">Scegli dalle tue ricette</button>
+   </div>
+ </div>`;
+ return `
+ <div class="row" style="margin-bottom:12px;flex-wrap:wrap">
+   <button class="btn sm" data-a="back">← Annulla</button>
+   <span class="grow"></span>
+   <span class="pill dark">${esc(titolo)}</span>
+ </div>
+ <div class="bar" style="margin-bottom:14px"><i style="width:${(P.i/P.pool.length)*100}%"></i></div>
+ ${deckCard(r)}
+ <p class="muted" style="text-align:center;margin-top:12px">Proposta ${P.i+1} di ${P.pool.length} · scartate ${P.rejected.length}</p>`;
+}
+function vProposte(){
+ const P=S.prop;
+ if(P.mode==='slot') return vProposteSlot();
+ if(P.step==='setup'){
+  const ex=esclusi().length;
+  return `
+  <button class="btn sm" data-a="back" style="margin-bottom:12px">← Indietro</button>
+  <h1 style="font-size:26px">Prima di proporti i piatti</h1>
+  <p class="muted" style="margin:4px 0 16px">Cinque cose e poi si va veloce: sì o no su ogni ricetta.</p>
+
+  <div class="card" style="padding:18px;margin-bottom:12px">
+    <div class="row" style="margin-bottom:6px">
+      <span class="col grow"><strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Quanto vuoi spendere a pasto</strong>
+      <span class="small">per persona, ingredienti del piatto</span></span>
+      <span class="num tnum" id="bdgval" style="font-family:var(--font-display);font-size:26px;color:var(--verde-scuro)">${eur(S.budget)}</span>
+    </div>
+    <input class="rng" type="range" min="0.5" max="9" step="0.25" value="${S.budget}" data-a="budget" id="bdg">
+    <div class="row"><span class="muted grow">0,50 €</span><span class="muted">9,00 €</span></div>
+  </div>
+
+  <div class="card" style="padding:18px;margin-bottom:12px">
+    <strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Dove fai la spesa</strong>
+    <p class="small" style="margin:4px 0 10px">Rilevato dai tuoi scontrini: <b>${esc(SPESA_FATTA.store)}</b></p>
+    <div class="chips" style="margin:0">
+      ${STORES.map(s=>`<button class="chip" aria-pressed="${S.store===s}" data-a="store" data-v="${esc(s)}">${esc(s)}</button>`).join('')}
+    </div>
+    ${ex?`<p class="small" style="margin:6px 0 0;color:var(--terra-ink)">${ex} ricette restano fuori: chiedono prodotti che da ${esc(S.store)} di solito non trovi, o sforano il budget.</p>`:''}
+  </div>
+
+  <div class="card" style="padding:18px;margin-bottom:12px">
+    <strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Per quante persone cucini</strong>
+    <p class="small" style="margin:4px 0 10px">${S.people===2
+      ? 'Le ricette sono scritte per due: le quantità restano queste.'
+      : `Scalo le quantità di ogni piatto: ${S.people===1?'la metà':'×'+(S.people/2).toString().replace('.',',')} di quelle scritte.`}</p>
+    <div class="chips" style="margin:0;flex-wrap:wrap;overflow:visible">
+      ${[1,2,3,4,5,6].map(n=>`<button class="chip" aria-pressed="${S.people===n}" data-a="people" data-v="${n}">${n===1?'1 persona':n+' persone'}</button>`).join('')}
+    </div>
+  </div>
+
+  <div class="card" style="padding:18px;margin-bottom:12px">
+    <strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Quanto ti vuoi impegnare</strong>
+    <p class="small" style="margin:4px 0 10px">${S.diffMax===5
+      ? 'Nessun limite: ti propongo anche i piatti lunghi.'
+      : `Al massimo <b>«${DIFF[S.diffMax].toLowerCase()}»</b>, niente di più impegnativo.`}</p>
+    <div class="chips" style="margin:0;flex-wrap:wrap;overflow:visible">
+      ${[1,2,3,4,5].map(n=>`<button class="chip" aria-pressed="${S.diffMax===n}" data-a="diff" data-v="${n}"
+        style="display:inline-flex;align-items:center;gap:8px"><span class="diff">${pallini(n)}</span>${DIFF[n]}</button>`).join('')}
+    </div>
+    ${(()=>{const f=RECIPES.filter(r=>!r.slots.includes('colazione')&&dOf(r)>S.diffMax).length;
+      return f?`<p class="small" style="margin:8px 0 0;color:var(--terra-ink)">${f} ricette restano fuori perché più impegnative di così.</p>`:'';})()}
+  </div>
+
+  <div class="card" style="padding:18px;margin-bottom:14px">
+    <strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Per quante settimane</strong>
+    <p class="small" style="margin:4px 0 10px">Puoi pianificare anche più di una spesa.</p>
+    <div class="chips" style="margin:0">
+      ${[1,2,3].map(w=>`<button class="chip" aria-pressed="${S.weeks===w}" data-a="weeks" data-v="${w}">${w} settiman${w>1?'e':'a'}</button>`).join('')}
+    </div>
+  </div>
+
+  <button class="btn primary wide" data-a="deck">Vai con le proposte →</button>`;
+ }
+
+ if(P.step==='deck'){
+  const lista=P.pool, i=P.i, r=lista[i], liberi=slotLiberi().length;
+  if(!r||!liberi) return doneProposte();
+  return `
+  <div class="row" style="margin-bottom:12px">
+    <button class="btn sm" data-a="back">← Esci</button>
+    <span class="grow"></span>
+    <span class="pill dark">${liberi} pasti da riempire</span>
+  </div>
+  <div class="bar" style="margin-bottom:14px"><i style="width:${(i/lista.length)*100}%"></i></div>
+  ${deckCard(r)}
+  <p class="muted" style="text-align:center;margin-top:12px">Accettate: ${P.accepted.length} · scartate: ${P.rejected.length}</p>`;
+ }
+ return doneProposte();
+}
+function doneProposte(){
+ const P=S.prop;
+ const righe=listaSpesa(), tot=righe.reduce((t,r)=>t+r.prezzo,0);
+ return `
+ <div class="done card pop">
+   <div class="ic">🎉</div>
+   <h2 style="font-size:24px;margin:8px 0 6px">Piano aggiornato</h2>
+   <p class="small" style="max-width:34ch;margin:0 auto">${P.accepted.length} piatti nuovi nel piano. La lista della spesa si è aggiornata da sola: ${eur(tot)} stimati.</p>
+ </div>
+ ${P.accepted.length?`<section class="sec">
+   <div class="sec-h"><h2>Hai scelto</h2></div>
+   <div class="inv">
+     ${P.accepted.map(a=>`<div class="item dish">
+       <span class="blob av">${a.r.e}</span>
+       <span class="col grow"><span class="name" style="font-size:16px">${esc(a.r.n)}</span>
+       <span class="small" style="text-transform:capitalize">${dayLabel(a.i)} a ${a.s}</span></span>
+       <span class="pill ok tnum">${eur(perPorz(a.r))}</span></div>`).join('')}
+   </div>
+ </section>`:''}
+ <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px">
+   <button class="btn primary wide" data-a="go" data-s="spesa">🛒 Vedi la lista della spesa</button>
+   <button class="btn wide" data-a="go" data-s="piano">📅 Guarda il piano</button>
+ </div>`;
+}
+
+/* ===================== spesa inserita a mano =====================
+   Per quando lo scontrino non c'è: si spunta quello che si è preso
+   dalla lista, si aggiusta il numero di confezioni, si aggiunge il resto. */
+function apriManuale(){
+ const sel={};
+ listaSpesa().forEach(r=>{ sel[r.k]=r.conf; });
+ S.man={sel,q:''}; S.screen='manuale'; render();
+}
+function rigaManuale(k){
+ const i=ING[k], c=S.man.sel[k]||0, preso=c>0;
+ return `<div class="sitem ingr" style="${preso?'':'opacity:.5'}">
+   <button class="tile av-sm" data-a="mtog" data-id="${k}" aria-label="${preso?'Togli':'Metti'} ${esc(i.n)}">${i.e}</button>
+   <button class="col grow" data-a="mtog" data-id="${k}" style="text-align:left;min-width:0">
+     <span class="name">${esc(i.n)}</span>
+     <span class="small">${preso?`${c>1?c+' × ':''}${qty(i.f,i.u)}`:'non l’ho preso'}</span>
+   </button>
+   <span class="stepper sm">
+     <button data-a="mmeno" data-id="${k}" aria-label="una confezione in meno">−</button>
+     <b class="tnum">${c}</b>
+     <button data-a="mpiu" data-id="${k}" aria-label="una confezione in più">+</button>
+   </span>
+ </div>`;
+}
+function vManuale(){
+ const lista=listaSpesa();
+ const inLista=lista.map(r=>r.k);
+ const altri=Object.keys(S.man.sel).filter(k=>!inLista.includes(k)&&ING[k]);
+ const q=(S.man.q||'').trim().toLowerCase();
+ const sugg=q?Object.keys(ING).filter(k=>ING[k].n.toLowerCase().includes(q)
+   &&!inLista.includes(k)&&!altri.includes(k)).slice(0,6):[];
+ const esatto=q&&Object.keys(ING).some(k=>ING[k].n.toLowerCase()===q);
+ const presi=Object.keys(S.man.sel).filter(k=>S.man.sel[k]>0).length;
+ return `
+ <button class="btn sm" data-a="back" style="margin-bottom:12px">← Spesa</button>
+ <h1 style="font-size:26px">Cosa hai comprato</h1>
+ <p class="muted" style="margin:4px 0 14px">Niente scontrino: spunta quello che hai preso davvero e aggiusta le confezioni.</p>
+
+ ${lista.length?`<section class="sec" style="margin-top:0">
+   <div class="sec-h"><h2>Dalla tua lista</h2><span>${lista.length} cose</span></div>
+   <div class="inv">${lista.map(r=>rigaManuale(r.k)).join('')}</div>
+ </section>`:'<p class="small">La lista della spesa è vuota: aggiungi qui sotto quello che hai preso.</p>'}
+
+ ${altri.length?`<section class="sec">
+   <div class="sec-h"><h2>Aggiunti da te</h2></div>
+   <div class="inv">${altri.map(k=>rigaManuale(k)).join('')}</div>
+ </section>`:''}
+
+ <section class="sec">
+   <div class="sec-h"><h2>Hai preso altro?</h2></div>
+   <div class="search"><span>🔍</span>
+     <input id="mq" placeholder="Cerca o scrivi un prodotto…" value="${esc(S.man.q||'')}" autocomplete="off"></div>
+   ${sugg.length?`<div class="chips" style="margin-top:10px;flex-wrap:wrap;overflow:visible">
+     ${sugg.map(k=>`<button class="chip" data-a="madd" data-id="${k}">${ING[k].e} ${esc(ING[k].n)}</button>`).join('')}
+   </div>`:''}
+   ${q&&!esatto?`<div style="margin-top:10px">
+     <button class="btn sm" data-a="mnuovo">➕ Aggiungi «${esc(S.man.q.trim())}»</button>
+     <p class="small" style="margin:7px 0 0;color:var(--ink-3)">Lo creo come pezzo singolo, senza prezzo: lo sistemerai quando vuoi.</p>
+   </div>`:''}
+ </section>
+
+ <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">
+   <button class="btn primary wide" data-a="mok" ${presi?'':'disabled'}>
+     Metti in dispensa${presi?` · ${presi} cos${presi===1?'a':'e'}`:''}</button>
+   <button class="btn sm ghost wide" data-a="go" data-s="scontrino">📸 Ho lo scontrino, lo fotografo</button>
+ </div>`;
+}
+function applicaManuale(){
+ let n=0;
+ Object.keys(S.man.sel).forEach(k=>{
+  const c=S.man.sel[k], i=ING[k];
+  if(!c||!i) return;
+  const q=Math.round(i.f*c*10)/10;
+  i.q=Math.round((i.q+q)*10)/10;
+  i.f=Math.max(i.f,i.q);
+  if(i.exp!==undefined) i.exp=Math.max(i.exp,7);
+  delete S.checked[k];
+  S.extra=S.extra.filter(x=>x!==k);
+  n++;
+ });
+ S.shopped=true; S.added=n; S.man={sel:{},q:''};
+ S.screen='dispensa'; render();
+ toast(`${n} cos${n===1?'a messa':'e messe'} in dispensa`);
+}
+
+/* ===================== scontrino ===================== */
+function vScontrino(){
+ const st=S.step;
+ const head=`<button class="btn sm" data-a="back" style="margin-bottom:12px">← Spesa</button>
+   <h1 style="font-size:26px">Lo scontrino</h1>
+   <p class="muted" style="margin:4px 0 0">Lo leggo io: riconosco il negozio, tengo il cibo e scarto il resto.</p>
+   <div class="flow">${[1,2,3,4].map(i=>`<i class="${i<=st?'on':''}"></i>`).join('')}</div>`;
+
+ if(st<=1) return head+`
+   <div class="drop soft">
+     <div class="ic">🧾</div>
+     <h3 style="font-size:21px;margin:8px 0 5px">Fotografa lo scontrino</h3>
+     <p class="small" style="max-width:31ch;margin:0 auto 16px">Tienilo disteso e inquadra tutte le righe. Funziona anche con la foto storta.</p>
+     <label class="btn primary" style="display:inline-flex">📸 Scatta o scegli una foto
+       <input id="file" type="file" accept="image/*" capture="environment" hidden></label>
+     <div style="margin-top:12px;display:flex;gap:9px;justify-content:center;flex-wrap:wrap">
+       <button class="btn sm ghost" data-a="demo">Usa lo scontrino di esempio</button>
+       <button class="btn sm ghost" data-a="manuale">Inserisci a mano</button></div>
+   </div>
+   <section class="sec">
+     <div class="sec-h"><h2>Negozi riconosciuti</h2><span>un profilo per catena</span></div>
+     <div class="chips" style="flex-wrap:wrap;overflow:visible">
+       ${["In's Mercato",'Conad','Esselunga','Lidl','Carrefour','Eurospin','Bennet','Pam','MD','Alimentari sotto casa']
+         .map(s=>`<span class="chip">${esc(s)}</span>`).join('')}
+     </div>
+     <p class="muted">Ogni catena scrive pesi, sconti e abbreviazioni a modo suo: il motore tiene un profilo per ognuna e una regola generica per le altre.</p>
+   </section>`;
+
+ if(st===2) return head+`
+   <div class="scan">
+     ${S.photo?`<img src="${S.photo}" alt="Foto dello scontrino caricata">`:
+       Array.from({length:10},(_,i)=>`<div class="l" style="width:${[72,92,60,88,74,95,52,86,66,90][i]}%"></div>`).join('')}
+     <div class="beam"></div>
+   </div>
+   <div class="card" style="padding:16px;margin-top:14px">
+     <div class="row"><span class="blob av" style="background:var(--verde-bg)">🔎</span>
+       <span class="col grow"><strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Sto leggendo…</strong>
+       <span class="small">negozio, data, righe prodotto, pesi e quantità</span></span></div>
+   </div>`;
+
+ if(st===3){
+  const on=S.lines.filter(l=>l.on), dubbi=on.filter(l=>l.c<.7).length;
+  return head+`
+   <div class="card" style="padding:16px">
+     <div class="row"><span class="blob av" style="background:var(--verde-bg)">🏪</span>
+       <span class="col grow"><strong style="font-family:var(--font-display);font-size:18px;color:var(--verde-scuro)">${esc(RECEIPT.store)}</strong>
+       <span class="small">${RECEIPT.date} · ${RECEIPT.nlines} righe · totale € ${RECEIPT.tot}</span></span></div>
+     <div class="row" style="gap:7px;margin-top:12px;flex-wrap:wrap">
+       <span class="pill ok">${on.length} alimenti</span>
+       <span class="pill flat">${S.others.length} scartati</span>
+       ${dubbi?`<span class="pill warn">${dubbi} da controllare</span>`:''}
+     </div>
+   </div>
+   <section class="sec">
+     <div class="sec-h"><h2>Da mettere in dispensa</h2><span>tocca per escludere</span></div>
+     <div class="inv">
+       ${S.lines.map((l,idx)=>`
+         <div class="pline ingr ${l.on?'':'off'}">
+           <span class="tile av-sm" style="background:var(--${l.c<.7?'terra':'verde'}-bg)">${l.id&&ING[l.id]?ING[l.id].e:'❓'}</span>
+           <span class="col grow" style="gap:3px">
+             <span class="name">${l.id&&ING[l.id]?esc(ING[l.id].n):esc(l.guess||'Non riconosciuto')}</span>
+             <span class="raw">${esc(l.raw)}</span>
+             <span class="meta" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:3px">
+               <span class="pill flat tnum">${qty(l.q,l.u)}</span>
+               ${l.c<.7?'<span class="pill warn">confermi?</span>'
+                 :`<span class="pill ok">${Math.round(l.c*100)}% sicuro</span>`}
+               ${l.id&&ING[l.id]&&ING[l.id].q<=0?'<span class="pill bad">ti mancava</span>':''}
+             </span>
+           </span>
+           <button class="sw" aria-pressed="${l.on}" data-a="toggleline" data-i="${idx}"
+             aria-label="Includi ${esc(l.raw)}"></button>
+         </div>`).join('')}
+     </div>
+   </section>
+   <section class="sec">
+     <div class="sec-h"><h2>Scartati</h2><span>non è cibo</span></div>
+     <div class="card" style="padding:14px">
+       ${S.others.map((o,idx)=>`<div class="row" style="padding:8px 0">
+         <span class="blob av-sm" style="background:var(--surface-2);font-size:17px">🚫</span>
+         <span class="col grow"><span class="raw">${esc(o.raw)}</span>
+           <span class="small">${esc(o.why)}</span></span>
+         <button class="pill flat" data-a="rescue" data-i="${idx}">recupera</button>
+       </div>`).join('')}
+     </div>
+   </section>
+   <div style="margin-top:18px"><button class="btn primary wide" data-a="confirm">✓ Metti ${on.length} alimenti in dispensa</button></div>`;
+ }
+
+ const probl=problemi();
+ return head+`
+ <div class="done soft pop">
+   <div class="ic">🎉</div>
+   <h2 style="font-size:24px;margin:8px 0 6px">Dispensa aggiornata</h2>
+   <p class="small" style="max-width:33ch;margin:0 auto">${S.added} alimenti aggiunti. Ho tolto dalla lista quello che hai preso e ricontrollato tutte le ricette del piano.</p>
+ </div>
+ ${probl.length?`<div class="alert" style="margin-top:14px">
+   <h3 style="font-size:18px">${probl.length} ricette non si possono più fare</h3>
+   <p class="small" style="margin:6px 0 10px">Nello scontrino non ho trovato tutto quello che serviva.</p>
+   ${probl.map(p=>`<div class="row" style="padding:7px 0">
+     <span class="blob av-sm" style="background:#fff">${p.r.e}</span>
+     <span class="col grow"><strong style="font-family:var(--font-display);font-size:15.5px;color:var(--verde-scuro)">${esc(p.r.n)}</strong>
+     <span class="small" style="text-transform:capitalize">${r_name(p)} · manca ${p.manca.map(([k])=>ING[k]?ING[k].n.toLowerCase():k).join(', ')}</span></span>
+     <button class="pill bad" data-a="swap" data-d="${p.di}" data-s="${p.slot}">sostituisci</button>
+   </div>`).join('')}
+ </div>`:`<div class="card" style="padding:16px;margin-top:14px">
+   <div class="row"><span class="blob av" style="background:var(--verde-bg)">✅</span>
+   <span class="col grow"><strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Tutte le ricette del piano reggono</strong>
+   <span class="small">Niente da sostituire.</span></span></div></div>`}
+ <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
+   <button class="btn primary wide" data-a="go" data-s="piano">📅 Guarda il piano</button>
+   <button class="btn wide" data-a="go" data-s="dispensa">🫙 Apri la dispensa</button>
+ </div>`;
+}
+
+/* ===================== nuova ricetta ===================== */
+function trovaIng(name){
+ const s=name.trim().toLowerCase(); if(!s) return null;
+ return Object.keys(ING).find(k=>ING[k].n.toLowerCase()===s)
+   || Object.keys(ING).find(k=>ING[k].n.toLowerCase().startsWith(s)&&s.length>2) || null;
+}
+function nrNote(r){
+ if(!r.name.trim()) return '';
+ const m=trovaIng(r.name);
+ const col=m?(ING[m].q>0?'--verde-ink':'--alert'):'--terra-ink';
+ const txt=m?(ING[m].q>0?`✓ in dispensa: ${qty(ING[m].q,ING[m].u)}`:'✕ finito, finirà in lista spesa')
+   :'✦ ingrediente nuovo, lo imparo';
+ return `<span style="color:var(${col})">${esc(txt)}</span>`;
+}
+function nrFeas(){
+ const rows=S.newIng.filter(r=>r.name.trim());
+ const noti=rows.map(r=>trovaIng(r.name)).filter(Boolean);
+ const casa=noti.filter(k=>ING[k].q>0).length;
+ const ic=rows.length&&noti.length===rows.length&&casa===rows.length?'✅':'🛒';
+ const head=rows.length?`${casa} ingredienti su ${rows.length} già in casa`:'Scrivi gli ingredienti';
+ return `<div class="row"><span class="blob av" style="background:#fff">${ic}</span>
+   <span class="col grow"><strong style="font-family:var(--font-display);font-size:16px;color:var(--verde-scuro)">${head}</strong>
+   <span class="small">Ti dico subito se la puoi cucinare stasera.</span></span></div>`;
+}
+function refreshNR(){
+ S.newIng.forEach((r,i)=>{const n=el('note-'+i); if(n) n.innerHTML=nrNote(r);});
+ const f=el('feas-in'); if(f) f.innerHTML=nrFeas();
+}
+function vNuova(){
+ return `
+ <button class="btn sm" data-a="back" style="margin-bottom:12px">← Ricette</button>
+ <h1 style="font-size:26px">Nuova ricetta</h1>
+ <p class="muted" style="margin:4px 0 16px">Tre passaggi. Le quantità servono a scalare la dispensa e a stimare il prezzo.</p>
+
+ <div class="nr-step card">
+   <div class="row" style="margin-bottom:13px"><span class="nr-num">1</span><h3 style="font-size:17px">Che piatto è</h3></div>
+   <div class="field"><label for="nr-n">Nome</label><input id="nr-n" placeholder="Es. Pasta al forno della nonna"></div>
+   <div class="row" style="gap:10px;align-items:flex-end">
+     <span class="field grow" style="margin:0"><label for="nr-t">Minuti</label><input id="nr-t" type="number" value="30" min="5" step="5" class="tnum"></span>
+     <span class="field grow" style="margin:0"><label for="nr-p">Porzioni</label><input id="nr-p" type="number" value="2" min="1" class="tnum"></span>
+   </div>
+   <div style="margin-top:14px">
+     <label style="display:block;margin-bottom:7px">Quanto è impegnativa: <b id="nr-dlab">${DIFF[S.newDiff]}</b></label>
+     <div class="chips" style="margin:0;flex-wrap:wrap;overflow:visible">
+       ${[1,2,3,4,5].map(n=>`<button type="button" class="chip" aria-pressed="${S.newDiff===n}" data-a="nrdiff" data-v="${n}"
+         style="display:inline-flex;align-items:center;gap:8px"><span class="diff">${pallini(n)}</span>${DIFF[n]}</button>`).join('')}
+     </div>
+   </div>
+ </div>
+
+ <div class="nr-step card">
+   <div class="row" style="margin-bottom:6px"><span class="nr-num">2</span>
+     <span class="col grow"><h3 style="font-size:17px">Ingredienti e grammi</h3>
+     <span class="small">Scrivi il nome: se lo conosco te lo completo.</span></span></div>
+   <datalist id="ings">${Object.keys(ING).map(k=>`<option value="${esc(ING[k].n)}">`).join('')}</datalist>
+   <div style="margin-top:13px">
+     ${S.newIng.map((r,i)=>`<div class="ingrow">
+       <input list="ings" placeholder="Ingrediente" value="${esc(r.name)}" data-a="nrname" data-i="${i}" autocomplete="off">
+       <input type="number" placeholder="q.tà" class="tnum" value="${esc(r.q)}" data-a="nrq" data-i="${i}">
+       <select data-a="nru" data-i="${i}">${['g','ml','pz','spicchi','vaso','scatole','bustine','cubetti','mazzetto','rametti']
+         .map(u=>`<option ${u===r.u?'selected':''}>${u}</option>`).join('')}</select>
+       <button class="del" data-a="nrdel" data-i="${i}" aria-label="Togli riga">✕</button>
+     </div>
+     <div class="ingnote" id="note-${i}">${nrNote(r)}</div>`).join('')}
+     <button class="btn sm ghost wide" data-a="nradd">＋ Aggiungi ingrediente</button>
+   </div>
+ </div>
+
+ <div class="nr-step card">
+   <div class="row" style="margin-bottom:13px"><span class="nr-num">3</span><h3 style="font-size:17px">Come si fa</h3></div>
+   <div class="field" style="margin:0"><label for="nr-s">Un passaggio per riga</label>
+     <textarea id="nr-s" rows="4" placeholder="Soffriggi la cipolla&#10;Aggiungi la passata&#10;…"></textarea></div>
+ </div>
+
+ <div class="feas soft">
+   <div id="feas-in">${nrFeas()}</div>
+   <div style="margin-top:12px"><button class="btn primary wide" data-a="save">Salva la ricetta</button></div>
+ </div>`;
+}
+
+/* ===================== sheet: cambia pasto ===================== */
+function openSheet(di,slot){
+ S.sheet={di,slot};
+ const attuale=PLAN[di].meals[slot];
+ const opzioni=RECIPES.filter(r=>r.slots.includes(slot)&&r.id!==attuale)
+   .map(r=>({r,c:check(r)}))
+   .sort((a,b)=>a.c.gap-b.c.gap||perPorz(a.r)-perPorz(b.r));
+ el('sheet').innerHTML=`
+ <div class="sheet-wrap" data-a="closesheet">
+   <div class="sheet" data-stop="1">
+     <div class="grab"></div>
+     <h2 style="font-size:21px">${SLOTNAME[slot]} di ${dayLabel(di).toLowerCase()}</h2>
+     <p class="muted" style="margin:4px 0 0">${attuale?'Adesso: '+esc(R(attuale).n):'Ancora da decidere'}</p>
+     <button class="btn primary wide" data-a="propslot" style="margin:14px 0 6px">
+       ✨ Proponimi ${slot==='colazione'?'un’altra colazione':slot==='pranzo'?'un altro pranzo':'un’altra cena'}</button>
+     <p class="muted" style="margin:0 0 16px;text-align:center">Te ne mostro una alla volta: sì o no.</p>
+     ${attuale?`<button class="btn sm ghost wide" data-a="clear" style="margin-bottom:16px">Togli ${esc(R(attuale).n)}</button>`:''}
+     <div class="sec-h" style="margin-bottom:10px"><h2 style="font-size:16px">Oppure scegli tu</h2>
+       <span>prima quelle fattibili</span></div>
+     <div class="inv">
+       ${opzioni.map(({r,c})=>`
+         <button class="item dish" data-a="pick" data-id="${r.id}">
+           <span class="blob av">${r.e}</span>
+           <span class="col grow">
+             <span class="name" style="font-size:16px">${esc(r.n)}</span>
+             <span class="meta">
+               ${c.gap?`<span class="pill warn">mancano ${c.gap}</span>`:'<span class="pill ok">✓ fattibile</span>'}
+               <span class="small">${r.min} min · ${eur(perPorz(r))}</span>
+               ${diffPip(r)}
+             </span>
+           </span>
+         </button>`).join('')}
+     </div>
+   </div>
+ </div>`;
+}
+const closeSheet=()=>{S.sheet=null;el('sheet').innerHTML='';};
+
+/* ===================== render ===================== */
+const ICO_CARRELLO=`<svg class="svgic" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+ stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+ <path d="M2.6 3.4h2.3l2.2 10.3a1.7 1.7 0 0 0 1.66 1.35h8.2a1.7 1.7 0 0 0 1.66-1.32L20 6.6H6.1"/>
+ <circle cx="9.6" cy="19.6" r="1.55"/><circle cx="17.4" cy="19.6" r="1.55"/></svg>`;
+const ICO_FOTO=`<svg class="svgic" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+ stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+ <path d="M3.2 8.6h3.1l1.5-2.3h8.4l1.5 2.3h3.1v10.6H3.2z"/><circle cx="12" cy="13.9" r="3.3"/></svg>`;
+const TABS=[['oggi','🏠','Oggi'],['piano','📅','Piano'],['spesa',ICO_CARRELLO,'Spesa',1],
+            ['dispensa','🫙','Dispensa'],['ricette','📖','Ricette']];
+const VIEWS={oggi:vOggi,piano:vPiano,dispensa:vDispensa,spesa:vSpesa,ricette:vRicette,
+             ricetta:vRicetta,nuova:vNuova,proposte:vProposte,scontrino:vScontrino,
+             manuale:vManuale};
+/* il Piano scorre dentro la sua lista: il calendario in alto resta fermo */
+function segnaGiorno(i){
+ S.selDay=i;
+ document.querySelectorAll('.calday').forEach((c,n)=>c.classList.toggle('sel',n===i));
+}
+function vaiAlGiorno(i){
+ const list=el('planlist'), d=el('day-'+i);
+ if(list&&d){
+  S.scrollLock=true;
+  clearTimeout(vaiAlGiorno.t);
+  vaiAlGiorno.t=setTimeout(()=>{S.scrollLock=false;},1200);
+  list.scrollTo({top:Math.max(0,d.offsetTop-6),behavior:'smooth'});
+ }
+ segnaGiorno(i);
+}
+function montaPiano(){
+ const list=el('planlist'); if(!list) return;
+ const top=list.getBoundingClientRect().top;
+ list.style.height=Math.max(200,Math.round(window.innerHeight-top))+'px';
+ /* spazio in coda, così anche l'ultimo giorno può salire in cima */
+ const inner=list.firstElementChild;
+ if(inner) inner.style.paddingBottom=Math.max(132,list.clientHeight-150)+'px';
+ if(S.planScroll) list.scrollTop=S.planScroll;
+ const giorni=[...list.querySelectorAll('.day')];
+ list.onscroll=()=>{
+  S.planScroll=list.scrollTop;
+  /* mentre scorre da solo non cambio l'evidenziazione: la sblocco quando si ferma */
+  if(S.scrollLock){ clearTimeout(vaiAlGiorno.t);
+    vaiAlGiorno.t=setTimeout(()=>{S.scrollLock=false;},140); return; }
+  let idx=0; giorni.forEach((g,i)=>{ if(g.offsetTop-list.scrollTop<=30) idx=i; });
+  if(idx!==S.selDay) segnaGiorno(idx);
+ };
+ segnaGiorno(S.selDay||0);
+}
+window.addEventListener('resize',()=>{ if(S.screen==='piano') montaPiano(); });
+
+function render(keep){
+ const y=window.scrollY;
+ el('view').innerHTML=VIEWS[S.screen]();
+ document.body.classList.toggle('no-pad',S.screen==='piano');
+ const att={ricetta:'ricette',nuova:'ricette',scontrino:'spesa',manuale:'spesa',proposte:'piano'}[S.screen]||S.screen;
+ el('tabs').innerHTML=TABS.map(([k,i,l,key])=>
+   `<button class="tab ${key?'key':''}" ${att===k?'aria-current="page"':''} data-a="go" data-s="${k}">
+     ${key?`<span class="ring">${i}<span class="cam">${ICO_FOTO}</span></span>`:`<span class="ic">${i}</span>`}${l}</button>`).join('');
+ window.scrollTo(0,keep?y:0);
+ if(S.screen==='piano') montaPiano();
+ salvaPresto();
+}
+
+/* ===================== interazioni ===================== */
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-a]'); if(!t) return;
+ const a=t.dataset.a;
+ if(a==='closesheet'){ if(!e.target.closest('[data-stop]')) closeSheet(); return; }
+ if(a==='go'){ const s=t.dataset.s; if(s!=='scontrino') S.step=0;
+   else { S.step=1; S.photo=null; } S.screen=s==='scontrino'?'scontrino':s; render(); }
+ else if(a==='back'){ closeSheet();
+   S.screen=(S.screen==='proposte'&&S.prop&&S.prop.from)?S.prop.from
+     :(S.screen==='ricetta'&&S.recFrom)?S.recFrom
+     :({ricetta:'ricette',nuova:'ricette',scontrino:'spesa',manuale:'spesa',proposte:'piano'}[S.screen]||'oggi');
+   S.recFrom=null;
+   S.step=0; render(); }
+ else if(a==='recipe'){ const r=R(t.dataset.id); S.recipe=r.id;
+   S.serv=Math.max(1,Math.round(r.serv*fattore()));
+   S.recFrom=S.screen; S.screen='ricetta'; render(); }
+ else if(a==='day'){ S.planScroll=0; S.screen='piano'; render(); vaiAlGiorno(Number(t.dataset.i)); }
+ else if(a==='scrollday'){ vaiAlGiorno(Number(t.dataset.i)); }
+ else if(a==='serv'){ S.serv=Math.max(1,Math.min(12,S.serv+Number(t.dataset.d))); render(true); }
+ else if(a==='swap'){ openSheet(Number(t.dataset.d),t.dataset.s); }
+ else if(a==='pick'){ const {di,slot}=S.sheet; PLAN[di].meals[slot]=t.dataset.id;
+   const n=R(t.dataset.id).n; closeSheet(); render(true);
+   toast(`${n}: ${dayLabel(di).toLowerCase()} a ${slot}`); }
+ else if(a==='clear'){ PLAN[S.sheet.di].meals[S.sheet.slot]=null; closeSheet(); render(true); toast('Pasto liberato'); }
+ else if(a==='plan'){ const r=R(t.dataset.id); const lib=slotLiberi()[0];
+   if(!lib){ toast('Il piano è pieno: libera un pasto dal Piano'); return; }
+   PLAN[lib.i].meals[lib.s]=r.id; toast(`${r.n}: ${dayLabel(lib.i).toLowerCase()} a ${lib.s}`);
+   S.screen='piano'; render(); }
+ else if(a==='invf'){ S.invFilter=t.dataset.f; render(true); }
+ else if(a==='recf'){ S.recFilter=t.dataset.f; render(true); }
+ else if(a==='use'){ const i=ING[t.dataset.id];
+   toast(i.q>0?`${i.n}: ne resta ${qty(i.q,i.u)} — qui si aprirà "ne ho usato…"`:`${i.n} è finito, è già in lista`); }
+ else if(a==='cooked'){ cucinata(t.dataset.id); }
+ else if(a==='manuale'){ apriManuale(); }
+ else if(a==='mtog'){ const k=t.dataset.id;
+   S.man.sel[k]=S.man.sel[k]>0?0:(S.man.sel[k]===0?1:1); render(true); }
+ else if(a==='mpiu'){ const k=t.dataset.id;
+   S.man.sel[k]=Math.min(20,(S.man.sel[k]||0)+1); render(true); }
+ else if(a==='mmeno'){ const k=t.dataset.id;
+   S.man.sel[k]=Math.max(0,(S.man.sel[k]||0)-1); render(true); }
+ else if(a==='madd'){ S.man.sel[t.dataset.id]=1; S.man.q=''; render(true); }
+ else if(a==='mnuovo'){
+   const nome=(S.man.q||'').trim(); if(!nome) return;
+   const k='mio'+Date.now().toString(36);
+   ING[k]={n:nome.charAt(0).toUpperCase()+nome.slice(1),e:'🛒',u:'pz',q:0,f:1,pr:0,l:'credenza'};
+   S.man.sel[k]=1; S.man.q=''; render(true); toast(`"${ING[k].n}" aggiunto`); }
+ else if(a==='mok'){ applicaManuale(); }
+ else if(a==='svuota'){ svuotaDispensa(); }
+ else if(a==='esporta'){ esporta(); }
+ else if(a==='azzera'){
+   if(!S.azzera){ S.azzera=1; render(true); setTimeout(()=>{S.azzera=0;},6000); }
+   else azzeraTutto(); }
+ else if(a==='tick'){ S.checked[t.dataset.id]=!S.checked[t.dataset.id]; render(true); }
+ else if(a==='proposte'||a==='setup'){
+   S.prop={mode:'settimana',step:'setup',i:0,pool:[],accepted:[],rejected:[],from:S.screen};
+   S.screen='proposte'; render(); }
+ else if(a==='propslot'){ proposteSlot(S.sheet.di,S.sheet.slot); }
+ else if(a==='store'){ S.store=t.dataset.v; render(true); }
+ else if(a==='diff'){ S.diffMax=Number(t.dataset.v); render(true); }
+ else if(a==='people'){ S.people=Number(t.dataset.v); render(true); }
+ else if(a==='nrdiff'){ S.newDiff=Number(t.dataset.v);
+   document.querySelectorAll('[data-a="nrdiff"]').forEach(b=>
+     b.setAttribute('aria-pressed', b.dataset.v===String(S.newDiff)));
+   const lb=el('nr-dlab'); if(lb) lb.textContent=DIFF[S.newDiff]; }
+ else if(a==='weeks'){ const w=Number(t.dataset.v); S.weeks=w;
+   while(PLAN.length<w*7) PLAN.push({meals:{colazione:null,pranzo:null,cena:null}});
+   while(PLAN.length>w*7) PLAN.pop();
+   render(true); }
+ else if(a==='deck'){ S.prop.pool=candidati(); S.prop.step='deck'; S.prop.i=0; render(); }
+ else if(a==='si'){ accetta(); }
+ else if(a==='no'){ const P=S.prop; P.rejected.push(P.pool[P.i]); P.i++; render(true); }
+ else if(a==='demo'){ avviaScansione(null); }
+ else if(a==='toggleline'){ S.lines[t.dataset.i].on=!S.lines[t.dataset.i].on; render(true); }
+ else if(a==='rescue'){ const o=S.others.splice(t.dataset.i,1)[0];
+   S.lines.push({raw:o.raw,id:null,q:1,u:'pz',c:.3,guess:'Recuperato a mano',on:true});
+   toast('Recuperato. La prossima volta me lo ricordo.'); render(true); }
+ else if(a==='confirm'){ applicaScontrino(); }
+ else if(a==='nradd'){ S.newIng.push({name:'',q:'',u:'g'}); render(true); }
+ else if(a==='nrdel'){ S.newIng.splice(t.dataset.i,1);
+   if(!S.newIng.length) S.newIng.push({name:'',q:'',u:'g'}); render(true); }
+ else if(a==='save'){ salvaRicetta(); }
+});
+document.addEventListener('input',e=>{
+ const t=e.target, a=t.dataset&&t.dataset.a;
+ if(t.id==='q'){ S.invQuery=t.value; render(true);
+   const q=el('q'); if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length);} }
+ else if(t.id==='mq'){ S.man.q=t.value; render(true);
+   const m=el('mq'); if(m){m.focus();m.setSelectionRange(m.value.length,m.value.length);} }
+ else if(a==='budget'){ S.budget=Number(t.value);
+   const v=el('bdgval'); if(v) v.textContent=eur(S.budget); }
+ else if(a==='nrname'){ S.newIng[t.dataset.i].name=t.value; refreshNR(); }
+ else if(a==='nrq'){ S.newIng[t.dataset.i].q=t.value; refreshNR(); }
+ else if(a==='nru'){ S.newIng[t.dataset.i].u=t.value; }
+});
+document.addEventListener('change',e=>{
+ if(e.target.id==='bdg'){ S.budget=Number(e.target.value); render(true); return; }
+ if(e.target.id==='backup'&&e.target.files&&e.target.files[0]){ importa(e.target.files[0]); return; }
+ if(e.target.id==='file'&&e.target.files&&e.target.files[0]){
+  const fr=new FileReader(); fr.onload=()=>avviaScansione(fr.result); fr.readAsDataURL(e.target.files[0]);
+ }
+});
+
+function accetta(){
+ const P=S.prop, r=P.pool[P.i];
+ if(P.mode==='slot'){
+  PLAN[P.di].meals[P.slot]=r.id;
+  P.accepted=[{r,i:P.di,s:P.slot}]; P.step='fatto';
+  toast(`${r.n} → ${SLOTNAME[P.slot].toLowerCase()} di ${dayLabel(P.di).toLowerCase()}`);
+  render(); return;
+ }
+ const lib=slotLiberi()[0];
+ if(!lib){ P.step='done'; render(); return; }
+ PLAN[lib.i].meals[lib.s]=r.id;
+ P.accepted.push({r,i:lib.i,s:lib.s});
+ P.i++;
+ toast(`${r.n} → ${dayLabel(lib.i).toLowerCase()} a ${lib.s}`);
+ if(!slotLiberi().length||P.i>=P.pool.length) P.step='done';
+ render();
+}
+function avviaScansione(photo){
+ S.photo=photo; S.step=2; S.screen='scontrino';
+ S.lines=RECEIPT.lines.map(l=>({...l,on:true}));
+ S.others=RECEIPT.other.map(o=>({...o}));
+ render();
+ const quick=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ setTimeout(()=>{ S.step=3; render(); }, quick?120:1900);
+}
+function applicaScontrino(){
+ let n=0;
+ S.lines.filter(l=>l.on&&l.id&&ING[l.id]).forEach(l=>{
+  const i=ING[l.id];
+  i.q=Math.round((i.q+l.q)*10)/10;
+  i.f=Math.max(i.f,i.q);
+  if(i.exp!==undefined) i.exp=Math.max(i.exp,7);
+  delete S.checked[l.id];
+  S.extra=S.extra.filter(k=>k!==l.id);
+  n++;
+ });
+ S.added=n; S.shopped=true; S.step=4; render(); toast(`${n} alimenti aggiornati in dispensa`);
+}
+function cucinata(id){
+ const r=R(id), c=check(r,S.serv); let n=0;
+ c.need.forEach(x=>{const i=ING[x.k]; if(!i||i.staple) return;
+  i.q=Math.max(0,Math.round((i.q-x.q)*10)/10); n++;});
+ toast(`Buon appetito! ${n} ingredienti scalati`);
+ S.screen='dispensa'; render();
+}
+function salvaRicetta(){
+ const nome=(el('nr-n')?.value||'').trim();
+ const rows=S.newIng.filter(r=>r.name.trim()&&Number(r.q)>0);
+ if(!nome){ toast('Dai un nome alla ricetta'); el('nr-n')?.focus(); return; }
+ if(!rows.length){ toast('Serve almeno un ingrediente con la quantità'); return; }
+ const serv=Math.max(1,Number(el('nr-p')?.value||2));
+ const steps=(el('nr-s')?.value||'').split('\n').map(s=>s.trim()).filter(Boolean);
+ const ing=rows.map(r=>{
+  let k=trovaIng(r.name);
+  if(!k){ k='x_'+Math.random().toString(36).slice(2,7);
+   ING[k]={n:r.name.trim(),e:'🥄',u:r.u,q:0,f:Number(r.q)*2,pr:2.50,l:'credenza'}; }
+  return [k,Number(r.q)];
+ });
+ RECIPES.unshift({id:'new'+RECIPES.length,n:nome,e:'🥄',min:Math.max(5,Number(el('nr-t')?.value||30)),
+  d:S.newDiff,serv,tag:'Nostra',slots:['pranzo','cena'],ing,
+  steps:steps.length?steps:['Scrivi i passaggi quando hai tempo.']});
+ S.newIng=[{name:'',q:'',u:'g'},{name:'',q:'',u:'g'}]; S.newDiff=2;
+ S.screen='ricette'; render(); toast(`"${nome}" salvata fra le vostre ricette`);
+}
+
+/* ===================== memoria sul dispositivo =====================
+   Tutto resta nel telefono: niente account, niente server. Se il browser
+   non concede spazio (finestra privata, spazio finito) l'app continua a
+   funzionare, semplicemente dimentica tutto alla chiusura. */
+const CHIAVE='mirtillo.v1';
+const oggiISO=()=>{const d=new Date();
+ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+const giorniTra=(a,b)=>Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000);
+
+function salva(){
+ try{ localStorage.setItem(CHIAVE, JSON.stringify({
+   v:1, data:S.planDate||oggiISO(), ING, RECIPES, PLAN,
+   imp:{budget:S.budget,weeks:S.weeks,store:S.store,diffMax:S.diffMax,people:S.people},
+   stato:{shopped:S.shopped,checked:S.checked,extra:S.extra}
+ })); }catch(e){ S.senzaMemoria=true; }
+}
+const salvaPresto=()=>{ clearTimeout(salvaPresto.t); salvaPresto.t=setTimeout(salva,350); };
+
+function carica(){
+ let raw=null;
+ try{ raw=localStorage.getItem(CHIAVE); }catch(e){ S.senzaMemoria=true; return false; }
+ if(!raw) return false;
+ let d; try{ d=JSON.parse(raw); }catch(e){ return false; }
+ if(!d||d.v!==1) return false;
+ if(d.ING) Object.keys(d.ING).forEach(k=>{ ING[k]=Object.assign({},ING[k]||{},d.ING[k]); });
+ if(Array.isArray(d.RECIPES)&&d.RECIPES.length) RECIPES=d.RECIPES;
+ if(Array.isArray(d.PLAN)&&d.PLAN.length) PLAN=d.PLAN;
+ Object.assign(S, d.imp||{}, d.stato||{});
+ S.planDate=d.data||oggiISO();
+ return true;
+}
+
+/* i giorni passano: il piano scorre da solo e le scadenze si accorciano */
+function avanzaGiorni(){
+ const oggi=oggiISO();
+ if(!S.planDate){ S.planDate=oggi; return 0; }
+ const n=giorniTra(S.planDate,oggi);
+ if(!(n>0)){ S.planDate=oggi; return 0; }
+ for(let i=0;i<Math.min(n,PLAN.length);i++){
+  PLAN.shift(); PLAN.push({meals:{colazione:null,pranzo:null,cena:null}});
+ }
+ if(n>=PLAN.length) PLAN=PLAN.map(()=>({meals:{colazione:null,pranzo:null,cena:null}}));
+ Object.keys(ING).forEach(k=>{
+  if(ING[k].exp!==undefined) ING[k].exp=Math.max(0,ING[k].exp-n); });
+ S.planDate=oggi; return n;
+}
+
+function esporta(){
+ let dati='{}'; try{ dati=localStorage.getItem(CHIAVE)||'{}'; }catch(e){}
+ const url=URL.createObjectURL(new Blob([dati],{type:'application/json'}));
+ const a=document.createElement('a');
+ a.href=url; a.download='mirtillo-'+oggiISO()+'.json';
+ document.body.appendChild(a); a.click(); a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),2000);
+ toast('Copia salvata fra i tuoi file');
+}
+function importa(file){
+ const fr=new FileReader();
+ fr.onload=()=>{
+  try{
+   const d=JSON.parse(fr.result);
+   if(!d||d.v!==1) throw new Error('non è una copia di Mirtillo');
+   localStorage.setItem(CHIAVE,fr.result);
+   location.reload();
+  }catch(e){ toast('Quel file non sembra una copia di Mirtillo'); }
+ };
+ fr.readAsText(file);
+}
+function azzeraTutto(){
+ try{ localStorage.removeItem(CHIAVE); }catch(e){}
+ location.reload();
+}
+function svuotaDispensa(){
+ Object.keys(ING).forEach(k=>{ ING[k].q=0; });
+ S.shopped=false; S.checked={}; salva(); render();
+ toast('Dispensa svuotata: ora puoi caricare la tua spesa');
+}
+
+/* installabile dalla home: il service worker tiene l'app anche senza rete.
+   Dentro l'anteprima di Claude non si registra, e va benissimo così. */
+if('serviceWorker' in navigator &&
+   (location.protocol==='https:'||location.hostname==='localhost')){
+ window.addEventListener('load',()=>{
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+ });
+}
+
+const avevoDati=carica();
+const saltati=avanzaGiorni();
+installaPattern();
+render();
+if(saltati>0) setTimeout(()=>toast(
+  saltati===1?'È passato un giorno: ho fatto scorrere il piano'
+             :`Sono passati ${saltati} giorni: ho fatto scorrere il piano`), 600);
+salva();
+</script>
