@@ -547,6 +547,147 @@ const ING = {
   funghi:{n:'Funghi champignon',e:'🍄',u:'g',q:0,f:500,pr:2.60,l:'ortofrutta'},
   zucchine:{n:'Zucchine',e:'🥒',u:'g',q:0,f:500,pr:1.80,l:'ortofrutta',fav:1}
 };
+
+/* ===================== catalogo =====================
+   Quello che Mirtillo sa riconoscere su uno scontrino. Non è la dispensa:
+   questi entrano in dispensa solo quando li comprate davvero. Ogni voce ha
+   le parole con cui la scrivono le casse, che spesso non sono il nome.
+   [chiave, nome, emoji, unità, confezione, prezzo, reparto, parole] */
+const CATALOGO=[
+/* --- frutta --- */
+['mele','Mele','🍎','g',1000,2.20,'ortofrutta','mela golden gala fuji annurca'],
+['pere','Pere','🍐','g',1000,2.40,'ortofrutta','pera abate kaiser williams'],
+['banane','Banane','🍌','g',1000,1.80,'ortofrutta','banana chiquita'],
+['arance','Arance','🍊','g',1000,2.00,'ortofrutta','arancia tarocco navel spremuta'],
+['mandarini','Mandarini','🍊','g',1000,2.30,'ortofrutta','clementine mandarino tangerino'],
+['limoni2','Limone verdello','🍋','pz',4,1.60,'ortofrutta','limoni'],
+['pompelmo','Pompelmo','🍊','pz',2,1.60,'ortofrutta','pompelmi grapefruit'],
+['kiwi','Kiwi','🥝','g',750,2.30,'ortofrutta','kiwifruit zespri'],
+['uva','Uva','🍇','g',700,2.60,'ortofrutta','uva bianca nera pizzutello'],
+['pesche','Pesche','🍑','g',1000,2.50,'ortofrutta','pesca nettarina percoca'],
+['albicocche','Albicocche','🍑','g',500,2.40,'ortofrutta','albicocca'],
+['susine','Susine','🫐','g',500,2.20,'ortofrutta','prugne prugna susina'],
+['ciliegie','Ciliegie','🍒','g',500,4.50,'ortofrutta','ciliegia'],
+['fragole','Fragole','🍓','g',400,3.20,'ortofrutta','fragola fragoline'],
+['mirtilli','Mirtilli','🫐','g',125,2.50,'ortofrutta','mirtillo blueberry'],
+['lamponi','Lamponi','🫐','g',125,2.80,'ortofrutta','lampone more ribes'],
+['melone','Melone','🍈','pz',1,2.50,'ortofrutta','meloni cantalupo retato'],
+['anguria','Anguria','🍉','pz',1,4.00,'ortofrutta','cocomero melone acqua'],
+['ananas','Ananas','🍍','pz',1,2.50,'ortofrutta','ananasso'],
+['avocado','Avocado','🥑','pz',2,2.60,'ortofrutta','avocadi hass'],
+/* --- verdura --- */
+['insalata','Insalata','🥬','g',200,1.30,'ortofrutta','lattuga iceberg gentile valeriana valerianella songino misticanza insala'],
+['rucola','Rucola','🥬','g',100,1.20,'ortofrutta','rughetta'],
+['radicchio','Radicchio','🥬','g',300,1.60,'ortofrutta','trevigiano chioggia'],
+['spinacino','Spinacino','🥬','g',150,1.50,'ortofrutta','baby spinaci foglia'],
+['finocchi','Finocchi','🥬','g',700,1.90,'ortofrutta','finocchio'],
+['cavolfiore','Cavolfiore','🥦','pz',1,1.90,'ortofrutta','cavolfiori'],
+['broccoli','Broccoli','🥦','g',500,1.90,'ortofrutta','broccolo cime rapa'],
+['verza','Verza','🥬','pz',1,1.50,'ortofrutta','cavolo cappuccio'],
+['peperoni','Peperoni','🫑','g',500,2.40,'ortofrutta','peperone'],
+['cetrioli','Cetrioli','🥒','pz',2,1.20,'ortofrutta','cetriolo'],
+['fagiolini','Fagiolini','🫘','g',500,2.60,'ortofrutta','tegoline cornetti'],
+['asparagi','Asparagi','🥬','g',500,3.50,'ortofrutta','asparago'],
+['carciofi','Carciofi','🥬','pz',4,2.60,'ortofrutta','carciofo'],
+['pomodori','Pomodori','🍅','g',700,2.20,'ortofrutta','pomodoro ramato cuore bue casalino insalataro'],
+['zucchine2','Zucchine lunghe','🥒','g',600,1.80,'ortofrutta','zucchina'],
+['funghi2','Funghi porcini','🍄','g',300,4.50,'ortofrutta','porcino pleurotus cardoncelli'],
+['prezzemolo2','Mazzetto odori','🌿','pz',1,0.80,'ortofrutta','odori salvia alloro'],
+/* --- latticini e frigo --- */
+['ricotta','Ricotta','🧀','g',250,1.70,'frigo','ricotte vaccina'],
+['stracchino','Stracchino','🧀','g',200,2.10,'frigo','crescenza certosa'],
+['gorgonzola','Gorgonzola','🧀','g',200,2.60,'frigo','erborinato dolcelatte'],
+['taleggio','Taleggio','🧀','g',200,3.00,'frigo','quartirolo'],
+['emmental','Emmental','🧀','g',200,2.80,'frigo','emmenthal groviera fontina edamer'],
+['scamorza','Scamorza','🧀','g',250,2.60,'frigo','provola affumicata caciocavallo'],
+['philadelphia','Formaggio spalmabile','🧀','g',150,1.90,'frigo','philadelphia spalmabile robiola'],
+['mascarpone','Mascarpone','🧀','g',250,2.20,'frigo','mascarpone'],
+['yogurtgreco','Yogurt greco','🥣','pz',4,2.50,'frigo','greco fage skyr proteico'],
+['besciamella','Besciamella','🥛','ml',500,1.50,'frigo','bechamel'],
+['pastasfoglia','Pasta sfoglia','🥐','g',230,1.80,'frigo','sfoglia brise brisee frolla'],
+['tortellini','Tortellini','🥟','g',250,2.80,'frigo','tortelloni ravioli agnolotti cappelletti'],
+['gnocchi','Gnocchi di patate','🥔','g',500,1.30,'frigo','gnocco chicche'],
+['wurstel','Würstel','🌭','pz',4,1.50,'frigo','wurstel hot dog'],
+['pizzapronta','Base pizza','🍕','pz',1,1.60,'frigo','base pizza impasto focaccia'],
+/* --- salumi --- */
+['prosciuttocotto','Prosciutto cotto','🥓','g',120,2.20,'frigo','cotto prosc'],
+['prosciuttocrudo','Prosciutto crudo','🥓','g',100,3.20,'frigo','crudo parma san daniele'],
+['speck','Speck','🥓','g',100,2.60,'frigo','speck'],
+['bresaola','Bresaola','🥓','g',100,3.50,'frigo','bresaola'],
+['salame','Salame','🥓','g',150,2.80,'frigo','salamino milano napoli cacciatore'],
+['mortadella','Mortadella','🥓','g',150,2.00,'frigo','bologna'],
+['pancetta','Pancetta','🥓','g',150,2.40,'frigo','pancetta affumicata cubetti'],
+['salsiccia','Salsiccia','🌭','g',400,3.50,'frigo','salsicce luganega'],
+/* --- carne --- */
+['hamburger','Hamburger','🍔','pz',2,3.00,'frigo','svizzere vitello bovino burger'],
+['cosciapollo','Cosce di pollo','🍗','g',600,4.00,'frigo','sovracosce fusi alette pollo'],
+['tacchino','Fesa di tacchino','🍗','g',400,4.20,'frigo','tacchino fesa'],
+['lonza','Lonza di maiale','🥩','g',500,4.50,'frigo','arista lombo maiale braciole costine'],
+['spezzatino','Spezzatino','🥩','g',500,6.00,'frigo','spezzatino bovino manzo'],
+/* --- pesce --- */
+['merluzzo','Merluzzo','🐟','g',400,5.00,'freezer','baccala nasello platessa filetti bianchi'],
+['orata','Orata','🐟','pz',2,6.50,'frigo','branzino spigola'],
+['gamberi','Gamberi','🦐','g',300,6.00,'freezer','gamberetti mazzancolle code'],
+['calamari','Calamari','🦑','g',400,5.50,'freezer','totani seppie anelli'],
+['cozze','Cozze','🦪','g',1000,4.00,'frigo','vongole frutti mare'],
+['bastoncini','Bastoncini di pesce','🐟','pz',10,3.20,'freezer','findus capitan'],
+['alici','Alici','🐟','g',80,1.80,'credenza','acciughe filetti'],
+['sgombro','Sgombro','🐟','g',120,1.60,'credenza','sgombri maccarello'],
+/* --- dispensa: primi --- */
+['pasta_corta','Pasta corta','🍝','g',500,0.90,'credenza','penne fusilli rigatoni sedanini mezze maniche farfalle conchiglie tortiglioni caserecce orecchiette'],
+['pasta_lunga','Pasta lunga','🍝','g',500,0.90,'credenza','linguine bucatini vermicelli spaghettini capellini tagliatelle fettuccine'],
+['pastina','Pastina','🍜','g',500,1.10,'credenza','stelline risoni ditalini anellini'],
+['lasagne','Lasagne','🍝','g',500,1.60,'credenza','sfoglie lasagna cannelloni'],
+['orzo','Orzo perlato','🌾','g',500,1.50,'credenza','orzo'],
+['couscous','Cous cous','🌾','g',500,1.80,'credenza','couscous bulgur'],
+['quinoa','Quinoa','🌾','g',400,2.80,'credenza','quinoa'],
+['polenta','Polenta','🌽','g',500,1.40,'credenza','farina mais bramata'],
+['pangrattato','Pangrattato','🍞','g',500,1.00,'credenza','grattugiato'],
+['pane','Pane','🍞','g',500,1.80,'credenza','pagnotta ciabatta michetta rosette baguette filone'],
+['panebauletto','Pane in cassetta','🍞','pz',20,1.60,'credenza','bauletto toast sandwich morbido'],
+['piadina','Piadine','🫓','pz',4,1.60,'credenza','piadina tortillas wrap'],
+/* --- dispensa: conserve e condimenti --- */
+['concentrato','Concentrato di pomodoro','🥫','g',140,0.90,'credenza','triplo concentrato'],
+['sugopronto','Sugo pronto','🥫','g',400,1.80,'credenza','ragu arrabbiata sughi freschi assor norma'],
+['pesto','Pesto','🌿','g',190,2.20,'credenza','genovese basilico barattolo'],
+['lenticchie','Lenticchie','🫘','g',400,1.20,'credenza','lenticchia'],
+['maisscatola','Mais','🌽','g',300,1.00,'credenza','mais dolce'],
+['olive','Olive','🫒','g',300,2.00,'credenza','taggiasche denocciolate'],
+['capperi','Capperi','🫒','g',100,1.60,'credenza','cappero'],
+['aceto','Aceto','🍾','ml',500,1.00,'credenza','vino aceto'],
+['balsamico','Aceto balsamico','🍾','ml',250,2.50,'credenza','balsamico modena'],
+['maionese','Maionese','🥫','g',250,1.80,'credenza','maio ketchup senape'],
+['tonno2','Tonno all olio','🐟','scatole',3,3.00,'credenza','tonnetto pinne gialle'],
+/* --- dispensa: dolci e colazione --- */
+['cereali','Cereali','🥣','g',375,2.60,'credenza','corn flakes muesli granola fiocchi avena'],
+['nutella','Crema spalmabile','🍫','g',400,3.20,'credenza','nutella cacao nocciola'],
+['cioccolato','Cioccolato','🍫','g',100,1.50,'credenza','tavoletta fondente latte milka lindt novi'],
+['merendine','Merendine','🧁','pz',10,2.60,'credenza','brioche kinder plumcake girelle'],
+['crackers','Crackers','🍘','g',500,1.80,'credenza','cracker salatini'],
+['grissini','Grissini','🥖','g',250,1.40,'credenza','grissino torinesi'],
+['taralli','Taralli','🥨','g',250,1.80,'credenza','tarallini'],
+['patatine','Patatine','🍟','g',150,1.60,'credenza','chips san carlo pai'],
+['te','Tè','🍵','pz',20,1.80,'credenza','the camomilla tisana infuso'],
+['cacao','Cacao','🍫','g',250,2.20,'credenza','cacao amaro'],
+['miele','Miele','🍯','g',400,3.80,'credenza','acacia millefiori'],
+['zuccherocanna','Zucchero di canna','🍬','g',500,1.40,'credenza','canna grezzo'],
+/* --- spezie --- */
+['origano','Origano','🌿','pz',1,0.90,'credenza','origano'],
+['paprika','Paprika','🌶️','pz',1,1.20,'credenza','paprica curry curcuma zafferano cannella noce moscata'],
+/* --- surgelati --- */
+['minestrone','Minestrone surgelato','🥦','g',1000,2.40,'freezer','minestrone verdure zuppa surgelata'],
+['patatinefritte','Patatine fritte','🍟','g',750,2.00,'freezer','patate fritte surgelate'],
+['gelato','Gelato','🍨','ml',500,3.50,'freezer','vaschetta cornetti ghiaccioli algida'],
+['pizzasurgelata','Pizza surgelata','🍕','pz',1,2.60,'freezer','margherita surgelata buitoni'],
+/* --- bevande --- */
+['acqua','Acqua','💧','ml',1500,0.30,'credenza','naturale frizzante levissima sangemini'],
+['birra','Birra','🍺','ml',660,1.40,'credenza','moretti peroni ichnusa bionda'],
+['succo','Succo di frutta','🧃','ml',1000,1.40,'credenza','nettare pera pesca ace'],
+['bibita','Bibita','🥤','ml',1500,1.30,'credenza','cola aranciata chinotto gassosa fanta sprite'],
+['vinorosso','Vino rosso','🍷','ml',750,5.00,'credenza','rosso chianti barbera montepulciano'],
+/* --- non alimentari, per riconoscerli e scartarli --- */
+];
+
 const LOCS={frigo:{n:'In frigo',e:'🧊'},freezer:{n:'In freezer',e:'❄️'},
   credenza:{n:'In credenza',e:'🫙'},ortofrutta:{n:'Frutta e verdura',e:'🥕'}};
 const REPARTI={ortofrutta:'Frutta e verdura',frigo:'Banco frigo',freezer:'Surgelati',credenza:'Scaffali'};
@@ -633,7 +774,68 @@ let RECIPES=[
  {id:'pastazucchine',n:'Pasta e zucchine',e:'🥒',min:25,d:2,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
   ing:[['spaghetti',160],['zucchine',250],['parmigiano',30],['olio',20],['basilico',1]],
   steps:['Zucchine a rondelle in padella con olio, 10 minuti.','Frulla metà zucchine con un po’ di acqua di cottura.',
-         'Manteca la pasta con la crema e il parmigiano.']}
+         'Manteca la pasta con la crema e il parmigiano.']},
+ /* --- ricette che usano il catalogo nuovo --- */
+ {id:'pastapesto',n:'Pasta al pesto',e:'🌿',min:15,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['pasta_corta',180],['pesto',90],['parmigiano',20]],
+  steps:['Lessa la pasta.','Stempera il pesto con due cucchiai di acqua di cottura.',
+         'Manteca fuori dal fuoco, così il basilico non si cuoce.']},
+ {id:'caprese',n:'Caprese',e:'🍅',min:10,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo','cena'],
+  ing:[['pomodori',400],['mozzarella',250],['basilico',1],['olio',20]],
+  steps:['Taglia pomodori e mozzarella a fette.','Alterna, sala, olio e basilico.']},
+ {id:'insalatariso',n:'Insalata di riso',e:'🍚',min:25,d:2,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['riso',180],['tonno',1],['maisscatola',150],['olive',60],['uova',2]],
+  steps:['Lessa il riso e raffreddalo sotto acqua fredda.','Rassoda le uova, 9 minuti.',
+         'Mescola tutto con un filo d’olio.']},
+ {id:'frittatapatate',n:'Frittata di patate',e:'🥔',min:30,d:2,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['uova',5],['patate',400],['cipolla',1],['olio',25],['parmigiano',25]],
+  steps:['Patate a fettine sottili in padella con cipolla, 15 minuti.',
+         'Versa le uova sbattute col parmigiano.','Gira con l’aiuto di un piatto, altri 4 minuti.']},
+ {id:'zuppalenticchie',n:'Zuppa di lenticchie',e:'🫘',min:40,d:2,serv:2,tag:'Comfort',slots:['cena'],
+  ing:[['lenticchie',200],['carote',1],['sedano',1],['cipolla',1],['olio',20],['dado',1]],
+  steps:['Soffritto di carota, sedano e cipolla.','Unisci lenticchie e acqua, 30 minuti.',
+         'Aggiusta di sale e servi con un filo d’olio a crudo.']},
+ {id:'pastanorma',n:'Pasta alla norma',e:'🍆',min:35,d:3,serv:2,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['pasta_corta',180],['melanzane',1],['passata',300],['ricotta',80],['basilico',1],['olio',30]],
+  steps:['Melanzane a cubetti, rosolate in padella.','Unisci la passata, 15 minuti.',
+         'Condisci la pasta e finisci con ricotta e basilico.']},
+ {id:'cotoletta',n:'Cotoletta',e:'🍖',min:25,d:2,serv:2,tag:'Classico',slots:['pranzo','cena'],
+  ing:[['lonza',400],['uova',2],['pangrattato',120],['burro',40]],
+  steps:['Passa le fette nell’uovo e poi nel pangrattato, premendo.',
+         'Friggi nel burro a fuoco medio, 4 minuti per lato.']},
+ {id:'polloforno',n:'Pollo al forno con patate',e:'🍗',min:60,d:2,serv:2,tag:'Della domenica',slots:['cena'],
+  ing:[['cosciapollo',600],['patate',600],['rosmarino',1],['olio',30],['aglio',2]],
+  steps:['Tutto in teglia con olio, rosmarino e aglio.','Forno a 200° per 50 minuti, girando a metà.']},
+ {id:'vellutatabroccoli',n:'Vellutata di broccoli',e:'🥦',min:35,d:2,serv:2,tag:'Comfort',slots:['cena'],
+  ing:[['broccoli',500],['patate',200],['dado',1],['olio',20]],
+  steps:['Lessa broccoli e patate in poca acqua.','Frulla con il brodo fino a vellutata.',
+         'Olio a crudo e pepe.']},
+ {id:'pastaceci',n:'Pasta e ceci',e:'🫘',min:35,d:2,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['pasta_corta',160],['ceci',1],['rosmarino',1],['aglio',1],['olio',25],['passata',100]],
+  steps:['Aglio e rosmarino in olio, unisci i ceci e la passata.',
+         'Frulla metà ceci per legare.','Cuoci la pasta direttamente nel sugo con acqua calda.']},
+ {id:'uovaspeck',n:'Uova al tegamino con speck',e:'🍳',min:12,d:1,serv:2,tag:'Svelta',slots:['colazione','cena'],
+  ing:[['uova',4],['speck',80],['pane',120],['burro',15]],
+  steps:['Rosola lo speck nel burro.','Apri le uova nel tegame, coperchio 4 minuti.',
+         'Servi col pane tostato.']},
+ {id:'insalatona',n:'Insalatona',e:'🥗',min:12,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['insalata',200],['tonno',1],['maisscatola',120],['pomodorini',200],['olive',50],['olio',20]],
+  steps:['Lava e asciuga l’insalata.','Unisci tutto, condisci all’ultimo.']},
+ {id:'pastapomodoro',n:'Pasta al pomodoro',e:'🍅',min:20,d:1,serv:2,tag:'Classico',slots:['pranzo','cena'],
+  ing:[['spaghetti',180],['passata',300],['aglio',1],['basilico',1],['olio',25]],
+  steps:['Aglio in olio, togli l’aglio quando è biondo.','Passata, 15 minuti a fuoco dolce.',
+         'Basilico a crudo sulla pasta già condita.']},
+ {id:'tortellinibrodo',n:'Tortellini in brodo',e:'🥟',min:15,d:1,serv:2,tag:'Comfort',slots:['cena'],
+  ing:[['tortellini',250],['dado',1],['parmigiano',20]],
+  steps:['Porta il brodo a bollore.','Butta i tortellini, 4 minuti.','Parmigiano al momento.']},
+ {id:'piadina',n:'Piadina crudo e stracchino',e:'🫓',min:10,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['piadina',2],['prosciuttocrudo',80],['stracchino',100],['rucola',40]],
+  steps:['Scalda la piadina in padella, un minuto per lato.',
+         'Farcisci con stracchino, crudo e rucola.']},
+ {id:'bruschette',n:'Bruschette',e:'🍞',min:15,d:1,serv:2,tag:'Svelta',slots:['cena'],
+  ing:[['pane',200],['pomodori',300],['aglio',1],['basilico',1],['olio',25]],
+  steps:['Tosta il pane e strofinalo con l’aglio.','Pomodori a cubetti con olio, sale e basilico.',
+         'Condisci all’ultimo, o il pane si bagna.']}
 ];
 
 /* piano dei prossimi 7 giorni */
@@ -711,7 +913,9 @@ const perPorz=r=>cost(r)/r.serv;
 function level(k){const i=ING[k];return i?Math.min(1,i.q/Math.max(i.f,1)):0;}
 function stato(k){const i=ING[k];if(!i||i.q<=0)return 'out';return level(k)<=.25?'low':'ok';}
 const inCasa=()=>Object.keys(ING).filter(k=>ING[k].q>0);
-const finiti=()=>Object.keys(ING).filter(k=>ING[k].q<=0);
+/* "finiti" sono le cose che avete avuto e sono esaurite: il resto del
+   catalogo non è roba vostra, non ha senso mostrarlo come mancante */
+const finiti=()=>Object.keys(ING).filter(k=>ING[k].q<=0&&ING[k].visto);
 const inEsaurimento=()=>Object.keys(ING).filter(k=>stato(k)==='low');
 const SLOTS=['colazione','pranzo','cena'];
 /* difficoltà 1-5: pallini pieni, più la parola dove c'è spazio */
@@ -1552,7 +1756,7 @@ function applicaManuale(){
   if(!c||!i) return;
   const q=Math.round(i.f*c*10)/10;
   i.q=Math.round((i.q+q)*10)/10;
-  i.f=Math.max(i.f,i.q);
+  i.f=Math.max(i.f,i.q); i.visto=1;
   if(i.exp!==undefined) i.exp=Math.max(i.exp,7);
   delete S.checked[k];
   S.extra=S.extra.filter(x=>x!==k);
@@ -1665,7 +1869,8 @@ function vBenvenuto(){
 
 function finisciOnb(dove){
  /* la dispensa parte vuota davvero: niente dati di esempio nell'app vera */
- Object.keys(ING).forEach(k=>{ ING[k].q=0; if(ING[k].exp!==undefined) ING[k].exp=99; });
+ Object.keys(ING).forEach(k=>{ ING[k].q=0; ING[k].visto=0;
+   if(ING[k].exp!==undefined) ING[k].exp=99; });
  PLAN=PLAN.map(()=>({meals:{colazione:null,pranzo:null,cena:null}}));
  S.checked={}; S.extra=[]; S.shopped=false;
  S.onb={fatto:true,passo:0};
@@ -2911,7 +3116,7 @@ document.addEventListener('click',e=>{
    if(l){
      const k='mio'+Date.now().toString(36)+i;
      const aPeso=(l.u==='g'||l.u==='ml')&&l.q>1;
-     ING[k]={n:(l.guess||'Prodotto').slice(0,34),e:'🛒',
+     ING[k]={visto:1,n:(l.guess||'Prodotto').slice(0,34),e:'🛒',
              u:aPeso?l.u:'pz', q:0, f:aPeso?l.q:1,
              pr:l.prezzo||0, l:'credenza'};
      l.id=k; l.stato='certa'; l.c=1; l.on=true;
@@ -2944,7 +3149,7 @@ document.addEventListener('click',e=>{
  else if(a==='mnuovo'){
    const nome=(S.man.q||'').trim(); if(!nome) return;
    const k='mio'+Date.now().toString(36);
-   ING[k]={n:nome.charAt(0).toUpperCase()+nome.slice(1),e:'🛒',u:'pz',q:0,f:1,pr:0,l:'credenza'};
+   ING[k]={visto:1,n:nome.charAt(0).toUpperCase()+nome.slice(1),e:'🛒',u:'pz',q:0,f:1,pr:0,l:'credenza'};
    S.man.sel[k]=1; S.man.q=''; render(true); toast(`"${ING[k].n}" aggiunto`); }
  else if(a==='mok'){ applicaManuale(); }
  else if(a==='svuota'){ svuotaDispensa(); }
@@ -3063,7 +3268,7 @@ function applicaScontrino(){
  S.lines.filter(l=>l.on&&l.id&&ING[l.id]).forEach(l=>{
   const i=ING[l.id];
   i.q=Math.round((i.q+l.q)*10)/10;
-  i.f=Math.max(i.f,i.q);
+  i.f=Math.max(i.f,i.q); i.visto=1;
   if(i.exp!==undefined) i.exp=Math.max(i.exp,7);
   delete S.checked[l.id];
   S.extra=S.extra.filter(k=>k!==l.id);
@@ -3091,7 +3296,7 @@ function salvaRicetta(){
    ING[k]={n:r.name.trim(),e:'🥄',u:r.u,q:0,f:Number(r.q)*2,pr:2.50,l:'credenza'}; }
   return [k,Number(r.q)];
  });
- RECIPES.unshift({id:'new'+RECIPES.length,n:nome,e:'🥄',min:Math.max(5,Number(el('nr-t')?.value||30)),
+ RECIPES.unshift({id:'new'+Date.now().toString(36),mia:1,n:nome,e:'🥄',min:Math.max(5,Number(el('nr-t')?.value||30)),
   d:S.newDiff,serv,tag:'Nostra',slots:['pranzo','cena'],ing,
   steps:steps.length?steps:['Scrivi i passaggi quando hai tempo.']});
  S.newIng=[{name:'',q:'',u:'g'},{name:'',q:'',u:'g'}]; S.newDiff=2;
@@ -3109,7 +3314,10 @@ const giorniTra=(a,b)=>Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00
 
 function salva(){
  try{ localStorage.setItem(CHIAVE, JSON.stringify({
-   v:1, data:S.planDate||oggiISO(), ING, RECIPES, PLAN,
+   v:1, data:S.planDate||oggiISO(), ING, PLAN,
+   /* solo le ricette scritte da voi: le mie arrivano con l'app, e se le
+      salvassi tutte un aggiornamento non ve ne porterebbe mai di nuove */
+   RECIPES:RECIPES.filter(r=>r.mia),
    imp:{budget:S.budget,weeks:S.weeks,store:S.store,diffMax:S.diffMax,people:S.people,
         onb:S.onb,diete:S.diete,colazione:S.colazione,imparate:S.imparate},
    stato:{shopped:S.shopped,checked:S.checked,extra:S.extra}
@@ -3124,7 +3332,11 @@ function carica(){
  let d; try{ d=JSON.parse(raw); }catch(e){ return false; }
  if(!d||d.v!==1) return false;
  if(d.ING) Object.keys(d.ING).forEach(k=>{ ING[k]=Object.assign({},ING[k]||{},d.ING[k]); });
- if(Array.isArray(d.RECIPES)&&d.RECIPES.length) RECIPES=d.RECIPES;
+ if(Array.isArray(d.RECIPES)&&d.RECIPES.length){
+  const mie=d.RECIPES.filter(r=>r&&r.id);
+  /* le vostre in cima, senza doppioni, le mie restano sempre */
+  RECIPES=[...mie, ...RECIPES.filter(r=>!mie.some(m=>m.id===r.id))];
+ }
  if(Array.isArray(d.PLAN)&&d.PLAN.length) PLAN=d.PLAN;
  Object.assign(S, d.imp||{}, d.stato||{});
  S.planDate=d.data||oggiISO();
@@ -3172,7 +3384,7 @@ function azzeraTutto(){
  location.reload();
 }
 function svuotaDispensa(){
- Object.keys(ING).forEach(k=>{ ING[k].q=0; });
+ Object.keys(ING).forEach(k=>{ ING[k].q=0; ING[k].visto=0; });
  S.shopped=false; S.checked={}; salva(); render();
  toast('Dispensa svuotata: ora puoi caricare la tua spesa');
 }
@@ -3185,7 +3397,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261118-1857';
+const VERSIONE='20261118-1906';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
@@ -3243,8 +3455,35 @@ document.addEventListener('visibilitychange',()=>{
  if(!document.hidden) controllaVersione(false);
 });
 
+/* Il catalogo diventa roba riconoscibile, non roba che avete in casa:
+   entra in dispensa solo quando lo comprate. E ogni ingrediente guadagna
+   come parole chiave quelle del proprio nome, oltre a quelle delle casse. */
+function montaCatalogo(){
+ CATALOGO.forEach(([k,n,e,u,f,pr,l,parole])=>{
+  if(!ING[k]) ING[k]={n,e,u,q:0,f,pr,l};
+  const extra=(parole||'').split(/\s+/).filter(Boolean);
+  ALIAS[k]=[...new Set([...(ALIAS[k]||[]),...extra])];
+ });
+ /* le parole scritte a mano valgono più di quelle ricavate dal nome:
+    "olio" è l'olio, non il tonno all'olio. Quindi una parola già assegnata
+    a qualcuno non viene regalata a nessun altro. */
+ const assegnate=new Set();
+ Object.keys(ALIAS).forEach(k=>(ALIAS[k]||[]).forEach(w=>assegnate.add(w)));
+ Object.keys(ING).forEach(k=>{
+  const miei=new Set(ALIAS[k]||[]);
+  const dalNome=normalizza(ING[k].n).split(/\s+/)
+    .filter(w=>w.length>3 && (miei.has(w)||!assegnate.has(w)));
+  dalNome.forEach(w=>assegnate.add(w));
+  ALIAS[k]=[...new Set([...(ALIAS[k]||[]),...dalNome])];
+ });
+}
+montaCatalogo();
+
 const avevoDati=carica();
 const saltati=avanzaGiorni();
+/* quello che avete in casa adesso è roba vostra: comparirà fra i finiti
+   quando si esaurisce. Il resto del catalogo resta silenzioso. */
+Object.keys(ING).forEach(k=>{ if(ING[k].q>0) ING[k].visto=1; });
 if(!S.onb||!S.onb.fatto){ S.onb=S.onb||{fatto:false,passo:0}; S.screen='benvenuto'; }
 installaPattern();
 render();
