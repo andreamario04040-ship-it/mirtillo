@@ -1990,7 +1990,7 @@ const TESS_URL='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.m
 
 const L={attivo:false, video:null, stream:null, worker:null, timer:null,
  leggendo:false, trovate:[], scarti:[], negozio:null, fermi:0, fase:'avvio',
- errore:null, cand:{}, viste:{}, ritaglio:null, caselle:null, carta:null, raf:null,
+ errore:null, cand:{}, viste:{}, ritaglio:null, parole:null, livello:null, carta:null, raf:null,
  cartaOcr:null, ritaglioOcr:null, miniTrack:null, ultimoTrack:0, persa:0};
 
 /* Dove finisce un punto del fotogramma elaborato sullo schermo.
@@ -2016,8 +2016,42 @@ function mappa(video,canvas,larg,alt){
    gira per conto suo a schermo. */
 const CIANO='77,243,255', LIME='155,227,122', MAGENTA='255,77,157';
 
-function disegnaOverlay(caselle,carta){
- L.caselle=caselle||[]; L.carta=carta||null; L.quando=performance.now();
+/* Il testo letto viene riscritto sopra lo scontrino. Lo disegno una volta
+   sola su una tela a parte, nelle coordinate del ritaglio che ho analizzato;
+   poi a ogni fotogramma mi basta ricollocarla seguendo il movimento della
+   carta. Così posso inseguire la fotocamera senza ridisegnare 250 scritte
+   sessanta volte al secondo. */
+function componiLivello(parole,larg,alt){
+ const cv=L.livello||(L.livello=document.createElement('canvas'));
+ /* lo rimpicciolisco: deve essere solo bello da vedere, non leggibile al pixel */
+ const k=Math.min(1,900/Math.max(1,larg));
+ L.livelloK=k;
+ cv.width=Math.max(1,Math.round(larg*k)); cv.height=Math.max(1,Math.round(alt*k));
+ const c=cv.getContext('2d');
+ c.clearRect(0,0,cv.width,cv.height);
+ c.setTransform(k,0,0,k,0,0);
+ c.textBaseline='alphabetic';
+ parole.forEach(p=>{
+  const w=p.x1-p.x0, h=p.y1-p.y0;
+  if(w<6||h<8) return;
+  const col=p.presa?LIME:CIANO;
+  c.fillStyle='rgba('+col+',.12)';
+  c.fillRect(p.x0,p.y0,w,h);
+  c.strokeStyle='rgba('+col+',.5)'; c.lineWidth=1;
+  c.strokeRect(p.x0+.5,p.y0+.5,w-1,h-1);
+  if(!p.t) return;
+  c.font='700 '+Math.max(9,Math.round(h*0.86))+'px ui-monospace,SFMono-Regular,Menlo,monospace';
+  c.fillStyle='rgba('+col+',.96)';
+  c.fillText(p.t,p.x0+1,p.y1-h*0.12,w-2);
+ });
+ return cv;
+}
+
+function disegnaOverlay(parole,carta){
+ L.parole=parole||[]; L.carta=carta||null; L.quando=performance.now();
+ if(L.canvasOcr&&L.parole.length)
+  componiLivello(L.parole,L.canvasOcr.width,L.canvasOcr.height);
+ else L.livello=null;
 }
 
 function angoli(c,x0,y0,x1,y1,col,lato){
@@ -2039,7 +2073,7 @@ function animaOverlay(){
     e mi dice quanto si è spostata e ingrandita l'inquadratura da quando ho
     letto. Le caselle le sposto di conseguenza, così restano sulle parole. */
  const ora=performance.now();
- if(!L.ultimoTrack||ora-L.ultimoTrack>110){
+ if(!L.ultimoTrack||ora-L.ultimoTrack>33){   /* trenta volte al secondo: misurato, costa 0,06 ms */
   L.ultimoTrack=ora;
   if(!L.miniTrack) L.miniTrack=document.createElement('canvas');
   const c2=trovaCarta(video,L.miniTrack);
@@ -2080,8 +2114,8 @@ function animaOverlay(){
  c.beginPath(); c.moveTo(x0,ys); c.lineTo(x1,ys); c.stroke();
  c.restore();
 
- if(!L.caselle||!L.caselle.length||!L.canvasOcr||!L.ritaglioOcr) return;
- if(L.persa>6) return;           /* carta persa di vista: meglio niente che caselle a caso */
+ if(!L.livello||!L.canvasOcr||!L.ritaglioOcr) return;
+ if(L.persa>6) return;           /* carta persa di vista: meglio niente che scritte a caso */
  const vw2=video.videoWidth, vh2=video.videoHeight;
  const kk=Math.max(larg/vw2, alt/vh2);
  const oX=(larg-vw2*kk)/2, oY=(alt-vh2*kk)/2;
@@ -2100,20 +2134,21 @@ function animaOverlay(){
   return [oX+vx*kk, oY+vy*kk];
  };
  const eta=Math.min(1,(t-(L.quando||t))/420);
+ const [dx0,dy0]=m(0,0), [dx1,dy1]=m(L.canvasOcr.width,L.canvasOcr.height);
+ /* la tela del testo è ridotta: la riporto alla misura del ritaglio */
+ const dw=dx1-dx0, dh=dy1-dy0;
+ if(!(dw>4&&dh>4)) return;
  c.save();
- c.lineWidth=1;
- L.caselle.forEach(p=>{
-  const [ax,ay]=m(p.x0,p.y0), [bx,by]=m(p.x1,p.y1);
-  const w=bx-ax, h=by-ay;
-  if(w<2||h<4||ay>alt||by<0) return;
-  const passata=(ay+h/2)<ys;
-  const col=p.presa?LIME:CIANO;
-  const alfa=(passata?0.9:0.35)*(0.35+0.65*eta);
-  c.fillStyle='rgba('+col+','+(alfa*0.22).toFixed(3)+')';
-  c.strokeStyle='rgba('+col+','+alfa.toFixed(3)+')';
-  c.fillRect(ax,ay,w,h);
-  c.strokeRect(ax+.5,ay+.5,w-1,h-1);
- });
+ /* tutto il testo, in sordina */
+ c.globalAlpha=0.36*(0.4+0.6*eta);
+ c.drawImage(L.livello,dx0,dy0,dw,dh);
+ /* e di nuovo, acceso, solo dove la riga di scansione è già passata */
+ c.globalAlpha=0.95*(0.4+0.6*eta);
+ const taglio=Math.max(0,Math.min(dh,ys-dy0));
+ if(taglio>0){
+  c.beginPath(); c.rect(dx0,dy0,dw,taglio); c.clip();
+  c.drawImage(L.livello,dx0,dy0,dw,dh);
+ }
  c.restore();
 }
 
@@ -2416,21 +2451,18 @@ async function passata(canvas,mini){
   });
 
   /* disegno sul video quello che ho letto: verde ciò che è finito in lista */
-  /* una casella per ogni carattere: è quello che rende l'effetto "sta leggendo" */
-  const caselle=[];
+  /* le parole lette, con il loro testo: sarà riscritto sopra lo scontrino */
+  const parole=[];
   estraiRighe(data).forEach(riga=>{
    const presa=prese.some(t=>somiglianza(t,normalizza(riga.text||''))>0.7);
    (riga.words||[]).forEach(w=>{
-    if(!w.bbox) return;
-    const simboli=(w.symbols&&w.symbols.length)?w.symbols:[w];
-    simboli.forEach(sy=>{
-     const b=sy.bbox||w.bbox;
-     if(!b) return;
-     caselle.push({x0:b.x0,y0:b.y0,x1:b.x1,y1:b.y1,presa});
-    });
+    if(!w.bbox||!w.text||!w.text.trim()) return;
+    if(w.confidence!==undefined&&w.confidence<30) return;
+    parole.push({x0:w.bbox.x0,y0:w.bbox.y0,x1:w.bbox.x1,y1:w.bbox.y1,
+                 t:w.text.trim().slice(0,22),presa});
    });
   });
-  disegnaOverlay(caselle.slice(0,460),carta);
+  disegnaOverlay(parole.slice(0,320),carta);
 
   if(nuove){
    L.fermi=0; L.fase='letto'; freccia(false);
@@ -2457,7 +2489,7 @@ function fermaScanner(){
  L.attivo=false;
  if(L.timer){ clearInterval(L.timer); L.timer=null; }
  if(L.raf){ cancelAnimationFrame(L.raf); L.raf=null; }
- L.caselle=null; L.carta=null; L.cartaOcr=null;
+ L.parole=null; L.livello=null; L.carta=null; L.cartaOcr=null;
  L.ritaglioOcr=null; L.persa=0;
  if(L.stream){ L.stream.getTracks().forEach(t=>{try{t.stop();}catch(e){}}); L.stream=null; }
  if(L.worker){ const w=L.worker; L.worker=null; try{ w.terminate(); }catch(e){} }
@@ -3710,7 +3742,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261118-2322';
+const VERSIONE='20261118-2325';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
