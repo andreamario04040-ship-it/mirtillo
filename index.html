@@ -362,6 +362,16 @@ body.no-pad .app{padding-bottom:0;background-image:none}
 /* ---------- fotocamera dal vivo ---------- */
 .live{position:fixed;inset:0;z-index:80;background:#0A1020;overflow:hidden}
 .live video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.live canvas.ovl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.live .freccia{position:absolute;left:50%;transform:translateX(-50%);z-index:3;
+  bottom:40%;pointer-events:none;display:none;flex-direction:column;align-items:center;gap:4px}
+.live .freccia.on{display:flex}
+.live .freccia span{font-size:40px;line-height:.8;color:#9BE37A;
+  text-shadow:0 2px 10px rgba(0,0,0,.5);animation:giu 1.1s ease-in-out infinite}
+.live .freccia span:nth-child(2){animation-delay:.14s;opacity:.6}
+.live .freccia b{font-family:var(--font-display);font-size:13px;color:#fff;
+  background:rgba(10,16,32,.72);padding:6px 12px;border-radius:99px;margin-top:4px}
+@keyframes giu{0%,100%{transform:translateY(-5px)}50%{transform:translateY(7px)}}
 .live .guida{position:absolute;left:9%;right:9%;top:15%;bottom:38%;
   border:3px solid rgba(255,255,255,.88);border-radius:20px;pointer-events:none;
   box-shadow:0 0 0 100vmax rgba(8,13,26,.58);transition:border-color .25s}
@@ -678,7 +688,7 @@ const S={
  budget:4.50, weeks:1, store:"In's Mercato", diffMax:5, newDiff:2, people:2, planDate:null,
  step:0, photo:null, lines:[], others:[], shopped:false,
  checked:{}, extra:[], man:{sel:{},q:''}, azzera:0,
- onb:{fatto:false,passo:0}, diete:{}, colazione:true,
+ onb:{fatto:false,passo:0}, diete:{}, colazione:true, imparate:{}, scelta:null,
  prop:null, sheet:null,
  newIng:[{name:'',q:'',u:'g'},{name:'',q:'',u:'g'}]
 };
@@ -1676,13 +1686,92 @@ const TESS_URL='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.m
 const L={attivo:false, video:null, stream:null, worker:null, timer:null,
  leggendo:false, trovate:[], scarti:[], negozio:null, fermi:0, fase:'avvio', errore:null};
 
+/* Dove finisce un punto del fotogramma elaborato sullo schermo.
+   Il video è mostrato in "cover": ingrandito al massimo e centrato, quindi
+   per disegnarci sopra bisogna rifare lo stesso conto a ritroso. */
+function mappa(video,canvas,larg,alt){
+ const vw=video.videoWidth, vh=video.videoHeight;
+ const sx=vw*0.07, sy=vh*0.13, sw=vw*0.86, sh=vh*0.52;
+ const k=Math.max(larg/vw, alt/vh);
+ const offX=(larg-vw*k)/2, offY=(alt-vh*k)/2;
+ const kx=sw/canvas.width, ky=sh/canvas.height;
+ return (x,y)=>[offX+(sx+x*kx)*k, offY+(sy+y*ky)*k];
+}
+
+function disegnaOverlay(parole,carta){
+ const cv=el('live-ovl'), video=L.video;
+ if(!cv||!video||!video.videoWidth) return;
+ const dpr=Math.min(2,window.devicePixelRatio||1);
+ const larg=cv.clientWidth, alt=cv.clientHeight;
+ cv.width=Math.round(larg*dpr); cv.height=Math.round(alt*dpr);
+ const c=cv.getContext('2d');
+ c.setTransform(dpr,0,0,dpr,0,0);
+ c.clearRect(0,0,larg,alt);
+
+ /* il bordo dello scontrino, come l'ho visto */
+ if(carta){
+  const vw=video.videoWidth, vh=video.videoHeight;
+  const k=Math.max(larg/vw, alt/vh);
+  const offX=(larg-vw*k)/2, offY=(alt-vh*k)/2;
+  const x0=offX+carta.x0*k, y0=offY+carta.y0*k;
+  const x1=offX+carta.x1*k, y1=offY+carta.y1*k;
+  c.save();
+  c.strokeStyle='rgba(155,227,122,.95)'; c.lineWidth=3; c.setLineDash([]);
+  c.beginPath(); c.roundRect?c.roundRect(x0,y0,x1-x0,y1-y0,12):c.rect(x0,y0,x1-x0,y1-y0);
+  c.stroke();
+  c.fillStyle='rgba(155,227,122,.1)'; c.fill();
+  c.restore();
+ }
+
+ if(!parole||!parole.length) return;
+ const m=mappa(video,L.canvasOcr,larg,alt);
+ c.save();
+ parole.forEach(p=>{
+  const [ax,ay]=m(p.x0,p.y0), [bx,by]=m(p.x1,p.y1);
+  const w=bx-ax, h=by-ay;
+  if(w<4||h<4) return;
+  c.fillStyle = p.presa ? 'rgba(155,227,122,.34)' : 'rgba(255,255,255,.17)';
+  c.strokeStyle = p.presa ? 'rgba(155,227,122,.95)' : 'rgba(255,255,255,.38)';
+  c.lineWidth=1.5;
+  c.beginPath();
+  if(c.roundRect) c.roundRect(ax,ay,w,h,3); else c.rect(ax,ay,w,h);
+  c.fill(); c.stroke();
+ });
+ c.restore();
+}
+
+/* il bordo della carta: cerco la zona chiara dentro la guida */
+function trovaCarta(video,mini){
+ const c=mini.getContext('2d',{willReadFrequently:true});
+ const w=80,h=80; mini.width=w; mini.height=h;
+ const vw=video.videoWidth, vh=video.videoHeight;
+ if(!vw) return null;
+ const sx=vw*0.05, sy=vh*0.10, sw=vw*0.90, sh=vh*0.62;
+ c.drawImage(video,sx,sy,sw,sh,0,0,w,h);
+ const d=c.getImageData(0,0,w,h).data;
+ let x0=w,y0=h,x1=0,y1=0,n=0;
+ for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+  const i=(y*w+x)*4;
+  const l=d[i]*0.299+d[i+1]*0.587+d[i+2]*0.114;
+  if(l>132){ n++; if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; }
+ }
+ if(n<w*h*0.14||x1-x0<w*0.2||y1-y0<h*0.2) return null;
+ return {x0:sx+(x0/w)*sw, y0:sy+(y0/h)*sh, x1:sx+(x1/w)*sw, y1:sy+(y1/h)*sh};
+}
+
+function freccia(mostra){
+ const f=el('live-freccia'); if(f) f.classList.toggle('on',!!mostra);
+}
+
 function statoLive(testo){ const e=el('live-stato'); if(e) e.textContent=testo; }
 function guidaOk(ok){ const g=el('live-guida'); if(g) g.classList.toggle('ok',!!ok); }
 
 function vScanner(){
  return `<div class="live">
    <video id="live-video" playsinline muted autoplay></video>
+   <canvas class="ovl" id="live-ovl"></canvas>
    <div class="guida" id="live-guida"></div>
+   <div class="freccia" id="live-freccia"><span>⌄</span><span>⌄</span><b>Scendi piano</b></div>
    <div class="stato"><b id="live-stato">Accendo la fotocamera…</b></div>
    <button class="chiudi" data-a="live-chiudi" aria-label="Chiudi">✕</button>
    <div class="fondo">
@@ -1740,23 +1829,51 @@ function inquadrato(video,canvas){
  return (chiari/(w*h))*(media>95?1:0.3);
 }
 
-/* ritaglia la guida, ingrandisce e porta a bianco e nero: l'OCR ci vede molto meglio */
-function fotogramma(video,canvas){
- const vw=video.videoWidth, vh=video.videoHeight;
- const sx=vw*0.09, sy=vh*0.15, sw=vw*0.82, sh=vh*0.47;
- const scala=Math.min(2, 1100/sw);
+/* Bianco e nero con soglia LOCALE: su carta termica la luce non è mai uniforme
+   (ombra della mano, riflesso, stampa sbiadita in fondo). Con una soglia unica
+   per tutta l'immagine metà scontrino diventa nero e l'altra metà bianco; con
+   una media calcolata attorno a ogni pixel il testo resta leggibile ovunque.
+   La media mobile si ottiene da un'immagine integrale, così costa poco. */
+function binarizza(d,w,h,raggio,k){
+ const n=w*h, g=new Float64Array(n), S1=new Float64Array((w+1)*(h+1));
+ for(let i=0,p=0;i<n;i++,p+=4) g[i]=d[p]*0.299+d[p+1]*0.587+d[p+2]*0.114;
+ for(let y=0;y<h;y++){
+  let riga=0;
+  for(let x=0;x<w;x++){
+   riga+=g[y*w+x];
+   S1[(y+1)*(w+1)+(x+1)]=S1[y*(w+1)+(x+1)]+riga;
+  }
+ }
+ const area=(x0,y0,x1,y1)=>S1[(y1+1)*(w+1)+(x1+1)]-S1[y0*(w+1)+(x1+1)]
+                          -S1[(y1+1)*(w+1)+x0]+S1[y0*(w+1)+x0];
+ for(let y=0;y<h;y++){
+  const y0=Math.max(0,y-raggio), y1=Math.min(h-1,y+raggio);
+  for(let x=0;x<w;x++){
+   const x0=Math.max(0,x-raggio), x1=Math.min(w-1,x+raggio);
+   const conta=(x1-x0+1)*(y1-y0+1);
+   const media=area(x0,y0,x1,y1)/conta;
+   const v=g[y*w+x] < media*(1-k) ? 0 : 255;
+   const p=(y*w+x)*4; d[p]=d[p+1]=d[p+2]=v;
+  }
+ }
+}
+
+/* ritaglia la guida, ingrandisce e pulisce: l'OCR ci vede molto meglio */
+function fotogramma(video,canvas,sorgente){
+ let sx,sy,sw,sh,vw,vh;
+ if(sorgente&&sorgente.width){ vw=sorgente.width; vh=sorgente.height;
+  sx=0; sy=0; sw=vw; sh=vh; }
+ else { vw=video.videoWidth; vh=video.videoHeight;
+  sx=vw*0.07; sy=vh*0.13; sw=vw*0.86; sh=vh*0.52; }
+ /* l'OCR vuole testo alto almeno una trentina di pixel: meglio ingrandire */
+ const scala=Math.max(1, Math.min(2.4, 1700/sw));
  canvas.width=Math.round(sw*scala); canvas.height=Math.round(sh*scala);
  const c=canvas.getContext('2d',{willReadFrequently:true});
- c.drawImage(video,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
- const img=c.getImageData(0,0,canvas.width,canvas.height), d=img.data;
- let somma=0;
- for(let i=0;i<d.length;i+=4){
-  const l=d[i]*0.299+d[i+1]*0.587+d[i+2]*0.114; d[i]=d[i+1]=d[i+2]=l; somma+=l;
- }
- const soglia=(somma/(d.length/4))*0.86;
- for(let i=0;i<d.length;i+=4){
-  const v=d[i]<soglia?0:255; d[i]=d[i+1]=d[i+2]=v;
- }
+ c.imageSmoothingQuality='high';
+ c.drawImage(sorgente||video,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
+ const img=c.getImageData(0,0,canvas.width,canvas.height);
+ const raggio=Math.max(12,Math.round(canvas.height/26));
+ binarizza(img.data,canvas.width,canvas.height,raggio,0.14);
  c.putImageData(img,0,0);
  return canvas;
 }
@@ -1810,7 +1927,11 @@ async function apriScanner(){
   if(!L.attivo) return;
   statoLive('Preparo la lettura…');
   L.worker=await T.createWorker('ita',1);
-  await L.worker.setParameters({tessedit_pageseg_mode:'6'});
+  await L.worker.setParameters({
+   tessedit_pageseg_mode:'6',
+   preserve_interword_spaces:'1',
+   tessedit_char_blacklist:'{}[]|@#$%^&*_~`'
+  });
  }catch(e){
   return ripiego('Non riesco a scaricare il lettore',
    'La prima volta serve la rete per scaricare il riconoscimento del testo (poi resta nel telefono). Controlla la connessione, oppure inserisci la spesa a mano.');
@@ -1820,30 +1941,62 @@ async function apriScanner(){
  L.timer=setInterval(()=>passata(canvas,mini), 900);
 }
 
+/* le righe di testo trovate, comunque le restituisca Tesseract */
+function estraiRighe(data){
+ if(Array.isArray(data.lines)&&data.lines.length) return data.lines;
+ const fuori=[];
+ (data.blocks||[]).forEach(b=>(b.paragraphs||[]).forEach(par=>
+   (par.lines||[]).forEach(l=>fuori.push(l))));
+ return fuori;
+}
+
 async function passata(canvas,mini){
  if(!L.attivo||L.leggendo||!L.video||!L.video.videoWidth) return;
+ const carta=trovaCarta(L.video,mini);
  const pieno=inquadrato(L.video,mini);
- if(pieno<0.28){ guidaOk(false); statoLive('Inquadra lo scontrino'); return; }
+ if(pieno<0.22||!carta){
+  guidaOk(false); freccia(false); disegnaOverlay(null,carta);
+  statoLive('Inquadra lo scontrino'); return;
+ }
  guidaOk(true);
  L.leggendo=true;
  try{
   if(L.fase!=='letto') statoLive('Lo sto leggendo…');
-  const {data}=await L.worker.recognize(fotogramma(L.video,canvas));
+  L.canvasOcr=canvas;
+  const {data}=await L.worker.recognize(fotogramma(L.video,canvas),{},
+    {text:true,blocks:true});
   if(!L.attivo) return;
   const letto=leggiScontrino(data.text||'');
   if(letto.store&&!L.negozio){ L.negozio=letto.store; S.store=letto.store; }
-  let nuove=0;
-  letto.lines.forEach(l=>{ if(!giaPresa(l)){ L.trovate.push(l); nuove++; } });
+  let nuove=0; const prese=[];
+  letto.lines.forEach(l=>{ if(!giaPresa(l)){ L.trovate.push(l); nuove++; prese.push(normalizza(l.raw)); } });
   letto.other.forEach(o=>{ if(!L.scarti.some(x=>x.raw===o.raw)) L.scarti.push(o); });
+
+  /* disegno sul video quello che ho letto: verde ciò che è finito in lista */
+  const parole=[];
+  estraiRighe(data).forEach(riga=>{
+   const presa=prese.some(t=>somiglianza(t,normalizza(riga.text||''))>0.7);
+   (riga.words||[]).forEach(w=>{
+    if(!w.bbox||(w.confidence!==undefined&&w.confidence<34)) return;
+    parole.push({x0:w.bbox.x0,y0:w.bbox.y0,x1:w.bbox.x1,y1:w.bbox.y1,presa});
+   });
+  });
+  disegnaOverlay(parole.slice(0,90),carta);
+
   if(nuove){
-   L.fermi=0; L.fase='letto';
+   L.fermi=0; L.fase='letto'; freccia(false);
    disegnaTrovate();
    statoLive(nuove===1?'+1 riga':'+'+nuove+' righe');
    if(navigator.vibrate) try{navigator.vibrate(18);}catch(e){}
   }else{
    L.fermi++;
-   if(L.trovate.length&&L.fermi>=2) statoLive('Sposta il telefono più in basso');
-   else if(!L.trovate.length&&L.fermi>=3) statoLive('Avvicinati un po’, o cerca più luce');
+   if(L.trovate.length&&L.fermi>=2){
+    statoLive('Ho finito questo pezzo'); freccia(true);
+   } else if(!L.trovate.length&&L.fermi>=3){
+    freccia(false);
+    statoLive(parole.length?'Vedo il testo ma non lo capisco: più luce'
+                           :'Avvicinati un po’, o cerca più luce');
+   }
   }
  }catch(e){ /* un fotogramma venuto male: si riprova col prossimo */ }
  finally{ L.leggendo=false; }
@@ -1854,7 +2007,7 @@ function fermaScanner(){
  if(L.timer){ clearInterval(L.timer); L.timer=null; }
  if(L.stream){ L.stream.getTracks().forEach(t=>{try{t.stop();}catch(e){}}); L.stream=null; }
  if(L.worker){ const w=L.worker; L.worker=null; try{ w.terminate(); }catch(e){} }
- L.video=null;
+ L.video=null; L.canvasOcr=null;
 }
 
 function chiudiScanner(){ fermaScanner(); S.screen='spesa'; render(); }
@@ -1875,8 +2028,16 @@ async function leggiFoto(dataUrl){
  try{
   const T=await caricaTesseract();
   const w=await T.createWorker('ita',1);
-  await w.setParameters({tessedit_pageseg_mode:'6'});
-  const {data}=await w.recognize(dataUrl);
+  await w.setParameters({
+    tessedit_pageseg_mode:'6',
+    preserve_interword_spaces:'1',
+    tessedit_char_blacklist:'{}[]|@#$%^&*_~`'
+   });
+  const im=new Image(); im.src=dataUrl;
+  await new Promise(ok=>{ im.onload=ok; im.onerror=ok; });
+  const cv=document.createElement('canvas');
+  const sorgente=(im.width&&im.height)?im:null;
+  const {data}=await w.recognize(sorgente?fotogramma(null,cv,im):dataUrl);
   try{ w.terminate(); }catch(e){}
   const letto=leggiScontrino(data.text||'');
   S.lines=letto.lines.map(l=>Object.assign({},l,{on:true}));
@@ -1931,19 +2092,32 @@ const NONRIGA=[/^tot/i,/^sub ?tot/i,/^iva\b/i,/^cassa/i,/^oper/i,/^grazie/i,
  /^euro$/i,/^€/,/^servizio/i,/^reparto/i,/^art\.\s?\d/i,/^cliente/i,/^via\b/i,
  /^tel\b/i,/^partita/i,/^chiusura/i,/^addetto/i,/^num\b/i,/^pezzi\b/i];
 
-const ALIAS={uova:['uova','uovo'],latte:['latte'],yogurt:['yogurt','yoghurt'],
- mozzarella:['mozzarella','fiordilatte'],parmigiano:['parmigiano','grana','reggiano'],
+const ALIAS={uova:['uova','uovo','ovoprodotto'],
+ latte:['latte','granarolo','parmalat','zymil','accadi'],
+ yogurt:['yogurt','yoghurt','activia','muller','vipiteno','yomo','fage','skyr'],
+ mozzarella:['mozzarella','fiordilatte','galbani','santalucia','bufala'],
+ parmigiano:['parmigiano','grana','reggiano','padano','grattugiato'],
  pecorino:['pecorino','romano'],guanciale:['guanciale','pancetta'],burro:['burro'],
  panna:['panna'],pomodorini:['pomodorini','ciliegino','ciliegini','datterini'],
- pollo:['pollo'],macinato:['macinata','macinato','trita'],piselli:['piselli'],
+ pollo:['pollo','fesa','sovracoscia','amadori'],
+ macinato:['macinata','macinato','trita','hamburger','svizzera'],
+ piselli:['piselli','pisellini'],
  salmone:['salmone'],spinaci:['spinaci'],spaghetti:['spaghetti'],
- pasta_mista:['penne','fusilli','rigatoni','maniche','tortiglioni','farfalle','pasta'],
+ pasta_mista:['penne','fusilli','rigatoni','maniche','tortiglioni','farfalle','pasta',
+   'semola','barilla','rummo','garofalo','voiello','dececco','sedanini','caserecce',
+   'orecchiette','conchiglie','paccheri','linguine','bucatini','maccheroni'],
  riso:['riso','carnaroli','arborio'],farro:['farro'],
- fagioli:['fagioli','borlotti','cannellini'],ceci:['ceci'],tonno:['tonno'],
- passata:['passata'],pelati:['pelati','polpa'],olio:['olio','extravergine','oliva'],
+ fagioli:['fagioli','borlotti','cannellini'],ceci:['ceci'],
+ tonno:['tonno','riomare','nostromo','asdomar','mareblu','maruzzella'],
+ passata:['passata','mutti','cirio','valfrutta','pomi','sugo'],
+ pelati:['pelati','polpa','datterino','cubettati'],
+ olio:['olio','extravergine','oliva','bertolli','monini','farchioni','carapelli'],
  farina:['farina'],zucchero:['zucchero'],lievito:['lievito'],
- caffe:['caffe','caffè'],fette:['fette','biscottate'],biscotti:['biscotti','frollini'],
- marmellata:['marmellata','confettura'],dado:['dado','brodo'],vino_bianco:['vino'],
+ caffe:['caffe','caffè','lavazza','illy','kimbo','segafredo','borbone','moka'],
+ fette:['fette','biscottate'],
+ biscotti:['biscotti','frollini','pavesini','misura','gocciole','macine'],
+ marmellata:['marmellata','confettura','santarosa','fiordifrutta'],
+ dado:['dado','brodo','knorr'],vino_bianco:['vino','bianco'],
  sale:['sale'],pepe:['pepe'],peperoncino:['peperoncino'],cipolla:['cipolle','cipolla'],
  aglio:['aglio'],carote:['carote','carota'],sedano:['sedano'],patate:['patate','patata'],
  limoni:['limoni','limone'],basilico:['basilico'],rosmarino:['rosmarino'],
@@ -1964,6 +2138,25 @@ const vietati=()=>Object.keys(S.diete||{}).filter(g=>S.diete[g])
 function vietata(r){
  const no=vietati(); if(!no.length) return false;
  return r.ing.some(([k])=>no.includes(k));
+}
+
+/* le risposte che dai alla revisione restano qui: la stessa riga, la volta
+   dopo, viene riconosciuta subito. È l'unico modo onesto di "allenarsi sugli
+   scontrini veri": impara dai vostri, non da un campione che non ho. */
+const chiaveRiga=t=>normalizza(t).replace(/\d+[.,]\d{2}\s*[a-z]?\s*$/,'')
+  .replace(/[0-9]/g,'').replace(/\s+/g,' ').trim().slice(0,38);
+function imparata(raw){
+ const k=chiaveRiga(raw);
+ if(!k||!S.imparate) return undefined;
+ if(k in S.imparate) return S.imparate[k];
+ for(const altra in S.imparate){
+  if(altra.length>8 && somiglianza(altra,k)>0.88) return S.imparate[altra];
+ }
+ return undefined;
+}
+function impara(raw,id){
+ const k=chiaveRiga(raw); if(!k) return;
+ S.imparate=S.imparate||{}; S.imparate[k]=id; salva();
 }
 
 const senzaAccenti=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'');
@@ -2051,18 +2244,30 @@ function leggiRiga(grezza){
  const raw=String(grezza||'').replace(/\s+/g,' ').trim();
  if(raw.length<3) return null;
  const n=normalizza(raw);
+ /* prima di tutto: me l'hai già detto tu cos'è? */
+ const nota=imparata(raw);
+ if(nota===false) return {scarto:'me l’hai detto tu',raw};
  const sporco=NONCIBO.find(w=>n.includes(w));
  if(sporco) return {scarto:'non è cibo',raw};
  if(NONRIGA.some(r=>r.test(n))) return {scarto:'riga non prodotto',raw};
- /* senza un prezzo in fondo, di solito è intestazione o indirizzo */
- const prezzo=n.match(/(\d+[.,]\d{2})\s*[a-z]?\s*$/);
- const desc=raw.replace(/(\d+[.,]\d{2})\s*[a-z]?\s*$/,'').trim();
- if(!prezzo && !/\d/.test(n)) return {scarto:'riga non prodotto',raw};
+ /* l'intestazione col nome della catena non è un prodotto */
+ if(CATENE.some(c=>{const k=normalizza(c); return k.length>3&&n.includes(k);}))
+  return {scarto:'intestazione',raw};
+ /* il prezzo può avere dietro la lettera dell'IVA, un asterisco, un euro */
+ const rePrezzo=/(\d+[.,]\d{2})\s*(?:€|eur)?\s*[a-z*]{0,2}\s*$/i;
+ const prezzo=n.match(rePrezzo);
+ const desc=raw.replace(rePrezzo,'').replace(/[*€]+\s*$/,'').trim();
+ if(desc.replace(/[^a-zA-Zàèéìòù]/g,'').length<3) return {scarto:'riga non prodotto',raw};
  const q=leggiQuantita(raw);
+ if(nota){ const i=ING[nota];
+  if(i) return {raw,id:nota,q:(q.v&&q.u===i.u)?q.v:Math.round(i.f*q.molt*10)/10,
+                u:i.u,c:1,stato:'certa',
+                prezzo:prezzo?parseFloat(prezzo[1].replace(',','.')):null}; }
  const m=abbina(desc||raw);
- if(!m.id||m.punti<0.56){
+ if(!m.id||m.punti<0.50){
   return {raw, id:null, guess:(desc||raw).toLowerCase(), q:q.v||1,
-          u:q.u||'pz', c:Math.max(.2,m.punti), prezzo:prezzo?parseFloat(prezzo[1].replace(',','.')):null};
+          u:q.u||'pz', c:Math.max(.2,m.punti), stato:'ignota',
+          prezzo:prezzo?parseFloat(prezzo[1].replace(',','.')):null};
  }
  const i=ING[m.id];
  let quanti=q.v, unita=q.u;
@@ -2076,6 +2281,7 @@ function leggiRiga(grezza){
   else { quanti=Math.round(i.f*q.molt*10)/10; unita=i.u; }
  }
  return {raw, id:m.id, q:quanti, u:unita, c:Math.min(.99,m.punti),
+         stato:m.punti>=0.86?'certa':'dubbia',
          prezzo:prezzo?parseFloat(prezzo[1].replace(',','.')):null};
 }
 
@@ -2144,7 +2350,9 @@ function vScontrino(){
    </div>`;
 
  if(st===3){
-  const on=S.lines.filter(l=>l.on), dubbi=on.filter(l=>l.c<.7).length;
+  const incerta=l=>l.stato==='dubbia'||l.stato==='ignota';
+  const dubbi=S.lines.filter(incerta).length;
+  const on=S.lines.filter(l=>l.on&&!incerta(l));
   return head+`
    <div class="card" style="padding:16px">
      <div class="row"><span class="blob av" style="background:var(--verde-bg)">🏪</span>
@@ -2153,15 +2361,36 @@ function vScontrino(){
          const t=S.lines.reduce((a,l)=>a+(l.prezzo||0),0);
          return t?' · '+eur(t)+' riconosciuti':'';})()}</span></span></div>
      <div class="row" style="gap:7px;margin-top:12px;flex-wrap:wrap">
-       <span class="pill ok">${on.length} alimenti</span>
-       <span class="pill flat">${S.others.length} scartati</span>
+       <span class="pill ok">${on.length} aliment${on.length===1?'o sicuro':'i sicuri'}</span>
+       <span class="pill flat">${S.others.length} scartat${S.others.length===1?'o':'i'}</span>
        ${dubbi?`<span class="pill warn">${dubbi} da controllare</span>`:''}
      </div>
    </div>
    <section class="sec">
      <div class="sec-h"><h2>Da mettere in dispensa</h2><span>tocca per escludere</span></div>
+     ${(()=>{
+       const dubbie=S.lines.map((l,i)=>({l,i})).filter(x=>x.l.stato==='dubbia'||x.l.stato==='ignota');
+       if(!dubbie.length) return '';
+       return `<div class="card" style="padding:16px;margin-bottom:14px;background-color:var(--terra-bg)">
+         <strong style="font-family:var(--font-display);font-size:17px;color:var(--terra-ink)">Qui non sono sicuro</strong>
+         <p class="small" style="margin:4px 0 0;color:var(--terra-ink)">${dubbie.length===1?'Una riga':dubbie.length+' righe'}: dimmi tu se ho indovinato. Quello che rispondi me lo ricordo, la prossima volta le riconosco da solo.</p>
+       </div>`+
+       dubbie.map(({l,i})=>`
+        <div class="card" style="padding:15px;margin-bottom:10px">
+          <span class="raw" style="display:block">${esc(l.raw)}</span>
+          <strong style="display:block;font-family:var(--font-display);font-size:17px;color:var(--verde-scuro);margin:7px 0 2px">
+            ${l.id&&ING[l.id]?`È ${ING[l.id].e} ${esc(ING[l.id].n)}?`:'Cos’è questo?'}</strong>
+          ${l.id&&ING[l.id]?`<span class="small">ne metterei ${qty(l.q,l.u)} in dispensa</span>`:
+            '<span class="small">non l’ho riconosciuto: dimmelo tu, oppure scartalo</span>'}
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            ${l.id?`<button class="btn sm primary" data-a="conf-si" data-i="${i}">Sì, è questo</button>`:''}
+            <button class="btn sm" data-a="conf-altro" data-i="${i}">${l.id?'No, è altro':'Scegli tu'}</button>
+            <button class="btn sm ghost" data-a="conf-no" data-i="${i}">Non è cibo</button>
+          </div>
+        </div>`).join('');
+     })()}
      <div class="inv">
-       ${S.lines.map((l,idx)=>`
+       ${S.lines.map((l,idx)=>({l,idx})).filter(x=>x.l.stato!=='dubbia'&&x.l.stato!=='ignota').map(({l,idx})=>`
          <div class="pline ingr ${l.on?'':'off'}">
            <span class="tile av-sm" style="background:var(--${l.c<.7?'terra':'verde'}-bg)">${l.id&&ING[l.id]?ING[l.id].e:'❓'}</span>
            <span class="col grow" style="gap:3px">
@@ -2439,6 +2668,23 @@ document.addEventListener('click',e=>{
  else if(a==='live-chiudi'){ chiudiScanner(); }
  else if(a==='live-fine'){ finiScanner(); }
  else if(a==='live-mano'){ fermaScanner(); apriManuale(); }
+ else if(a==='conf-si'){ const l=S.lines[+t.dataset.i];
+   if(l){ l.stato='certa'; l.c=1; l.on=true; impara(l.raw,l.id); }
+   render(true); toast('Me lo ricordo'); }
+ else if(a==='conf-no'){ const i=+t.dataset.i, l=S.lines[i];
+   if(l){ impara(l.raw,false); S.others.push({raw:l.raw,why:'me l’hai detto tu'});
+     S.lines.splice(i,1); }
+   render(true); }
+ else if(a==='conf-altro'){ apriScelta(+t.dataset.i); }
+ else if(a==='chiudi-scelta'){ S.scelta=null; disegnaScelta(); }
+ else if(a==='scelto'){
+   const k=t.dataset.id, l=S.scelta?S.lines[S.scelta.i]:null;
+   if(l&&ING[k]){
+     l.id=k; l.stato='certa'; l.c=1; l.on=true;
+     if(l.u!==ING[k].u){ l.q=ING[k].f; l.u=ING[k].u; }
+     impara(l.raw,k);
+   }
+   S.scelta=null; disegnaScelta(); render(true); toast('Imparato'); }
  else if(a==='onb-avanti'){ S.onb.passo=Math.min(PASSI.length-1,S.onb.passo+1); salva(); render(); }
  else if(a==='onb-fine'){ finisciOnb(t.dataset.v); }
  else if(a==='onb-demo'){ S.onb={fatto:true,passo:0}; S.screen='oggi'; salva(); render();
@@ -2499,6 +2745,8 @@ document.addEventListener('input',e=>{
    const q=el('q'); if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length);} }
  else if(t.id==='mq'){ S.man.q=t.value; render(true);
    const m=el('mq'); if(m){m.focus();m.setSelectionRange(m.value.length,m.value.length);} }
+ else if(t.id==='sq'){ S.scelta.q=t.value; disegnaScelta();
+   const x=el('sq'); if(x){x.focus();x.setSelectionRange(x.value.length,x.value.length);} }
  else if(a==='budget'){ S.budget=Number(t.value);
    const v=el('bdgval'); if(v) v.textContent=eur(S.budget); }
  else if(a==='nrname'){ S.newIng[t.dataset.i].name=t.value; refreshNR(); }
@@ -2539,6 +2787,34 @@ function avviaScansione(photo){
  const quick=matchMedia('(prefers-reduced-motion: reduce)').matches;
  setTimeout(()=>{ S.step=3; render(); }, quick?120:1900);
 }
+/* la lista per rispondere "è altro": tutti gli ingredienti, con una ricerca */
+function apriScelta(i){
+ S.scelta={i,q:''};
+ disegnaScelta();
+}
+function disegnaScelta(){
+ if(!S.scelta){ el('sheet').innerHTML=''; return; }
+ const q=(S.scelta.q||'').trim().toLowerCase();
+ const chiavi=Object.keys(ING).filter(k=>!q||ING[k].n.toLowerCase().includes(q)).slice(0,60);
+ const l=S.lines[S.scelta.i];
+ el('sheet').innerHTML=`<div class="sheet-wrap" data-a="chiudi-scelta">
+   <div class="sheet" onclick="event.stopPropagation()">
+     <div class="grab"></div>
+     <h2 style="font-size:20px">Cos’era?</h2>
+     <p class="small" style="margin:4px 0 12px"><span class="raw">${esc(l?l.raw:'')}</span></p>
+     <div class="search" style="margin-bottom:12px"><span>🔍</span>
+       <input id="sq" placeholder="Cerca un ingrediente…" value="${esc(S.scelta.q||'')}" autocomplete="off"></div>
+     <div class="inv">
+       ${chiavi.map(k=>`<button class="item ingr" data-a="scelto" data-id="${k}" style="width:100%">
+         <span class="tile av-sm">${ING[k].e}</span>
+         <span class="col grow" style="text-align:left"><span class="name">${esc(ING[k].n)}</span>
+         <span class="small">confezione da ${qty(ING[k].f,ING[k].u)}</span></span>
+       </button>`).join('')}
+       ${chiavi.length?'':'<p class="small">Nessun ingrediente con questo nome.</p>'}
+     </div>
+   </div></div>`;
+}
+
 function applicaScontrino(){
  let n=0;
  S.lines.filter(l=>l.on&&l.id&&ING[l.id]).forEach(l=>{
@@ -2592,7 +2868,7 @@ function salva(){
  try{ localStorage.setItem(CHIAVE, JSON.stringify({
    v:1, data:S.planDate||oggiISO(), ING, RECIPES, PLAN,
    imp:{budget:S.budget,weeks:S.weeks,store:S.store,diffMax:S.diffMax,people:S.people,
-        onb:S.onb,diete:S.diete,colazione:S.colazione},
+        onb:S.onb,diete:S.diete,colazione:S.colazione,imparate:S.imparate},
    stato:{shopped:S.shopped,checked:S.checked,extra:S.extra}
  })); }catch(e){ S.senzaMemoria=true; }
 }
@@ -2666,7 +2942,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261118-1827';
+const VERSIONE='20261118-1838';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
