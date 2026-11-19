@@ -97,7 +97,9 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px}
 .sec-h{display:flex;align-items:baseline;gap:10px;margin-bottom:11px;flex-wrap:wrap}
 .sec-h h2{font-size:20px}
 .sec-h span{font-size:12.5px;color:var(--ink-3);font-weight:700}
-.sec-h .more{margin-left:auto;font-size:13px;font-weight:800;color:var(--verde-ink)}
+.sec-h .more{margin-left:auto;font-size:13px;font-weight:800;color:var(--verde-ink);
+  display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 4px}
+.sec-h .more::after{content:"›";font-size:17px;line-height:1}
 .row{display:flex;align-items:center;gap:12px}
 .col{display:flex;flex-direction:column}
 .grow{flex:1;min-width:0}
@@ -119,7 +121,7 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px}
 .btn.terra{background:var(--terra);color:var(--verde-scuro)}
 .btn.ghost{background:transparent;box-shadow:inset 0 0 0 2px var(--line)}
 .btn.wide{width:100%}
-.btn.sm{font-size:14px;padding:10px 15px}
+.btn.sm{font-size:14px;padding:10px 15px;min-height:44px}
 .btn[disabled]{opacity:.4;pointer-events:none}
 .blob{flex:0 0 auto;display:grid;place-items:center;border-radius:var(--blob);background:var(--salvia-soft)}
 .blob.b2{border-radius:var(--blob2)}
@@ -149,7 +151,8 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding-block:2px 10px;
   margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
   padding-inline:max(16px,env(safe-area-inset-left,0px))}
-.chip{flex:0 0 auto;font-size:13.5px;font-weight:800;padding:9px 15px;border-radius:99px;
+.chip{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  min-height:44px;font-size:13.5px;font-weight:800;padding:9px 15px;border-radius:99px;
   background:var(--surface-2);color:var(--ink-2)}
 .chip[aria-pressed="true"]{background:var(--verde-scuro);color:var(--crema)}
 .chip[aria-pressed="true"] .diff i{color:rgba(255,255,255,.34)}
@@ -241,9 +244,10 @@ body.no-pad .app{padding-bottom:0;background-image:none}
   padding:10px max(16px,env(safe-area-inset-left,0px)) 12px;
   background:rgba(var(--crema-rgb),.84);
   -webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3)}
-.search{display:flex;align-items:center;gap:10px;padding:13px 16px;border-radius:99px;
+.search{display:flex;align-items:center;gap:10px;padding:0 16px;border-radius:99px;
   background-color:var(--surface);box-shadow:var(--shadow-sm)}
-.search input{border:0;background:none;outline:none;width:100%;font-weight:700;font-size:16px}
+.search input{border:0;background:none;outline:none;width:100%;font-weight:700;font-size:16px;
+  padding:16px 0;min-height:54px}
 .search input::placeholder{color:var(--ink-3)}
 .group-h{display:flex;align-items:center;gap:9px;margin:22px 0 10px}
 .group-h h3{font-size:16px}
@@ -274,6 +278,14 @@ body.no-pad .app{padding-bottom:0;background-image:none}
   background:var(--surface-2);color:var(--verde-scuro);font-size:19px;font-weight:800;
   display:grid;place-items:center;line-height:1}
 .quanto .passo:active{transform:scale(.92)}
+.passo-g{width:54px;height:54px;flex:0 0 auto;border:0;border-radius:50%;
+  background:var(--surface-2);color:var(--verde-scuro);font-size:26px;font-weight:800;
+  display:grid;place-items:center;line-height:1}
+.passo-g:active{transform:scale(.94)}
+input.grande{width:112px;border:0;outline:none;background:var(--surface-2);color:var(--ink);
+  text-align:center;font-family:var(--font-display);font-size:26px;font-weight:800;
+  border-radius:16px;padding:10px 6px}
+input.grande:focus{box-shadow:inset 0 0 0 2px var(--verde)}
 .quanto b{font-size:12px;font-weight:800;color:var(--ink-2);min-width:26px}
 .quanto .unit{font-size:12px;font-weight:800;color:var(--verde-scuro);min-width:34px;
   padding:7px 5px;border-radius:9px;background:var(--verde-bg);border:0;white-space:nowrap}
@@ -360,6 +372,10 @@ body.no-pad .app{padding-bottom:0;background-image:none}
 .nr-num{width:30px;height:30px;border-radius:var(--blob);background:var(--verde);color:var(--su-verde);
   font-family:var(--font-display);display:grid;place-items:center;font-size:15px;flex:0 0 auto}
 .ingrow{display:grid;grid-template-columns:1fr 68px 78px 34px;gap:7px;align-items:center;margin-bottom:8px}
+@media (max-width:430px){
+  .ingrow{grid-template-columns:1fr 92px 38px}
+  .ingrow>:first-child{grid-column:1 / -1}
+}
 .ingrow input,.ingrow select{padding:10px 12px;font-size:16px;border-radius:14px;background:var(--surface);
   border:0;box-shadow:inset 0 0 0 2px var(--line);outline:none;font-family:var(--font-body);font-weight:700;width:100%}
 .ingrow .del{display:grid;place-items:center;height:40px;border-radius:50%;color:var(--ink-3)}
@@ -988,7 +1004,7 @@ const S={
  invFilter:'tutto', invQuery:'', recFilter:'tutte',
  budget:4.50, weeks:1, store:"In's Mercato", diffMax:5, newDiff:2, people:2, planDate:null,
  step:0, photo:null, lines:[], others:[], shopped:false,
- checked:{}, extra:[], man:{sel:{},q:'',u:{}}, azzera:0, ultima:null,
+ checked:{}, extra:[], man:{sel:{},q:'',u:{}}, azzera:0, ultima:null, uso:null,
  onb:{fatto:false,passo:0}, diete:{}, imparate:{}, scelta:null, mod:null,
  prop:null, sheet:null,
  newIng:[{name:'',q:'',u:'g'},{name:'',q:'',u:'g'}]
@@ -1195,7 +1211,7 @@ function bandHTML(){
  if(!inCasa().length) return `<div class="band soft">
    <span class="big">🧺</span>
    <h3>La dispensa è vuota</h3>
-   <div class="small" style="margin-top:5px;max-width:74%">Carica la prima spesa: da lì in poi so cosa potete cucinare e il conto lo tengo io.</div>
+   <div class="small" style="margin-top:5px;max-width:74%">Carica la prima spesa: da lì in poi so cosa puoi cucinare e il conto lo tengo io.</div>
    <button class="btn primary" data-a="go" data-s="spesa"
      style="margin-top:15px;background:#fff;color:var(--verde-scuro)">🧾 Carica la spesa</button>
  </div>`;
@@ -1368,13 +1384,13 @@ function vDispensa(){
  </div>
 
  <section class="sec">
-   <div class="sec-h"><h2>I vostri dati</h2><span>restano su questo telefono</span></div>
+   <div class="sec-h"><h2>I tuoi dati</h2><span>restano su questo telefono</span></div>
    <div class="card" style="padding:16px">
      <p class="small" style="margin:0 0 12px">${S.senzaMemoria
        ? '⚠️ Questo browser non mi lascia salvare nulla: quando chiudi, l’app dimentica tutto.'
        : 'Dispensa, ricette e piano sono salvati qui dentro. Nessun account, nessun server.'}</p>
      <div style="display:flex;flex-direction:column;gap:9px">
-       <button class="btn sm ghost wide" data-a="svuota">Svuota la dispensa e riparti dalla vostra spesa</button>
+       <button class="btn sm ghost wide" data-a="svuota">Svuota la dispensa e riparti dalla tua spesa</button>
        <button class="btn sm ghost wide" data-a="esporta">⬇️ Salva una copia dei dati</button>
        <label class="btn sm ghost wide" style="display:flex">⬆️ Ripristina da una copia
          <input id="backup" type="file" accept="application/json,.json" hidden></label>
@@ -1444,7 +1460,7 @@ function vSpesa(){
    <div class="row" style="gap:8px;margin-top:13px;flex-wrap:wrap">
      <span class="pill flat">🏪 ${esc(S.store)}</span>
      <span class="pill flat">📅 ${S.weeks} settiman${S.weeks>1?'e':'a'}</span>
-     <button class="pill dark" data-a="setup">cambia</button>
+     <button class="btn sm" data-a="setup" style="margin-left:auto">⚙️ Cambia</button>
    </div>
  </div>
 
@@ -1696,10 +1712,13 @@ function vProposte(){
  if(P.mode==='slot') return vProposteSlot();
  if(P.step==='setup'){
   const ex=esclusi().length;
+  const daSpesa=P.from==='spesa';
   return `
   <button class="btn sm" data-a="back" style="margin-bottom:12px">← Indietro</button>
-  <h1 style="font-size:26px">Prima di proporti i piatti</h1>
-  <p class="muted" style="margin:4px 0 16px">Cinque cose e poi si va veloce: sì o no su ogni ricetta.</p>
+  <h1 style="font-size:26px">${daSpesa?'Le tue preferenze':'Prima di proporti i piatti'}</h1>
+  <p class="muted" style="margin:4px 0 16px">${daSpesa
+    ?'Budget, negozio, persone e voglia di cucinare: la lista si rifà da sola.'
+    :'Cinque cose e poi si va veloce: sì o no su ogni ricetta.'}</p>
 
   <div class="card" style="padding:18px;margin-bottom:12px">
     <div class="row" style="margin-bottom:6px">
@@ -1751,7 +1770,8 @@ function vProposte(){
     </div>
   </div>
 
-  <button class="btn primary wide" data-a="deck">Vai con le proposte →</button>`;
+  <button class="btn primary wide" data-a="deck">${daSpesa?'Rifai le proposte con queste impostazioni →':'Vai con le proposte →'}</button>
+  ${daSpesa?`<button class="btn sm ghost wide" data-a="back" style="margin-top:10px">Torna alla spesa</button>`:''}`;
  }
 
  if(P.step==='deck'){
@@ -3295,7 +3315,7 @@ function vNuova(){
    </div>
  </div>
 
- <div class="nr-step card">
+ <div class="nr-step card" style="margin-bottom:116px">
    <div class="row" style="margin-bottom:13px"><span class="nr-num">3</span><h3 style="font-size:17px">Come si fa</h3></div>
    <div class="field" style="margin:0"><label for="nr-s">Un passaggio per riga</label>
      <textarea id="nr-s" rows="4" placeholder="Soffriggi la cipolla&#10;Aggiungi la passata&#10;…"></textarea></div>
@@ -3439,8 +3459,13 @@ document.addEventListener('click',e=>{
    S.screen='piano'; render(); }
  else if(a==='invf'){ S.invFilter=t.dataset.f; render(true); }
  else if(a==='recf'){ S.recFilter=t.dataset.f; render(true); }
- else if(a==='use'){ const i=ING[t.dataset.id];
-   toast(i.q>0?`${i.n}: ne resta ${qty(i.q,i.u)} — qui si aprirà "ne ho usato…"`:`${i.n} è finito, è già in lista`); }
+ else if(a==='use'){ apriUso(t.dataset.id); }
+ else if(a==='uso-passo'){ cambiaUso((S.uso?S.uso.q:0)+(+t.dataset.d)*passoUso(S.uso.k)); }
+ else if(a==='uso-meta'){ cambiaUso((S.uso?S.uso.q:0)/2); }
+ else if(a==='uso-fine'){ cambiaUso(0); }
+ else if(a==='uso-pieno'){ cambiaUso(ING[S.uso.k].f); }
+ else if(a==='uso-salva'){ salvaUso(); }
+ else if(a==='chiudi-uso'){ if(!e.target.closest('[data-stop]')){ S.uso=null; el('sheet').innerHTML=''; } }
  else if(a==='cooked'){ cucinata(t.dataset.id); }
  else if(a==='manuale'){ fermaScanner(); apriManuale(); }
  else if(a==='scanner'){ apriScanner(); }
@@ -3480,7 +3505,7 @@ document.addEventListener('click',e=>{
      if(!aPeso){ l.q=1; l.u='pz'; }
      impara(l.raw,k);
    }
-   render(true); toast('Aggiunto ai vostri prodotti'); }
+   render(true); toast('Aggiunto ai tuoi prodotti'); }
  else if(a==='chiudi-scelta'){ if(!e.target.closest('[data-stop]')){ S.scelta=null; disegnaScelta(); } }
  else if(a==='scelto'){
    const k=t.dataset.id, l=S.scelta?S.lines[S.scelta.i]:null;
@@ -3495,7 +3520,7 @@ document.addEventListener('click',e=>{
  else if(a==='onb-demo'){ S.onb={fatto:true,passo:0}; S.screen='oggi';
    S.ultima={store:SPESA_FATTA.store,data:SPESA_FATTA.data,righe:SPESA_FATTA.righe,tot:SPESA_FATTA.tot};
    salva(); render();
-   toast('Dati di esempio: li cancelli da Dispensa → I vostri dati'); }
+   toast('Dati di esempio: li cancelli da Dispensa → I tuoi dati'); }
  else if(a==='dieta'){ const g=t.dataset.v; S.diete[g]=!S.diete[g]; render(true); }
  else if(a==='fav'){ const k=t.dataset.v; if(ING[k]) ING[k].fav=ING[k].fav?0:1; render(true); }
  else if(a==='mtog'){ const k=t.dataset.id;
@@ -3644,6 +3669,69 @@ function disegnaScelta(){
 /* Correggere a mano una riga letta male: nome, quantità, unità, reparto.
    I campi si leggono solo al salvataggio, così scrivere non fa ridisegnare
    nulla e il testo non sparisce sotto le dita. */
+function passoUso(k){
+ const i=ING[k]; if(!i) return 1;
+ if(i.u!=='g'&&i.u!=='ml') return 1;
+ const f=i.f||500;
+ return f>=1000?100:f>=400?50:f>=150?25:10;
+}
+function cambiaUso(v){
+ if(!S.uso) return;
+ const i=ING[S.uso.k];
+ S.uso.q=Math.max(0,Math.round(v*10)/10);
+ if(i) S.uso.q=Math.min(S.uso.q, Math.max(i.f,i.q)*4);
+ disegnaUso();
+}
+function salvaUso(){
+ const u=S.uso; if(!u||!ING[u.k]){ S.uso=null; el('sheet').innerHTML=''; return; }
+ const i=ING[u.k], prima=i.q;
+ i.q=Math.round(u.q*10)/10;
+ if(i.q>0){ i.visto=1; i.f=Math.max(i.f,i.q); }
+ S.uso=null; el('sheet').innerHTML=''; salva(); render(true);
+ toast(i.q<=0?`${i.n}: finito, lo metto in lista`
+   :i.q<prima?`${i.n}: ne resta ${qty(i.q,i.u)}`
+   :`${i.n}: segnati ${qty(i.q,i.u)}`);
+}
+function disegnaUso(){
+ const u=S.uso; if(!u) return;
+ const i=ING[u.k], passo=passoUso(u.k);
+ const pieno=Math.max(i.f,1), pct=Math.round(Math.min(1,u.q/pieno)*100);
+ el('sheet').innerHTML=`<div class="sheet-wrap" data-a="chiudi-uso">
+   <div class="sheet" data-stop="1">
+     <div class="grab"></div>
+     <div class="row" style="margin-bottom:14px">
+       <span class="blob av" style="background:var(--verde-bg)">${i.e}</span>
+       <span class="col grow" style="gap:2px">
+         <strong style="font-family:var(--font-display);font-size:20px;color:var(--verde-scuro)">${esc(i.n)}</strong>
+         <span class="small">${i.q>0?'in casa ne hai '+qty(i.q,i.u):'risulta finito'}</span>
+       </span>
+     </div>
+     <label style="display:block;margin-bottom:8px">Quanto ne resta adesso?</label>
+     <div class="row" style="justify-content:center;gap:10px">
+       <button class="passo-g" data-a="uso-passo" data-d="-1" aria-label="Meno ${passo} ${i.u}">−</button>
+       <span class="col" style="align-items:center;min-width:112px">
+         <input id="uso-q" type="number" step="any" min="0" inputmode="decimal" class="tnum grande"
+           value="${Math.round(u.q*10)/10}" aria-label="Quantità rimasta">
+         <span class="small">${esc(i.u)}</span>
+       </span>
+       <button class="passo-g" data-a="uso-passo" data-d="1" aria-label="Più ${passo} ${i.u}">+</button>
+     </div>
+     <div class="bar ${pct<=25?'warn':''}" style="margin:14px 0 16px"><i style="width:${pct}%"></i></div>
+     <div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0 0 16px">
+       <button class="chip" data-a="uso-meta">ne resta metà</button>
+       <button class="chip" data-a="uso-fine">è finito</button>
+       <button class="chip" data-a="uso-pieno">confezione piena</button>
+     </div>
+     <button class="btn primary wide" data-a="uso-salva">Salva</button>
+   </div></div>`;
+ const inp=el('uso-q');
+ if(inp) inp.oninput=()=>{ S.uso.q=Math.max(0,Number(inp.value)||0); };
+}
+function apriUso(k){
+ if(!ING[k]) return;
+ S.uso={k,q:ING[k].q};
+ disegnaUso();
+}
 function apriModifica(i){
  const l=S.lines[i]; if(!l) return;
  const ing=l.id?ING[l.id]:null;
@@ -3743,7 +3831,7 @@ function salvaRicetta(){
   d:S.newDiff,serv,tag:'Nostra',slots:['pranzo','cena'],ing,
   steps:steps.length?steps:['Scrivi i passaggi quando hai tempo.']});
  S.newIng=[{name:'',q:'',u:'g'},{name:'',q:'',u:'g'}]; S.newDiff=2;
- S.screen='ricette'; render(); toast(`"${nome}" salvata fra le vostre ricette`);
+ S.screen='ricette'; render(); toast(`"${nome}" salvata fra le tue ricette`);
 }
 
 /* ===================== memoria sul dispositivo =====================
@@ -3840,7 +3928,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261118-2353';
+const VERSIONE='20261119-0000';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
