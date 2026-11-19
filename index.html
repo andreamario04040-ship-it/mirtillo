@@ -557,6 +557,28 @@ body.onboarding .app{padding-bottom:40px}
 .pop{animation:pop .4s var(--mov-molla)}
 @keyframes pop{0%{transform:scale(.94);opacity:0}100%{transform:scale(1);opacity:1}}
 
+/* ---------- quando una schermata si apre ---------- */
+/* Le cose non arrivano tutte insieme: salgono una dopo l'altra, a cinque
+   centesimi l'una, e in meno di mezzo secondo si sono posate tutte. Solo
+   le prime sette: in una lista lunga il resto è già pronto quando ci
+   arrivi con l'occhio, e aspettare sarebbe fastidioso. */
+#view.vai-tab > *,#view.vai-avanti > *,#view.vai-indietro > *{
+  animation:salita .44s var(--mov) both}
+@keyframes salita{from{transform:translateY(15px)}to{transform:none}}
+#view > *:nth-child(1){animation-delay:0s}
+#view > *:nth-child(2){animation-delay:.045s}
+#view > *:nth-child(3){animation-delay:.09s}
+#view > *:nth-child(4){animation-delay:.13s}
+#view > *:nth-child(5){animation-delay:.17s}
+#view > *:nth-child(6){animation-delay:.2s}
+#view > *:nth-child(n+7){animation-delay:.23s}
+/* le barre di livello si riempiono da sinistra quando la schermata si apre:
+   in un colpo d'occhio vedi quanto ti resta di tutto */
+.bar i{transform-origin:left}
+#view.vai-tab .bar i,#view.vai-avanti .bar i,#view.vai-indietro .bar i{
+  animation:riempi .75s var(--mov) .12s both}
+@keyframes riempi{from{transform:scaleX(0)}to{transform:none}}
+
 /* ---------- il tocco ---------- */
 /* Ogni cosa che si tocca risponde allo stesso modo: scende subito sotto il
    dito e risale con calma. Una regola sola, così niente si muove a modo suo. */
@@ -573,38 +595,70 @@ body.onboarding .app{padding-bottom:40px}
 .bar i{transition:width .55s var(--mov),background-color var(--t-cambio) var(--mov)}
 .live .barra i{transition:width .5s var(--mov),background-color var(--t-cambio) var(--mov)}
 
+/* il numero grande fa un salto ogni volta che cambia: è lui il valore che
+   stai muovendo, deve essere chiaro che ha sentito il tocco */
+.quanto .grande{animation:numero .34s var(--mov-molla)}
+@keyframes numero{0%{transform:scale(.86)}100%{transform:scale(1)}}
+/* la spunta della lista della spesa non appare: ci salta dentro */
+.sitem[aria-pressed="true"] .box,.ingr[aria-pressed="true"] .box{animation:spunta .36s var(--mov-molla)}
+@keyframes spunta{0%{transform:scale(.4)}60%{transform:scale(1.14)}100%{transform:scale(1)}}
+/* gli stati vuoti respirano piano: una pagina senza niente non deve
+   sembrare una pagina rotta */
+.drop .ic,.band.soft .av-lg,.done .ic{animation:respiro 4.2s var(--mov-dentro) infinite}
+@keyframes respiro{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(-2deg)}}
+
 /* ---------- l'apertura ---------- */
-/* Il mirtillo arriva, la stella ci si posa sopra, il nome sale da sotto e
-   l'app si apre. Dura poco più di un secondo: un saluto, non un'attesa.
+/* Solo il mirtillo. Cade, tocca e si schiaccia un attimo come farebbe una
+   cosa vera, rimbalza piano, la stella ci si posa sopra, l'ombra sotto si
+   allarga e si stringe col peso. Poi la bacca si allarga verso di te e
+   l'app è già lì dentro. Poco più di un secondo.
    È tutto in CSS e sta nel corpo della pagina, così parte al primo
    fotogramma e se ne va da sola anche se lo script non partisse mai. */
 #avvio{position:fixed;inset:0;z-index:200;background:var(--crema);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
-  animation:avvio-via .42s var(--mov-dentro) .9s both}
-@keyframes avvio-via{to{opacity:0;transform:scale(1.045);visibility:hidden;pointer-events:none}}
-#avvio .bollo{position:relative;display:grid;place-items:center}
-#avvio svg{width:116px;height:116px;display:block;
-  filter:drop-shadow(0 14px 26px rgba(74,86,181,.3));
-  animation:bacca .6s var(--mov-molla) both}
-@keyframes bacca{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
-/* l'onda: l'aria spostata dalla bacca che si posa */
-#avvio .onda{position:absolute;width:116px;height:116px;border-radius:50%;
-  box-shadow:0 0 0 2.5px rgba(74,86,181,.4);animation:onda .95s var(--mov) .18s both}
-@keyframes onda{0%{opacity:0;transform:scale(.78)}30%{opacity:.55}100%{opacity:0;transform:scale(1.7)}}
+  display:grid;place-items:center;
+  animation:avvio-via .4s var(--mov-dentro) .92s both}
+@keyframes avvio-via{to{opacity:0;visibility:hidden;pointer-events:none}}
+#avvio .bollo{position:relative;display:grid;place-items:center;
+  animation:congedo .44s var(--mov-dentro) .88s both}
+/* se ne va allargandosi, come se ci entrassi dentro */
+@keyframes congedo{to{transform:scale(1.9);opacity:0}}
+/* l'ombra per terra: si allarga quando la bacca arriva, si stringe quando
+   rimbalza. È il peso, non un effetto */
+#avvio .ombra{position:absolute;bottom:-26px;width:74px;height:13px;border-radius:50%;
+  background:rgba(74,86,181,.26);filter:blur(5px);
+  animation:ombra .9s var(--mov) both}
+@keyframes ombra{
+  0%{opacity:0;transform:scale(.3)}
+  34%{opacity:.85;transform:scale(1.12)}
+  52%{opacity:.5;transform:scale(.8)}
+  70%{opacity:.8;transform:scale(1.04)}
+  100%{opacity:.6;transform:scale(1)}}
+#avvio svg{width:128px;height:128px;display:block;
+  filter:drop-shadow(0 16px 28px rgba(74,86,181,.28));
+  animation:cade .88s var(--mov) both}
+/* cade, si schiaccia sul colpo, si allunga nel rimbalzo, si posa */
+@keyframes cade{
+  0%{opacity:0;transform:translateY(-120px) scale(.86,1.12)}
+  26%{opacity:1}
+  34%{transform:translateY(0) scale(1.14,.86)}
+  52%{transform:translateY(-26px) scale(.95,1.05)}
+  70%{transform:translateY(0) scale(1.06,.94)}
+  86%{transform:translateY(-7px) scale(.99,1.01)}
+  100%{transform:translateY(0) scale(1)}}
+/* l'aria spostata dall'arrivo: parte nell'istante del tocco */
+#avvio .onda{position:absolute;width:128px;height:128px;border-radius:50%;
+  box-shadow:0 0 0 2.5px rgba(74,86,181,.42);animation:onda .8s var(--mov) .3s both}
+@keyframes onda{0%{opacity:0;transform:scale(.8)}26%{opacity:.6}100%{opacity:0;transform:scale(1.75)}}
+/* la stella si posa dopo il colpo, non prima */
 #avvio .stella{transform-origin:center;transform-box:fill-box;
-  animation:stella .54s var(--mov-molla) .2s both}
-@keyframes stella{from{opacity:0;transform:scale(.25) rotate(-45deg)}to{opacity:1;transform:none}}
-#avvio .luce{animation:luce .55s var(--mov) .3s both}
+  animation:stella .5s var(--mov-molla) .34s both}
+@keyframes stella{from{opacity:0;transform:scale(.2) rotate(-50deg)}to{opacity:1;transform:none}}
+#avvio .luce{animation:luce .5s var(--mov) .4s both}
 @keyframes luce{from{opacity:0}to{opacity:.3}}
-#avvio .nome{font-family:var(--font-display);font-weight:800;font-size:28px;letter-spacing:-.015em;
-  color:var(--verde-scuro);animation:nome .46s var(--mov) .32s both}
-#avvio .sotto{font-size:12.5px;font-weight:700;color:var(--ink-3);margin-top:-14px;
-  animation:nome .44s var(--mov) .38s both}
-@keyframes nome{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-/* l'app non compare: si apre sotto, mentre il saluto se ne va */
-.app{animation:apri .5s var(--mov) .94s both}
-@keyframes apri{from{opacity:0;transform:scale(.988)}to{opacity:1;transform:none}}
-.tabbar,.tabblur{animation:menu-su .5s var(--mov) 1.04s both}
+/* l'app non compare: si apre sotto, mentre il mirtillo si allarga */
+.app{animation:apri .5s var(--mov) .9s both}
+@keyframes apri{from{opacity:0;transform:scale(.99)}to{opacity:1;transform:none}}
+.tabbar,.tabblur{animation:menu-su .5s var(--mov) 1s both}
 @keyframes menu-su{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 
 /* Il cambio di schermata racconta dove stai andando. Fra le cinque sezioni
@@ -649,6 +703,7 @@ body.onboarding .app{padding-bottom:40px}
 
 <div id="avvio" aria-hidden="true">
   <div class="bollo">
+    <span class="ombra"></span>
     <span class="onda"></span>
     <svg viewBox="0 0 124 124" xmlns="http://www.w3.org/2000/svg">
       <defs><radialGradient id="bacca-g" cx="34%" cy="28%" r="80%">
@@ -660,8 +715,6 @@ body.onboarding .app{padding-bottom:40px}
       <path class="stella" d="M62 38 L67.11 50.96 L81.02 51.82 L70.27 60.69 L73.76 74.18 L62 66.7 L50.24 74.18 L53.73 60.69 L42.98 51.82 L56.89 50.96 Z" fill="#2B3585"/>
     </svg>
   </div>
-  <div class="nome">Mirtillo</div>
-  <div class="sotto">la dispensa, le ricette e la spesa</div>
 </div>
 
 <div class="app">
@@ -3044,14 +3097,18 @@ function leggiQuantita(testo){
  if(mx) molt=Math.min(20,parseInt(mx[1],10)||1);
  /* "6 PZ", "CONF.4", "4 PEZZI": lo scontrino dice già quanti sono */
  const mz=t.match(/(?:^|\s)(\d{1,2})\s?(?:pz|pezzi|pcs)\b/)
+   ||t.match(/\b(?:pz|pezzi)\.?\s?(\d{1,2})(?:\s|$)/)   /* certe catene lo scrivono al contrario: "PZ 2" */
    ||t.match(/\b(?:conf|cf)\.?\s?(\d{1,2})(?:\s|$)/);
  if(mz&&molt===1) molt=Math.min(30,parseInt(mz[1],10)||1);
  const mp=t.match(/(\d+(?:[.,]\d+)?)\s?(kg|gr|g|ml|cl|lt|l)\b/);
  if(mp){
   let v=parseFloat(mp[1].replace(',','.')), u=mp[2];
+  /* "0,412 kg" con tre decimali è la bilancia, non una confezione: quel
+     numero storto è giusto per forza e non va messo in discussione */
+  const bilancia=/[.,]\d{3}$/.test(mp[1]);
   if(u==='kg'){v*=1000;u='g';} else if(u==='gr'){u='g';}
   else if(u==='lt'||u==='l'){v*=1000;u='ml';} else if(u==='cl'){v*=10;u='ml';}
-  return {v:Math.round(v*molt*10)/10,u,molt,pesato:false};
+  return {v:Math.round(v*molt*10)/10,u,molt,pesato:bilancia};
  }
  const mw=t.match(/(?:^|\s)(0[.,]\d{3})(?:\s|$)/);
  if(mw) return {v:Math.round(parseFloat(mw[1].replace(',','.'))*1000),u:'g',molt,pesato:true};
@@ -3177,11 +3234,22 @@ function leggiRiga(grezza,colonne){
  if(NONRIGA.some(r=>r.test(dn))) return {scarto:'riga non prodotto',raw};
  if(NONFRASI.some(f=>n.includes(f)||dn.includes(f))) return {scarto:'riga di cassa',raw};
  if(NONCIBO.find(w=>dn.includes(w))) return {scarto:'non è cibo',raw};
- const q=leggiQuantita(desc+' '+raw);
+ /* La quantità la cerco solo nella descrizione, non in tutta la riga: nel
+    margine l'OCR raccoglie numeri che non vogliono dire niente ("'58" letto
+    sulla carta sporca diventerebbe 58 g di pesto). Se le colonne non le ho
+    trovate, la riga intera è tutto quello che ho. */
+ const q=leggiQuantita(colonne?desc:(desc+' '+raw));
+ /* il "2 X" in testa alla riga le colonne l'hanno già tolto dal nome e
+    messo da parte: se l'ho perso per strada me lo riprendo da lì */
+ if(colonne&&colonne.molt>1&&q.molt===1){
+  q.molt=colonne.molt;
+  if(q.v) q.v=Math.round(q.v*colonne.molt*10)/10;
+ }
  if(nota){ const i=ING[nota];
   if(i){ const mis=misura(nota,q);
    return {raw,id:nota,q:mis.q,u:mis.u,c:1,desc,prezzo,
-           chiedi:!!mis.chiedi,stato:mis.chiedi?'quanti':'certa'}; } }
+           chiedi:!!mis.chiedi,
+           stato:mis.pesoDubbio?'peso':(mis.chiedi?'quanti':'certa')}; } }
  const m=abbina(desc);
  if(!m.id||m.punti<0.56){
   return {raw, id:null, guess:nomePresentabile(desc), desc, q:q.v||1,
@@ -3191,7 +3259,7 @@ function leggiRiga(grezza,colonne){
  const sicuro=m.punti>=0.86;
  return {raw, id:m.id, q:mis.q, u:mis.u, c:Math.min(.99,m.punti), desc, prezzo,
          chiedi:!!mis.chiedi,
-         stato:sicuro?(mis.chiedi?'quanti':'certa'):'dubbia'};
+         stato:sicuro?(mis.pesoDubbio?'peso':(mis.chiedi?'quanti':'certa')):'dubbia'};
 }
 
 /* il negozio, dalle prime righe */
@@ -3277,6 +3345,11 @@ function rigaDaColonne(riga,col){
  const paroluta=w=>(w.text.match(/[a-zA-Zàèéìòù]/g)||[]).length>=3;
  let testa=ws.filter(w=>w.bbox.x1<limite &&
    (w.confidence===undefined||w.confidence>=35||paroluta(w)));
+ /* Il "2 X" della quantità è fatto di pezzi corti, uguali alla sporcizia
+    del margine, e la pulizia qui sotto se lo porta via insieme a quella.
+    Quindi me lo segno adesso, finché la riga è ancora intera. */
+ const prima=testa.map(w=>w.text.trim()).join(' ');
+ const mq=prima.match(/(?:^|\s)(\d{1,2})\s*[xX*](?:\s|$)/);
  /* in testa resta la sporcizia del margine: via tutto ciò che non ha lettere */
  while(testa.length>1 && !/[a-zA-Zàèéìòù]/.test(testa[0].text)) testa.shift();
  const largh=(ws[ws.length-1].bbox.x1-ws[0].bbox.x0)||1;
@@ -3295,6 +3368,7 @@ function rigaDaColonne(riga,col){
  const mx=desc.match(/^(\d{1,2})\s*[xX*]\s+/);
  if(mx){ molt=parseInt(mx[1],10)||1; desc=desc.slice(mx[0].length).trim(); }
  else desc=desc.replace(/^[xX]\s+/,'').trim();
+ if(molt===1&&mq) molt=parseInt(mq[1],10)||1;
  if(prezzo===null) return null;      /* la riga c'è, ma senza prezzo non è un acquisto */
  return {desc,prezzo,molt};
 }
@@ -3476,8 +3550,32 @@ function vScontrino(){
           </div>
         </div>`;}).join('');
      })()}
+     ${(()=>{
+       const da=S.lines.map((l,i)=>({l,i})).filter(x=>x.l.stato==='peso'&&ING[x.l.id]);
+       if(!da.length) return '';
+       return `<div class="card" style="padding:16px;margin-bottom:12px;background-color:var(--terra-bg)">
+         <strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Questo peso non l'ho letto bene</strong>
+         <p class="small" style="margin:4px 0 0">${da.length===1?'Su una riga c\'era':'Su '+da.length+' righe c\'erano'} un peso che non torna, e l'ho lasciato stare: ti ho messo la confezione solita. Tocca la misura giusta, o lascia andare.</p>
+       </div>`+
+       da.map(({l,i})=>{
+        const ing=ING[l.id], f=ing.f||0;
+        const misure=[...new Set([Math.round(f/2),f,f*2,f*3])].filter(v=>v>0);
+        return `<div class="card" style="padding:14px;margin-bottom:10px">
+          <div class="row">
+            <span class="tile av-sm" style="background:var(--terra-bg)">${ing.e}</span>
+            <span class="col grow" style="gap:2px">
+              <span class="name">${esc(ing.n)}</span>
+              <span class="raw">${esc(l.raw||'')}</span>
+            </span>
+          </div>
+          <div class="chips" style="margin-top:11px;flex-wrap:wrap;overflow:visible">
+            ${misure.map(v=>`<button class="chip tnum" data-a="peso-q" data-i="${i}" data-v="${v}"
+              aria-pressed="${l.q===v}">${qty(v,ing.u)}</button>`).join('')}
+          </div>
+        </div>`;}).join('');
+     })()}
      <div class="inv">
-       ${S.lines.map((l,idx)=>({l,idx})).filter(x=>x.l.stato!=='dubbia'&&x.l.stato!=='ignota'&&x.l.stato!=='quanti').map(({l,idx})=>`
+       ${S.lines.map((l,idx)=>({l,idx})).filter(x=>x.l.stato!=='dubbia'&&x.l.stato!=='ignota'&&x.l.stato!=='quanti'&&x.l.stato!=='peso').map(({l,idx})=>`
          <div class="pline ingr ${l.on?'':'off'}">
            <span class="tile av-sm" style="background:var(--${l.c<.7?'terra':'verde'}-bg)">${l.id&&ING[l.id]?ING[l.id].e:'❓'}</span>
            <span class="col grow" style="gap:3px">
@@ -3801,6 +3899,9 @@ document.addEventListener('click',e=>{
    render(true); toast('Me lo ricordo'); }
  else if(a==='quanti'){ const l=S.lines[+t.dataset.i];
    if(l){ l.q=+t.dataset.v; l.u=unitaPezzo(l.id); l.stato='certa'; l.c=1; l.on=true; }
+   render(true); }
+ else if(a==='peso-q'){ const l=S.lines[+t.dataset.i], ing=l&&ING[l.id];
+   if(ing){ l.q=+t.dataset.v; l.u=ing.u; l.stato='certa'; l.c=1; l.on=true; }
    render(true); }
  else if(a==='apeso'){ const l=S.lines[+t.dataset.i], ing=l&&ING[l.id];
    if(ing){ l.u=ing.u; l.q=ing.f; l.stato='certa'; l.c=1; l.on=true; }
@@ -4255,7 +4356,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261119-1559';
+const VERSIONE='20261119-1649';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
@@ -4528,11 +4629,33 @@ function inUnita(id,q,u){
  return q;
 }
 /* la misura migliore per una riga di scontrino, e se vale la pena chiedere */
+/* Un peso letto male non si vede. "125 G" diventa "1256 G" e in dispensa
+   finisce un chilo e due di mozzarella senza che niente sembri strano: è un
+   numero come un altro. Però le confezioni hanno misure tonde e stanno
+   vicine a quella che conosco, quindi un numero che non è né tondo né
+   vicino non l'ho letto bene e non me lo tengo.
+   Il peso della bilancia ("0,412 kg") invece non si tocca mai: lì il numero
+   dispari è giusto per forza, è un pezzo pesato davvero. */
+function pesoStrano(id,let_){
+ const i=ING[id]; if(!i||let_.pesato) return false;
+ const q=let_.v;
+ if(!q||(let_.u!=='g'&&let_.u!=='ml')) return false;
+ /* nessuna confezione pesa 1256 g: un numero non tondo l'ho letto male.
+    Vale anche per le cose che si contano a pezzi, dove il peso scritto
+    sulla riga serve lo stesso a capire quanti sono */
+ if(q%5!==0) return true;
+ /* e deve stare vicino alla misura che conosco per quella cosa */
+ const rif=(i.u==='g'||i.u==='ml') ? (i.f||0) : (PEZZO[id]||0)*(i.f||1);
+ if(!rif) return false;
+ return q>rif*6 || q<rif/5;          /* troppo lontano da quella che conosco */
+}
+
 function misura(id,let_){
  const i=ING[id]; if(!i) return {q:let_.v||1,u:let_.u||'pz'};
  const molt=let_.molt||1;
- /* 1. il peso c'è scritto: quello è un dato, non si tocca */
- if(let_.v&&(let_.u==='g'||let_.u==='ml')){
+ const strano=pesoStrano(id,let_);
+ /* 1. il peso c'è scritto ed è credibile: quello è un dato, non si tocca */
+ if(let_.v&&(let_.u==='g'||let_.u==='ml')&&!strano){
   if(i.u==='g'||i.u==='ml') return {q:let_.v,u:i.u};
   const peso=PEZZO[id];
   if(peso) return {q:Math.max(1,Math.round(let_.v/peso)),u:i.u};
@@ -4540,12 +4663,19 @@ function misura(id,let_){
  }
  /* 2. "x3" sullo scontrino: tre pezzi, e non serve chiedere */
  if(molt>1&&aPezzi(id)) return {q:molt,u:unitaPezzo(id)};
- if(molt>1) return {q:Math.round(i.f*molt*10)/10,u:i.u};
- /* 3. nessun numero: la confezione solita, come prima. Ma se quella cosa
-       si compra contandola ti chiedo quanti, perché "hamburger" senza
-       grammi non vuol dire 110 g: vuol dire uno, o due, o quattro. */
+ if(molt>1){
+  /* su una cosa che si conta, "3X" dice quante ne hai prese, non quante
+     confezioni: "TONNO 3X" sono tre scatolette, non tre confezioni da tre */
+  const conta=!(i.u==='g'||i.u==='ml');
+  return conta?{q:molt,u:i.u}:{q:Math.round(i.f*molt*10)/10,u:i.u};
+ }
+ /* 3. nessun numero, o un numero di cui non mi fido: la confezione solita.
+       Se quella cosa si compra contandola ti chiedo quanti, perché
+       "hamburger" senza grammi non vuol dire 110 g: vuol dire uno, o due,
+       o quattro. E se il peso l'ho buttato via te lo dico. */
  const pesa=i.u==='g'||i.u==='ml';
- return {q:pesa?Math.round(i.f*10)/10:pezziTipici(id),u:i.u,chiedi:contaDavvero(id)};
+ return {q:pesa?Math.round(i.f*10)/10:pezziTipici(id),u:i.u,
+         chiedi:contaDavvero(id),pesoDubbio:strano};
 }
 /* la domanda, con le parole dell'alimento quando le ho */
 const domandaPezzi=id=>DOMANDE[id]||'Quanti ne hai presi?';
