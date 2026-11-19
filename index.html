@@ -424,17 +424,32 @@ input.grande:focus{box-shadow:inset 0 0 0 2px var(--verde)}
   box-shadow:0 0 0 100vmax rgba(6,10,22,.55);transition:opacity .3s}
 .live .guida.ok{opacity:0}
 .live .guida.ok{border-color:#9BE37A}
-.live .guidacard{position:absolute;left:12px;right:62px;z-index:3;
-  top:calc(14px + env(safe-area-inset-top,0px));
-  display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:18px;
-  background:rgba(10,16,32,.78);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-  box-shadow:0 6px 22px rgba(0,0,0,.35);transition:background .3s}
-.live .guidacard.ok{background:rgba(22,60,34,.8)}
-.live .guidacard .ic{font-size:22px;line-height:1;flex:0 0 auto}
+/* la guida è l'unica cosa che ti dice cosa fare mentre inquadri: deve
+   leggersi con il telefono in mano e a braccio teso, non strizzando */
+.live .guidacard{position:absolute;left:12px;right:12px;z-index:3;
+  top:calc(64px + env(safe-area-inset-top,0px));
+  display:grid;grid-template-columns:auto 1fr;gap:0 14px;align-items:center;
+  padding:15px 17px 14px;border-radius:24px;
+  background:rgba(10,16,32,.82);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  box-shadow:0 8px 28px rgba(0,0,0,.42);transition:background .3s}
+.live .guidacard.ok{background:rgba(20,58,32,.85)}
+.live .guidacard .ic{font-size:31px;line-height:1;flex:0 0 auto}
 .live .guidacard .tx{display:flex;flex-direction:column;min-width:0}
-.live .guidacard b{color:#fff;font-family:var(--font-display);font-size:15px;line-height:1.2}
-.live .guidacard i{color:rgba(255,255,255,.72);font-style:normal;font-size:12.5px;
-  font-weight:600;line-height:1.25;margin-top:2px}
+.live .guidacard b{color:#fff;font-family:var(--font-display);font-size:19.5px;line-height:1.18}
+.live .guidacard i{color:rgba(255,255,255,.82);font-style:normal;font-size:14px;
+  font-weight:600;line-height:1.3;margin-top:3px}
+/* quanto manca: non una percentuale inventata, ma le tappe vere */
+.live .avanz{grid-column:1 / -1;margin-top:13px}
+.live .barra{height:7px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden}
+.live .barra i{display:block;height:100%;border-radius:99px;background:#fff;
+  transition:width .45s ease-out}
+.live .avanz.finito .barra i{background:#86E79B}
+.live .tappe{display:flex;justify-content:space-between;gap:4px;margin-top:8px}
+.live .tappe span{font-size:10.5px;font-weight:800;letter-spacing:.05em;
+  text-transform:uppercase;color:rgba(255,255,255,.4);transition:color .3s}
+.live .tappe span.fatta{color:rgba(255,255,255,.72)}
+.live .tappe span.ora{color:#fff}
+.live .quante{margin-top:7px;font-size:12.5px;font-weight:700;color:rgba(255,255,255,.62)}
 .live .chiudi{position:absolute;z-index:3;right:14px;width:40px;height:40px;border-radius:50%;
   top:calc(14px + env(safe-area-inset-top,0px));
   background:rgba(10,16,32,.72);color:#fff;font-size:20px;display:grid;place-items:center}
@@ -2089,7 +2104,8 @@ const TESS_URL='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.m
 const L={attivo:false, video:null, stream:null, worker:null, timer:null,
  leggendo:false, trovate:[], scarti:[], negozio:null, fermi:0, fase:'avvio',
  errore:null, cand:{}, viste:{}, ritaglio:null, parole:null, livello:null, carta:null, raf:null,
- cartaOcr:null, ritaglioOcr:null, miniTrack:null, ultimoTrack:0, persa:0};
+ cartaOcr:null, ritaglioOcr:null, miniTrack:null, ultimoTrack:0, persa:0,
+ pronto:false, visto:false, fine:false};
 
 /* Dove finisce un punto del fotogramma elaborato sullo schermo.
    Il video è mostrato in "cover": ingrandito al massimo e centrato, quindi
@@ -2277,17 +2293,40 @@ function freccia(mostra){
 
 /* la scheda in alto dice sempre cosa fare, non solo cosa sta succedendo */
 const GUIDE={
- avvio:   ['📷','Accendo la fotocamera','un attimo solo'],
- scarico: ['⬇️','Preparo la lettura','scarico il riconoscimento, solo la prima volta'],
+ avvio:   ['📷','Accendo la fotocamera','un attimo e si parte'],
+ scarico: ['⬇️','Preparo il lettore','solo la prima volta: poi resta nel telefono'],
  cerca:   ['🧾','Inquadra lo scontrino','tienilo disteso e riempi lo schermo in larghezza'],
- legge:   ['👀','Sto leggendo','tieni fermo un attimo'],
- conferma:['⏳','Sto confermando','ancora un istante senza muoverti'],
- nuove:   ['✨','Righe nuove trovate','continua così'],
- scendi:  ['⬇️','Questo pezzo è fatto','scendi piano verso il basso'],
- buio:    ['💡','Vedo poco','più luce, oppure avvicinati'],
- illeggibile:['🔍','Vedo il testo ma non lo capisco','avvicinati ancora un po’'],
- pronto:  ['🛒','Puoi caricare la spesa','o scendi ancora per il resto']
+ legge:   ['👀','Sto leggendo','tieni fermo due secondi'],
+ conferma:['⏳','Sto controllando una riga','non muoverti, ci siamo quasi'],
+ nuove:   ['✨','Righe lette','continua così, poi scendi piano'],
+ scendi:  ['⬇️','Questo pezzo è fatto','scendi piano fino alla riga del totale'],
+ buio:    ['💡','Vedo poco','accendi una luce o avvicinati'],
+ illeggibile:['🔍','Vedo il testo ma non lo capisco','avvicinati e tieni fermo'],
+ pronto:  ['🛒','Sei arrivato al totale?','se sì carica la spesa, se no scendi ancora'],
+ fondo:   ['✅','Sei arrivato in fondo','ho visto il totale: puoi caricare la spesa']
 };
+/* ===== a che punto siamo =====
+   Una percentuale inventata sarebbe una bugia: non so quanto è lungo lo
+   scontrino finché non ne vedo la fine. Quello che so davvero sono le
+   tappe: fotocamera pronta, carta inquadrata, intestazione riconosciuta,
+   righe che salgono, riga del totale vista. La barra mostra quelle. */
+const TAPPE=['Inquadra','Negozio','Prodotti','Totale'];
+function avanzamento(){
+ let p=0.04, t=0;
+ if(L.pronto) p=0.10;
+ if(L.visto){ p=0.22; t=1; }
+ if(L.negozio){ p=0.36; t=1; }
+ if(L.trovate.length){ p=Math.max(p,0.36+Math.min(0.52,L.trovate.length*0.075)); t=2; }
+ if(L.fine){ p=1; t=3; }
+ const b=el('live-barra'); if(b) b.style.width=Math.round(p*100)+'%';
+ const box=el('live-avanz'); if(box) box.classList.toggle('finito',!!L.fine);
+ TAPPE.forEach((_,i)=>{ const e=el('tap-'+i);
+  if(e) e.className = i<t?'fatta' : (i===t?'ora':''); });
+ const n=el('live-quante');
+ if(n) n.textContent = L.fine ? 'fine dello scontrino trovata'
+   : L.trovate.length ? L.trovate.length+(L.trovate.length===1?' riga presa':' righe prese')
+   : 'niente di preso, per ora';
+}
 function guida(chiave,extra){
  const g=GUIDE[chiave]; if(!g) return;
  const ic=el('live-ic'), t=el('live-stato'), sotto=el('live-sotto'), card=el('live-guidacard');
@@ -2308,7 +2347,15 @@ function vScanner(){
    <div class="guidacard" id="live-guidacard">
      <span class="ic" id="live-ic">📷</span>
      <span class="tx"><b id="live-stato">Accendo la fotocamera…</b>
-     <i id="live-sotto">un attimo solo</i></span>
+     <i id="live-sotto">un attimo e si parte</i></span>
+     <div class="avanz" id="live-avanz">
+       <div class="barra"><i id="live-barra" style="width:4%"></i></div>
+       <div class="tappe">
+         <span id="tap-0" class="ora">Inquadra</span><span id="tap-1">Negozio</span>
+         <span id="tap-2">Prodotti</span><span id="tap-3">Totale</span>
+       </div>
+       <div class="quante" id="live-quante">niente di preso, per ora</div>
+     </div>
    </div>
    <button class="chiudi" data-a="live-chiudi" aria-label="Chiudi">✕</button>
    <div class="fondo">
@@ -2453,6 +2500,7 @@ async function apriScanner(){
  S.screen='scanner'; render();
  L.trovate=[]; L.scarti=[]; L.negozio=null; L.fermi=0; L.attivo=true; L.errore=null;
  L.cand={}; L.viste={}; L.ritaglio=null;
+ L.pronto=false; L.visto=false; L.fine=false;
  disegnaTrovate();
  const video=el('live-video'); L.video=video;
  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
@@ -2487,7 +2535,7 @@ async function apriScanner(){
    'La prima volta serve la rete per scaricare il riconoscimento del testo (poi resta nel telefono). Controlla la connessione, oppure inserisci la spesa a mano.');
  }
  if(!L.attivo){ fermaScanner(); return; }
- guida('cerca');
+ L.pronto=true; guida('cerca'); avanzamento();
  L.timer=setInterval(()=>passata(canvas,mini), 900);
  L.raf=requestAnimationFrame(animaOverlay);
 }
@@ -2507,9 +2555,9 @@ async function passata(canvas,mini){
  const pieno=inquadrato(L.video,mini);
  if(pieno<0.22||!carta){
   guidaOk(false); freccia(false); disegnaOverlay(null,carta);
-  guida('cerca'); return;
+  guida('cerca'); avanzamento(); return;
  }
- guidaOk(true);
+ guidaOk(true); L.visto=true;
  L.leggendo=true;
  try{
   if(L.fase!=='letto') guida('legge');
@@ -2523,6 +2571,12 @@ async function passata(canvas,mini){
   if(!L.negozio){
    const st=leggiNegozio(righeOCR.map(r=>(r.text||'')));
    if(st){ L.negozio=st; S.store=st; }
+  }
+  /* la riga del totale è la fine dello scontrino: da lì so che non manca
+     più niente sotto, ed è l'unica cosa che me lo dice davvero */
+  if(!L.fine&&L.trovate.length){
+   const coda=normalizza(righeOCR.map(r=>(r.text||'')).join(' '));
+   if(/(totale|importo pagato|pagamento elettronico|contante|resto)/.test(coda)) L.fine=true;
   }
   /* Una riga entra in lista solo se la rileggo in due passate diverse.
      Il rumore dell'OCR cambia ogni volta, il testo vero no: è così che si
@@ -2565,7 +2619,7 @@ async function passata(canvas,mini){
   if(nuove){
    L.fermi=0; L.fase='letto'; freccia(false);
    disegnaTrovate();
-   guida('nuove',nuove===1?'+1 riga letta':'+'+nuove+' righe lette');
+   guida(L.fine?'fondo':'nuove',L.fine?null:(nuove===1?'+1 riga letta':'+'+nuove+' righe lette'));
    if(navigator.vibrate) try{navigator.vibrate(18);}catch(e){}
   }else{
    L.fermi++;
@@ -2573,12 +2627,13 @@ async function passata(canvas,mini){
    if(inAttesa&&L.fermi<3){
     guida('conferma');
    } else if(L.trovate.length&&L.fermi>=2){
-    guida(L.trovate.length?'pronto':'scendi'); freccia(true);
+    guida(L.fine?'fondo':'pronto'); freccia(!L.fine);
    } else if(!L.trovate.length&&L.fermi>=3){
     freccia(false);
     guida(caselle.length?'illeggibile':'buio');
    }
   }
+  avanzamento();
  }catch(e){ /* un fotogramma venuto male: si riprova col prossimo */ }
  finally{ L.leggendo=false; }
 }
@@ -3967,7 +4022,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261119-0004';
+const VERSIONE='20261119-1142';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
