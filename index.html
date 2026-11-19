@@ -54,7 +54,7 @@
   --mov:cubic-bezier(.32,.72,0,1);      /* la curva di tutti i giorni */
   --mov-dentro:cubic-bezier(.4,0,.2,1); /* quando qualcosa se ne va */
   --mov-molla:cubic-bezier(.34,1.26,.64,1); /* un filo di rimbalzo, misurato */
-  --t-tocco:.16s; --t-cambio:.3s; --t-pannello:.44s;
+  --t-tocco:.16s; --t-cambio:.34s; --t-pannello:.48s;
   --shadow:0 8px 22px rgba(var(--ombra),.13);
   --shadow-sm:0 4px 14px rgba(var(--ombra),.10);
   --r-xl:32px; --r-lg:26px; --r-md:20px; --r-sm:16px;
@@ -139,7 +139,8 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px}
 .av-sm{width:42px;height:42px;font-size:22px}
 .av-lg{width:76px;height:76px;font-size:42px}
 .bar{height:9px;border-radius:99px;background:var(--surface-2);overflow:hidden}
-.bar i{display:block;height:100%;border-radius:99px;background:var(--ok)}
+.bar i{display:block;height:100%;width:100%;border-radius:99px;background:var(--ok);
+  transform-origin:left;transform:scaleX(var(--p,0))}
 .bar.warn i{background:var(--terra)} .bar.bad i{background:var(--ambra)}
 /* difficoltà: cinque mirtilli, pieni fino al livello della ricetta */
 .diff{display:inline-flex;align-items:center;gap:3px}
@@ -252,8 +253,7 @@ body.no-pad .app{padding-bottom:0;background-image:none}
 .searchbar{position:sticky;top:0;z-index:28;
   margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
   padding:10px max(16px,env(safe-area-inset-left,0px)) 12px;
-  background:rgba(var(--crema-rgb),.84);
-  -webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3)}
+  background:rgba(var(--crema-rgb),.97)}
 .search{display:flex;align-items:center;gap:10px;padding:0 16px;border-radius:99px;
   background-color:var(--surface);box-shadow:var(--shadow-sm)}
 .search input{border:0;background:none;outline:none;width:100%;font-weight:700;font-size:16px;
@@ -359,9 +359,9 @@ input.grande:focus{box-shadow:inset 0 0 0 2px var(--verde)}
 .scan{position:relative;height:230px;border-radius:var(--r-lg);background:var(--surface-2);
   overflow:hidden;display:flex;flex-direction:column;gap:8px;padding:18px 20px}
 .scan .l{height:9px;border-radius:99px;background:#FFFFFFB0}
-.scan .beam{position:absolute;left:0;right:0;height:60px;
+.scan .beam{position:absolute;left:0;right:0;top:0;height:60px;will-change:transform;
   background:linear-gradient(180deg,transparent,rgba(var(--verde-rgb),.6),transparent);animation:beam 1.5s linear infinite}
-@keyframes beam{0%{top:-62px}100%{top:232px}}
+@keyframes beam{0%{transform:translateY(-62px)}100%{transform:translateY(232px)}}
 .scan img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .pline{padding:12px 14px;display:flex;align-items:flex-start;gap:11px}
 .pline .raw{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;font-weight:700;
@@ -419,7 +419,8 @@ input.grande:focus{box-shadow:inset 0 0 0 2px var(--verde)}
 .sheet-wrap.gia:not(.via),.sheet-wrap.gia:not(.via) .sheet{animation:none}
 .sheet{width:100%;max-width:480px;margin:0 auto;background:var(--crema);border-radius:var(--r-xl) var(--r-xl) 0 0;
   padding:10px max(18px,env(safe-area-inset-left,0px)) calc(22px + env(safe-area-inset-bottom,0px));
-  max-height:82vh;overflow-y:auto;animation:su var(--t-pannello) var(--mov) both}
+  max-height:82vh;overflow-y:auto;will-change:transform;
+  animation:su var(--t-pannello) var(--mov) both}
 @keyframes su{from{transform:translateY(100%)}to{transform:none}}
 .grab{width:46px;height:5px;border-radius:99px;background:var(--line);margin:0 auto}
 .sheet-top{position:sticky;top:-10px;z-index:3;display:grid;grid-template-columns:44px 1fr 44px;
@@ -463,8 +464,8 @@ input.grande:focus{box-shadow:inset 0 0 0 2px var(--verde)}
 /* quanto manca: non una percentuale inventata, ma le tappe vere */
 .live .avanz{grid-column:1 / -1;margin-top:13px}
 .live .barra{height:7px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden}
-.live .barra i{display:block;height:100%;border-radius:99px;background:#fff;
-  transition:width .5s var(--mov)}
+.live .barra i{display:block;height:100%;width:100%;border-radius:99px;background:#fff;
+  transform-origin:left;transform:scaleX(var(--p,0))}
 .live .avanz.finito .barra i{background:#86E79B}
 .live .tappe{display:flex;justify-content:space-between;gap:4px;margin-top:8px}
 .live .tappe span{font-size:10.5px;font-weight:800;letter-spacing:.05em;
@@ -509,12 +510,14 @@ body.onboarding .app{padding-bottom:40px}
 .tabbar .in{max-width:452px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);
   align-items:end;background:var(--menu-bg);border-radius:30px;padding:9px 6px 10px;
   box-shadow:0 12px 32px rgba(var(--ombra),.22);pointer-events:auto;
-  -webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4)}
-/* sotto il menu l'app resta sfocata, così il menu si stacca */
+  /* un solo passaggio di sfocatura, senza saturazione: la saturazione è un
+     secondo passaggio sull'immagine e si paga a ogni fotogramma */
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+/* sotto il menu il contenuto sfuma, così il menu si stacca. Era una seconda
+   sfocatura sovrapposta alla prima: la sfumatura da sola fa lo stesso lavoro */
 .tabblur{position:fixed;left:0;right:0;bottom:0;z-index:34;pointer-events:none;
   height:calc(126px + env(safe-area-inset-bottom,0px));
-  -webkit-backdrop-filter:blur(13px);backdrop-filter:blur(13px);
-  background:linear-gradient(to top, rgba(var(--crema-rgb),.62), rgba(var(--crema-rgb),0));
+  background:linear-gradient(to top, rgba(var(--crema-rgb),.9), rgba(var(--crema-rgb),0));
   -webkit-mask-image:linear-gradient(to top, #000 48%, rgba(0,0,0,.55) 74%, transparent 100%);
   mask-image:linear-gradient(to top, #000 48%, rgba(0,0,0,.55) 74%, transparent 100%)}
 .tab{padding:4px 2px 2px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
@@ -543,7 +546,8 @@ body.onboarding .app{padding-bottom:40px}
 .tab.key .ring{transition:transform .42s var(--mov-molla)}
 .tab.key .cam{position:absolute;right:-4px;bottom:-2px;width:25px;height:25px;border-radius:50%;
   background:var(--verde-scuro);color:var(--crema);font-size:12px;display:grid;place-items:center;
-  animation:pulse 3.4s var(--mov-dentro) infinite}
+  animation:pulse 1.9s var(--mov-dentro) .9s 2 both}
+/* due battiti all'apertura per farsi notare, poi sta fermo */
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.11)}}
 
 #toast{position:fixed;left:50%;transform:translateX(-50%) translateY(18px);
@@ -562,8 +566,9 @@ body.onboarding .app{padding-bottom:40px}
    centesimi l'una, e in meno di mezzo secondo si sono posate tutte. Solo
    le prime sette: in una lista lunga il resto è già pronto quando ci
    arrivi con l'occhio, e aspettare sarebbe fastidioso. */
+#view.vai-tab,#view.vai-avanti,#view.vai-indietro{will-change:transform,opacity}
 #view.vai-tab > *,#view.vai-avanti > *,#view.vai-indietro > *{
-  animation:salita .44s var(--mov) both}
+  animation:salita .5s var(--mov) both}
 @keyframes salita{from{transform:translateY(15px)}to{transform:none}}
 #view > *:nth-child(1){animation-delay:0s}
 #view > *:nth-child(2){animation-delay:.045s}
@@ -577,14 +582,14 @@ body.onboarding .app{padding-bottom:40px}
 .bar i{transform-origin:left}
 #view.vai-tab .bar i,#view.vai-avanti .bar i,#view.vai-indietro .bar i{
   animation:riempi .75s var(--mov) .12s both}
-@keyframes riempi{from{transform:scaleX(0)}to{transform:none}}
+@keyframes riempi{from{transform:scaleX(0)}to{transform:scaleX(var(--p,1))}}
 
 /* ---------- il tocco ---------- */
 /* Ogni cosa che si tocca risponde allo stesso modo: scende subito sotto il
    dito e risale con calma. Una regola sola, così niente si muove a modo suo. */
 .chip,.stat,.sitem,.calday,.pline,.quanto .passo,.passo-g,.swipe button,
 .sheet-top .x,.tile,.ingr{transition:transform .36s var(--mov-molla),
-  background-color var(--t-cambio) var(--mov),box-shadow var(--t-cambio) var(--mov),
+  background-color var(--t-cambio) var(--mov),
   color var(--t-cambio) var(--mov),opacity var(--t-cambio) var(--mov)}
 .chip:active,.stat:active,.sitem:active,.calday:active,.pline:active,
 .quanto .passo:active,.passo-g:active,.swipe button:active,.sheet-top .x:active{
@@ -592,8 +597,7 @@ body.onboarding .app{padding-bottom:40px}
 .chip:active,.sitem:active,.pline:active,.calday:active{transform:scale(.975)}
 /* le barre di livello scorrono invece di saltare: quando salvi quanto ti
    resta di una cosa, il verde ci arriva camminando */
-.bar i{transition:width .55s var(--mov),background-color var(--t-cambio) var(--mov)}
-.live .barra i{transition:width .5s var(--mov),background-color var(--t-cambio) var(--mov)}
+.bar i,.live .barra i{transition:transform .55s var(--mov),background-color var(--t-cambio) var(--mov)}
 
 /* il numero grande fa un salto ogni volta che cambia: è lui il valore che
    stai muovendo, deve essere chiaro che ha sentito il tocco */
@@ -628,22 +632,28 @@ body.onboarding .app{padding-bottom:40px}
   background:rgba(74,86,181,.26);filter:blur(5px);
   animation:ombra .9s var(--mov) both}
 @keyframes ombra{
-  0%{opacity:0;transform:scale(.3)}
-  34%{opacity:.85;transform:scale(1.12)}
-  52%{opacity:.5;transform:scale(.8)}
-  70%{opacity:.8;transform:scale(1.04)}
+  0%{opacity:0;transform:scale(.3);animation-timing-function:cubic-bezier(.5,0,.9,.42)}
+  36%{opacity:.85;transform:scale(1.12);animation-timing-function:cubic-bezier(.12,.7,.35,1)}
+  54%{opacity:.5;transform:scale(.8);animation-timing-function:cubic-bezier(.5,0,.9,.45)}
+  72%{opacity:.8;transform:scale(1.04);animation-timing-function:cubic-bezier(.12,.7,.35,1)}
   100%{opacity:.6;transform:scale(1)}}
-#avvio svg{width:128px;height:128px;display:block;
-  filter:drop-shadow(0 16px 28px rgba(74,86,181,.28));
+#avvio svg{width:128px;height:128px;display:block;will-change:transform;
   animation:cade .88s var(--mov) both}
 /* cade, si schiaccia sul colpo, si allunga nel rimbalzo, si posa */
 @keyframes cade{
-  0%{opacity:0;transform:translateY(-120px) scale(.86,1.12)}
-  26%{opacity:1}
-  34%{transform:translateY(0) scale(1.14,.86)}
-  52%{transform:translateY(-26px) scale(.95,1.05)}
-  70%{transform:translateY(0) scale(1.06,.94)}
-  86%{transform:translateY(-7px) scale(.99,1.01)}
+  /* Una caduta sola, senza fermate in mezzo: un fotogramma intermedio
+     spezzava il volo a metà e si vedeva come un'esitazione. */
+  0%{opacity:0;transform:translateY(-124px) scale(.88,1.1);
+     animation-timing-function:cubic-bezier(.45,0,.75,.32)}    /* cade e accelera */
+  20%{opacity:1}
+  36%{transform:translateY(0) scale(1.13,.87);
+     animation-timing-function:cubic-bezier(.12,.7,.35,1)}     /* tocca e si schiaccia */
+  54%{transform:translateY(-24px) scale(.96,1.04);
+     animation-timing-function:cubic-bezier(.5,0,.9,.45)}      /* risale e ricade */
+  72%{transform:translateY(0) scale(1.05,.95);
+     animation-timing-function:cubic-bezier(.12,.7,.35,1)}
+  87%{transform:translateY(-6px) scale(.99,1.01);
+     animation-timing-function:cubic-bezier(.5,0,.9,.45)}
   100%{transform:translateY(0) scale(1)}}
 /* l'aria spostata dall'arrivo: parte nell'istante del tocco */
 #avvio .onda{position:absolute;width:128px;height:128px;border-radius:50%;
@@ -667,9 +677,9 @@ body.onboarding .app{padding-bottom:40px}
    scontrino la pagina arriva da destra, e tornando indietro se ne va da
    dove era venuta. Pochi pixel: il movimento deve dire la direzione, non
    farsi guardare. */
-#view.vai-tab{animation:v-tab .3s var(--mov) both}
-#view.vai-avanti{animation:v-avanti .34s var(--mov) both}
-#view.vai-indietro{animation:v-indietro .34s var(--mov) both}
+#view.vai-tab{animation:v-tab .34s var(--mov) both}
+#view.vai-avanti{animation:v-avanti .4s var(--mov) both}
+#view.vai-indietro{animation:v-indietro .4s var(--mov) both}
 @keyframes v-tab{from{opacity:0;transform:scale(.988)}to{opacity:1;transform:none}}
 @keyframes v-avanti{from{opacity:0;transform:translate3d(20px,0,0)}to{opacity:1;transform:none}}
 @keyframes v-indietro{from{opacity:0;transform:translate3d(-20px,0,0)}to{opacity:1;transform:none}}
@@ -1622,7 +1632,7 @@ function itemRow(k){
        ${i.exp!==undefined&&i.q>0&&i.exp<=5?`<span class="pill bad">scade in ${i.exp} gg</span>`:''}
        ${i.fav?'<span class="pill flat">la prendi spesso</span>':''}
      </span>
-     ${i.q>0?`<span class="bar ${cls}"><i style="width:${Math.max(3,pct)}%"></i></span>`:''}
+     ${i.q>0?`<span class="bar ${cls}"><i style="--p:${Math.max(3,pct)/100}"></i></span>`:''}
    </span>
    <span class="go" style="width:30px;height:30px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;color:var(--ink-3)">›</span>
  </button>`;
@@ -1658,7 +1668,7 @@ function vSpesa(){
        <span class="num tnum">${eur(totale)}</span></span>
      <span class="blob av-lg" style="background:var(--verde-bg)">🧾</span>
    </div>
-   <div class="bar ${totale>tetto?'warn':''}" style="margin-top:12px"><i style="width:${Math.min(100,totale/tetto*100)}%"></i></div>
+   <div class="bar ${totale>tetto?'warn':''}" style="margin-top:12px"><i style="--p:${Math.min(1,totale/tetto)}"></i></div>
    <div class="row" style="margin-top:8px">
      <span class="small grow">Budget: ${eur(S.budget)} a pasto × ${pasti} pasti per ${S.people===1?'una persona':S.people+' persone'}</span>
      <span class="small tnum" style="color:${totale>tetto?'var(--alert)':'var(--verde-ink)'}">${eur(tetto)}</span>
@@ -1923,7 +1933,7 @@ function vProposteSlot(){
    <span class="grow"></span>
    <span class="pill dark">${esc(titolo)}</span>
  </div>
- <div class="bar" style="margin-bottom:14px"><i style="width:${(P.i/P.pool.length)*100}%"></i></div>
+ <div class="bar" style="margin-bottom:14px"><i style="--p:${P.i/P.pool.length}"></i></div>
  ${deckCard(r)}
  <p class="muted" style="text-align:center;margin-top:12px">Proposta ${P.i+1} di ${P.pool.length} · scartate ${P.rejected.length}</p>`;
 }
@@ -2003,7 +2013,7 @@ function vProposte(){
     <span class="grow"></span>
     <span class="pill dark">${liberi} pasti da riempire</span>
   </div>
-  <div class="bar" style="margin-bottom:14px"><i style="width:${(i/lista.length)*100}%"></i></div>
+  <div class="bar" style="margin-bottom:14px"><i style="--p:${i/lista.length}"></i></div>
   ${deckCard(r)}
   <p class="muted" style="text-align:center;margin-top:12px">Accettate: ${P.accepted.length} · scartate: ${P.rejected.length}</p>`;
  }
@@ -2487,7 +2497,7 @@ function avanzamento(){
  if(L.negozio){ p=0.36; t=1; }
  if(L.trovate.length){ p=Math.max(p,0.36+Math.min(0.52,L.trovate.length*0.075)); t=2; }
  if(L.fine){ p=1; t=3; }
- const b=el('live-barra'); if(b) b.style.width=Math.round(p*100)+'%';
+ const b=el('live-barra'); if(b) b.style.setProperty('--p',p.toFixed(3));
  const box=el('live-avanz'); if(box) box.classList.toggle('finito',!!L.fine);
  TAPPE.forEach((_,i)=>{ const e=el('tap-'+i);
   if(e) e.className = i<t?'fatta' : (i===t?'ora':''); });
@@ -2518,7 +2528,7 @@ function vScanner(){
      <span class="tx"><b id="live-stato">Accendo la fotocamera…</b>
      <i id="live-sotto">un attimo e si parte</i></span>
      <div class="avanz" id="live-avanz">
-       <div class="barra"><i id="live-barra" style="width:4%"></i></div>
+       <div class="barra"><i id="live-barra" style="--p:.04"></i></div>
        <div class="tappe">
          <span id="tap-0" class="ora">Inquadra</span><span id="tap-1">Negozio</span>
          <span id="tap-2">Prodotti</span><span id="tap-3">Totale</span>
@@ -4142,7 +4152,7 @@ function disegnaUso(){
        </span>
        <button class="passo-g" data-a="uso-passo" data-d="1" aria-label="Più ${passo} ${i.u}">+</button>
      </div>
-     <div class="bar ${pct<=25?'warn':''}" style="margin:14px 0 16px"><i style="width:${pct}%"></i></div>
+     <div class="bar ${pct<=25?'warn':''}" style="margin:14px 0 16px"><i style="--p:${pct/100}"></i></div>
      <div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0 0 16px">
        <button class="chip" data-a="uso-meta">ne resta metà</button>
        <button class="chip" data-a="uso-fine">è finito</button>
@@ -4356,7 +4366,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261119-1649';
+const VERSIONE='20261119-1656';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
