@@ -3034,6 +3034,13 @@ function leggiNegozio(righe){
   const k=normalizza(c);
   if(k.length>3&&testa.includes(k)) return c==='Ins Mercato'?"In's Mercato":c;
  }
+ /* i nomi corti (MD, Pam, Alì) non si possono cercare dentro le parole:
+    "md" sta dentro "comodo". Li voglio come parola intera. */
+ for(const c of CATENE){
+  const k=normalizza(c);
+  if(k.length>3||k.length<2) continue;
+  if(new RegExp('(?:^|\\s)'+k+'(?:\\s|$)').test(testa)) return c;
+ }
  /* l'OCR sbaglia una lettera e il nome non si trova più: confronto per parola */
  const parole=testa.split(/\s+/).filter(w=>w.length>3);
  for(const c of CATENE){
@@ -3051,15 +3058,17 @@ function leggiNegozio(righe){
    il prezzo finisce nel nome. Tesseract però dà la posizione di ogni parola,
    e con quella le colonne si separano in modo netto. */
 /* un prezzo letto male ha una cifra in più o un segno attaccato: mi basta
-   che "assomigli" a un prezzo, la posizione conta più del valore */
-const RE_PREZZO=/^(\d{1,4})[.,](\d{2})\d?$/;
+   che "assomigli" a un prezzo, la posizione conta più del valore.
+   La parte intera può anche essere illeggibile ("@,89" al posto di "0,89"):
+   i centesimi e la posizione nella colonna bastano per capire che è un prezzo. */
+const RE_PREZZO=/^(\d{0,4})[.,](\d{2})\d?$/;
 const RE_IVA=/^\d{1,2}\s?%$/;
 const parolePulite=riga=>(riga.words||[]).filter(w=>w&&w.text&&w.text.trim()&&w.bbox)
   .sort((a,b)=>a.bbox.x0-b.bbox.x0);
 
 function prezzoDi(w){
  const m=w.text.trim().replace(/[^\d.,]/g,'').match(RE_PREZZO);
- return m?parseFloat(m[1]+'.'+m[2]):null;
+ return m?parseFloat((m[1]||'0')+'.'+m[2]):null;
 }
 
 /* le colonne sono le stesse per tutte le righe: le calcolo una volta sola
@@ -3094,7 +3103,12 @@ function rigaDaColonne(riga,col){
  }
  const limite=Math.min(xPrezzo,xIva)-4;
  if(!isFinite(limite)) return null;
- let testa=ws.filter(w=>w.bbox.x1<limite && (w.confidence===undefined||w.confidence>=35));
+ /* la sporcizia del margine è corta e storta; una parola di tre lettere o più
+    la tengo anche se Tesseract non ne è sicuro, perché il nome del prodotto
+    spesso è proprio la parola letta peggio */
+ const paroluta=w=>(w.text.match(/[a-zA-Zàèéìòù]/g)||[]).length>=3;
+ let testa=ws.filter(w=>w.bbox.x1<limite &&
+   (w.confidence===undefined||w.confidence>=35||paroluta(w)));
  /* in testa resta la sporcizia del margine: via tutto ciò che non ha lettere */
  while(testa.length>1 && !/[a-zA-Zàèéìòù]/.test(testa[0].text)) testa.shift();
  const largh=(ws[ws.length-1].bbox.x1-ws[0].bbox.x0)||1;
@@ -3104,7 +3118,9 @@ function rigaDaColonne(riga,col){
   if(lettere<=2 && (b.bbox.x0-a.bbox.x1)/largh>0.03) testa.shift();
   else break;
  }
- if(!testa.length||!/[a-zA-Zàèéìòù]/.test(testa[0].text)) return null;
+ /* dopo la pulizia la testa può cominciare con la quantità ("1 X SALMONE"):
+    non pretendo una lettera nella prima parola, ma almeno una in tutta la testa */
+ if(!testa.length||!/[a-zA-Zàèéìòù]/.test(testa.map(w=>w.text).join(''))) return null;
  let desc=testa.map(w=>w.text.trim()).join(' ').replace(/\s+/g,' ').trim();
  /* certe catene scrivono la quantità in testa: "2 X CROISSANT" */
  let molt=1;
@@ -3113,6 +3129,22 @@ function rigaDaColonne(riga,col){
  else desc=desc.replace(/^[xX]\s+/,'').trim();
  if(prezzo===null) return null;      /* la riga c'è, ma senza prezzo non è un acquisto */
  return {desc,prezzo,molt};
+}
+
+/* "1 x 1,59 1,59": nessun nome, solo numeri. È la seconda metà di un
+   acquisto scritto su due righe, e da sola non vale niente. */
+function prezzoSolo(riga,col){
+ const ws=parolePulite(riga);
+ let prezzo=null, x=Infinity;
+ for(let i=ws.length-1;i>=0;i--){
+  const p=prezzoDi(ws[i]);
+  if(p!==null){ prezzo=p; x=ws[i].bbox.x0; break; }
+ }
+ if(prezzo===null) return null;
+ if(col&&col.prezzo!==Infinity&&Math.abs(x-col.prezzo)>60) return null;
+ if(ws.some(w=>w.bbox.x1<x-4&&/[a-zA-Zàèéìòù]{3}/.test(w.text))) return null;
+ const mx=(riga.text||'').match(/(\d{1,2})\s*[xX*]\s/);
+ return {desc:'',prezzo,molt:mx?(parseInt(mx[1],10)||1):1};
 }
 
 /* le righe lette con le colonne, più quelle che restano da buttare */
@@ -3129,12 +3161,12 @@ function leggiColonne(righeOCR){
   const col=rigaDaColonne(r,colonne);
   if(col) return;
   const succ=righe[i+1]; if(!succ) return;
-  const colS=rigaDaColonne(succ,colonne);
+  const colS=rigaDaColonne(succ,colonne)||prezzoSolo(succ,colonne);
   if(!colS) return;
   const parole=(r.words||[]).filter(w=>w.text&&/[a-zA-Zàèéìòù]{3}/.test(w.text));
   if(parole.length<1) return;
   const suaDesc=(colS.desc||'').replace(/[^a-zA-Zàèéìòù]/g,'');
-  if(suaDesc.length>6) return;          /* la riga sotto ha già un nome suo */
+  if(suaDesc.length>3) return;          /* la riga sotto ha già un nome suo */
   const mio=parole.map(w=>w.text.trim()).join(' ');
   r.__unita={desc:mio,prezzo:colS.prezzo,molt:colS.molt||1};
   saltare[i+1]=1;
@@ -4022,7 +4054,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261119-1142';
+const VERSIONE='20261119-1447';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
