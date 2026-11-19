@@ -48,12 +48,16 @@
   --bordo-ingr:#CFE2F5; --box-ingr:#B9D6F0; --ingr-on:#E2F0FB;
   --pat-c1:#6FA8E0; --pat-c2:#E8B35A; --pat-c3:#8FB47A; --pat-c4:#4F8FD6;
   --pat-o1:.14; --pat-o2:.12; --pat-o3:.11; --pat-o4:.09;
-  /* Il movimento. Una sola famiglia di curve, come fa iOS: parte decisa e si
-     posa piano, senza mai frenare di colpo. I tempi sono tre, non dieci:
-     un tocco, un cambio, un pannello. */
-  --mov:cubic-bezier(.32,.72,0,1);      /* la curva di tutti i giorni */
-  --mov-dentro:cubic-bezier(.4,0,.2,1); /* quando qualcosa se ne va */
-  --mov-molla:cubic-bezier(.34,1.26,.64,1); /* un filo di rimbalzo, misurato */
+  /* Il movimento: la famiglia cubic, quella standard.
+     La curva di prima (.32,.72,0,1) partiva quasi di scatto e poi aveva una
+     coda lunghissima: negli ultimi due decimi la cosa si muoveva di tre
+     pixel, e lì i fotogrammi si contano a uno a uno — è quello che si vede
+     come "a scatti". La cubic distribuisce il movimento in modo più
+     uniforme: parte già in moto e arriva senza strisciare. */
+  --mov:cubic-bezier(.33,1,.68,1);          /* cubic in uscita */
+  --mov-dentro:cubic-bezier(.65,0,.35,1);   /* cubic in entrata e uscita */
+  --mov-entra:cubic-bezier(.32,0,.67,0);    /* cubic in entrata: accelera */
+  --mov-molla:cubic-bezier(.34,1.18,.64,1); /* un filo di rimbalzo, misurato */
   --t-tocco:.16s; --t-cambio:.34s; --t-pannello:.48s;
   --shadow:0 8px 22px rgba(var(--ombra),.13);
   --shadow-sm:0 4px 14px rgba(var(--ombra),.10);
@@ -530,8 +534,8 @@ body.onboarding .app{padding-bottom:40px}
 .tab[aria-current="page"] .ic{filter:none;opacity:1;transform:translateY(-3px) scale(1.14);
   animation:hop .42s var(--mov-molla)}
 @keyframes hop{
-  0%{transform:translateY(0) scale(.94)}
-  45%{transform:translateY(-6px) scale(1.2)}
+  0%{transform:translateY(0) scale(.94);animation-timing-function:cubic-bezier(.33,1,.68,1)}
+  45%{transform:translateY(-6px) scale(1.2);animation-timing-function:cubic-bezier(.65,0,.35,1)}
   100%{transform:translateY(-3px) scale(1.14)}}
 .tab.key{color:var(--verde-scuro)}
 .tab.key .ring{width:60px;height:60px;margin-top:-28px;border-radius:var(--blob);background:var(--verde);
@@ -566,22 +570,19 @@ body.onboarding .app{padding-bottom:40px}
    centesimi l'una, e in meno di mezzo secondo si sono posate tutte. Solo
    le prime sette: in una lista lunga il resto è già pronto quando ci
    arrivi con l'occhio, e aspettare sarebbe fastidioso. */
-#view.vai-tab,#view.vai-avanti,#view.vai-indietro{will-change:transform,opacity}
 #view.vai-tab > *,#view.vai-avanti > *,#view.vai-indietro > *{
-  animation:salita .5s var(--mov) both}
-@keyframes salita{from{transform:translateY(15px)}to{transform:none}}
+  animation:salita .46s var(--mov) both}
+@keyframes salita{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 #view > *:nth-child(1){animation-delay:0s}
-#view > *:nth-child(2){animation-delay:.045s}
-#view > *:nth-child(3){animation-delay:.09s}
-#view > *:nth-child(4){animation-delay:.13s}
-#view > *:nth-child(5){animation-delay:.17s}
-#view > *:nth-child(6){animation-delay:.2s}
-#view > *:nth-child(n+7){animation-delay:.23s}
+#view > *:nth-child(2){animation-delay:.04s}
+#view > *:nth-child(3){animation-delay:.08s}
+#view > *:nth-child(4){animation-delay:.11s}
+#view > *:nth-child(n+5){animation-delay:.14s}
 /* le barre di livello si riempiono da sinistra quando la schermata si apre:
    in un colpo d'occhio vedi quanto ti resta di tutto */
 .bar i{transform-origin:left}
 #view.vai-tab .bar i,#view.vai-avanti .bar i,#view.vai-indietro .bar i{
-  animation:riempi .75s var(--mov) .12s both}
+  animation:riempi .7s var(--mov) .1s both}
 @keyframes riempi{from{transform:scaleX(0)}to{transform:scaleX(var(--p,1))}}
 
 /* ---------- il tocco ---------- */
@@ -632,10 +633,10 @@ body.onboarding .app{padding-bottom:40px}
   background:rgba(74,86,181,.26);filter:blur(5px);
   animation:ombra .9s var(--mov) both}
 @keyframes ombra{
-  0%{opacity:0;transform:scale(.3);animation-timing-function:cubic-bezier(.5,0,.9,.42)}
-  36%{opacity:.85;transform:scale(1.12);animation-timing-function:cubic-bezier(.12,.7,.35,1)}
-  54%{opacity:.5;transform:scale(.8);animation-timing-function:cubic-bezier(.5,0,.9,.45)}
-  72%{opacity:.8;transform:scale(1.04);animation-timing-function:cubic-bezier(.12,.7,.35,1)}
+  0%{opacity:0;transform:scale(.3);animation-timing-function:cubic-bezier(.32,0,.67,0)}
+  36%{opacity:.85;transform:scale(1.12);animation-timing-function:cubic-bezier(.33,1,.68,1)}
+  54%{opacity:.5;transform:scale(.8);animation-timing-function:cubic-bezier(.32,0,.67,0)}
+  72%{opacity:.8;transform:scale(1.04);animation-timing-function:cubic-bezier(.33,1,.68,1)}
   100%{opacity:.6;transform:scale(1)}}
 #avvio svg{width:128px;height:128px;display:block;will-change:transform;
   animation:cade .88s var(--mov) both}
@@ -643,17 +644,19 @@ body.onboarding .app{padding-bottom:40px}
 @keyframes cade{
   /* Una caduta sola, senza fermate in mezzo: un fotogramma intermedio
      spezzava il volo a metà e si vedeva come un'esitazione. */
+  /* cade in cubic (accelera), rimbalza in cubic (decelera): le due metà di
+     un volo vero, ognuna con la curva del suo verso */
   0%{opacity:0;transform:translateY(-124px) scale(.88,1.1);
-     animation-timing-function:cubic-bezier(.45,0,.75,.32)}    /* cade e accelera */
+     animation-timing-function:cubic-bezier(.32,0,.67,0)}
   20%{opacity:1}
   36%{transform:translateY(0) scale(1.13,.87);
-     animation-timing-function:cubic-bezier(.12,.7,.35,1)}     /* tocca e si schiaccia */
+     animation-timing-function:cubic-bezier(.33,1,.68,1)}
   54%{transform:translateY(-24px) scale(.96,1.04);
-     animation-timing-function:cubic-bezier(.5,0,.9,.45)}      /* risale e ricade */
+     animation-timing-function:cubic-bezier(.32,0,.67,0)}
   72%{transform:translateY(0) scale(1.05,.95);
-     animation-timing-function:cubic-bezier(.12,.7,.35,1)}
+     animation-timing-function:cubic-bezier(.33,1,.68,1)}
   87%{transform:translateY(-6px) scale(.99,1.01);
-     animation-timing-function:cubic-bezier(.5,0,.9,.45)}
+     animation-timing-function:cubic-bezier(.32,0,.67,0)}
   100%{transform:translateY(0) scale(1)}}
 /* l'aria spostata dall'arrivo: parte nell'istante del tocco */
 #avvio .onda{position:absolute;width:128px;height:128px;border-radius:50%;
@@ -677,19 +680,19 @@ body.onboarding .app{padding-bottom:40px}
    scontrino la pagina arriva da destra, e tornando indietro se ne va da
    dove era venuta. Pochi pixel: il movimento deve dire la direzione, non
    farsi guardare. */
-#view.vai-tab{animation:v-tab .34s var(--mov) both}
-#view.vai-avanti{animation:v-avanti .4s var(--mov) both}
-#view.vai-indietro{animation:v-indietro .4s var(--mov) both}
-@keyframes v-tab{from{opacity:0;transform:scale(.988)}to{opacity:1;transform:none}}
-@keyframes v-avanti{from{opacity:0;transform:translate3d(20px,0,0)}to{opacity:1;transform:none}}
-@keyframes v-indietro{from{opacity:0;transform:translate3d(-20px,0,0)}to{opacity:1;transform:none}}
+/* la direzione la danno i figli, ognuno per conto suo */
+#view.vai-avanti > *{animation-name:salita-dx}
+#view.vai-indietro > *{animation-name:salita-sx}
+@keyframes salita-dx{from{opacity:0;transform:translate3d(22px,0,0)}to{opacity:1;transform:none}}
+@keyframes salita-sx{from{opacity:0;transform:translate3d(-22px,0,0)}to{opacity:1;transform:none}}
 
 /* Chi ha chiesto meno movimento lo ottiene davvero: niente animazioni, ma
    nemmeno un'app che sfarfalla. Le dissolvenze restano, cortissime. */
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms!important;animation-iteration-count:1!important;
     animation-delay:0ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
-  #view.vai-tab,#view.vai-avanti,#view.vai-indietro{animation:v-tab .12s linear both!important}
+  #view.vai-tab > *,#view.vai-avanti > *,#view.vai-indietro > *{
+    animation:salita .12s linear both!important;animation-delay:0ms!important}
 }
 @media (min-width:720px){
   body{background-color:var(--fuori)}
@@ -3844,6 +3847,11 @@ function render(keep){
   vista.classList.remove('vai-tab','vai-avanti','vai-indietro');
   void vista.offsetWidth;          /* fa ripartire l'animazione da capo */
   vista.classList.add(verso);
+  /* e appena ha finito se ne va: una classe che resta tiene il contenuto
+     su un livello a parte della scheda grafica, e si paga a ogni
+     scorrimento senza che niente si muova */
+  clearTimeout(render.pulizia);
+  render.pulizia=setTimeout(()=>vista.classList.remove('vai-tab','vai-avanti','vai-indietro'),700);
  }
  schermoPrec=S.screen;
  document.body.classList.toggle('no-pad',S.screen==='piano');
@@ -4366,7 +4374,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261119-1656';
+const VERSIONE='20261119-1701';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
