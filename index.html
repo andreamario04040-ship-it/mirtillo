@@ -1036,7 +1036,8 @@ const S={
  newIng:[{name:'',q:'',u:'g'},{name:'',q:'',u:'g'}]
 };
 const STORES=["In's Mercato",'Conad','Lidl','Esselunga','Carrefour','Eurospin',
- 'Pam','MD','Bennet','Famila','Tigros','Altro'];
+ 'Pam','MD','Bennet','Famila','Tigros','Coop','Penny','Despar','Il Gigante',
+ 'Crai','Todis','Aldi','Basko','Iper','Altro'];
 
 /* ===================== utilità ===================== */
 const el=id=>document.getElementById(id);
@@ -2712,10 +2713,14 @@ async function leggiFoto(dataUrl){
    detersivi, totali, righe di cassa. Niente è automatico fino in fondo, infatti
    ogni riga passa dalla revisione prima di entrare in dispensa. */
 
+/* I nomi lunghi stanno davanti: cerco in ordine e il primo che trovo vince,
+   così "Conad Superstore" non diventa un Conad qualunque. */
 const CATENE=["In's Mercato","Ins Mercato","Pam Panorama","Famila Superstore",
- "Eurospin Italia","Bennet","Tigros","Conad","Esselunga","Lidl","Carrefour",
- "Eurospin","Bennet","Pam","MD","Coop","Penny","Famila","Tigros","Iper","Despar",
- "Sigma","Crai","Todis","Alì","Basko","Prix","Aldi"];
+ "Eurospin Italia","Conad Superstore","Spazio Conad","Il Gigante","Oasi Tigre",
+ "Penny Market","Carrefour Market","Interspar","Bennet","Tigros","Conad",
+ "Esselunga","Lidl","Carrefour","Eurospin","Pam","MD","Coop","Penny","Famila",
+ "Iper","Despar","Sigma","Crai","Todis","Alì","Basko","Prix","Aldi","Unes",
+ "Decò","Rossetto","Cadoro","Dpiù","Gigante"];
 
 /* abbreviazioni che si trovano stampate sugli scontrini */
 const ABBREV={pst:'pasta',ltt:'latte',frn:'farina',zch:'zucchero',tnn:'tonno',
@@ -2950,24 +2955,59 @@ function leggiQuantita(testo){
    - la parola che conta è di solito la prima: "gnocchi di patate" sono
      gnocchi, non patate. Una somiglianza trovata più avanti vale meno,
      così finisce fra le cose da chiedere invece che fra le certezze. */
+/* tutte le parole che il catalogo conosce. Serve per distinguere una parola
+   che vuol dire qualcosa dalla sporcizia che l'OCR mette in testa alla riga. */
+let NOTE=null;
+function parolaNota(w){
+ if(!NOTE){
+  NOTE=new Set();
+  for(const id in ALIAS) (ALIAS[id]||[]).forEach(a=>{ if(!a.includes(' ')) NOTE.add(a); });
+ }
+ if(NOTE.has(w)||NOTE.has(espandi(w))) return true;
+ if(w.length>=6){
+  const radice=w.slice(0,-1);
+  for(const v of 'aeio') if(NOTE.has(radice+v)) return true;
+ }
+ return false;
+}
+
 function abbina(desc){
- const parole=normalizza(desc).split(/[\s\/.-]+/)
-   .filter(w=>w.length>2 && !/^\d/.test(w)).map(espandi);
+ const grezze=normalizza(desc).split(/[\s\/.-]+/)
+   .filter(w=>w.length>=2 && !/^\d/.test(w));
+ /* Ogni parola vale due volte: per come è scritta e per come la allargo.
+    "olive" resta "olive" e trova le olive, ma vale anche "oliva" e trova
+    l'olio — solo un po' meno. Così la parola scritta per intero batte
+    sempre la scorciatoia, e lo zucchero non diventa una zucchina. */
+ const parole=[];
+ grezze.forEach((w,idx)=>{
+  parole.push({w,idx,peso:1});
+  const e=espandi(w);
+  if(e!==w) parole.push({w:e,idx,peso:0.97});
+ });
+ /* "la parola che conta è la prima" vale dalla prima parola vera: la
+    sporcizia che l'OCR trova nel margine ("VON PASS. POMODORO") non si
+    prende il posto d'onore e non fa retrocedere il nome del prodotto */
+ let base=grezze.findIndex(parolaNota);
+ if(base<0) base=0;
  if(!parole.length) return {id:null,punti:0};
- const intera=normalizza(desc);
- let best={id:null,punti:0};
+ /* i punti e le barre valgono come spazi anche qui, altrimenti
+    "PROSC.CRUDO" non incontra mai l'alias "prosc crudo" e il prosciutto
+    crudo diventa cotto */
+ const intera=normalizza(desc).replace(/[\/.,-]+/g,' ').replace(/\s+/g,' ').trim();
+ let best={id:null,punti:0,quante:0};
  for(const id in ALIAS){
   if(!ING[id]) continue;
-  let migliore=0;
+  let migliore=0; const prese=new Set();
   for(const alias of ALIAS[id]){
    /* un alias di più parole ("pomodori pelati", "petto di pollo") vale pieno
       ovunque compaia: è più specifico di una parola sola */
-   if(alias.includes(' ')&&intera.includes(alias)){ migliore=Math.max(migliore,1.05); continue; }
-   for(let idx=0;idx<parole.length;idx++){
-    const w=parole[idx];
+   if(alias.includes(' ')&&intera.includes(alias)){ migliore=Math.max(migliore,1.05); prese.add(alias); continue; }
+   for(const {w,idx,peso} of parole){
     let p=0;
     if(w===alias) p=1;
-    else{
+    /* una parola di due lettere ("PS") conta solo se è identica: troppo
+       corta per permettersi un errore */
+    else if(w.length>=3){
      const L=Math.max(w.length,alias.length);
      const tolleranza = L>=10 ? 2 : (L>=7 ? 1 : 0);
      const d=lev(w,alias);
@@ -2977,14 +3017,27 @@ function abbina(desc){
         per essere il limone verdello */
      if(w.length>=6&&alias.startsWith(w)&&alias.length-w.length<=3) p=Math.max(p,.9);
      if(alias.length>=6&&w.startsWith(alias)&&w.length-alias.length<=3) p=Math.max(p,.9);
+     /* in italiano l'ultima vocale cambia da sola: "ramati" è "ramato",
+        "pomodorini" resta diverso da "pomodoro". Chiedo almeno cinque
+        lettere in comune, così "olive" non diventa "oliva". */
+     if(w.length>=6&&alias.length>=6&&w.slice(0,-1)===alias.slice(0,-1)
+        &&/[aeio]$/.test(w)&&/[aeio]$/.test(alias)) p=Math.max(p,.97);
     }
-    if(p&&idx>0) p*=0.8;
+    if(!p) continue;
+    p*=peso;
+    if(p>=0.86) prese.add(idx);
+    if(idx>base) p*=0.8;
     if(p>migliore) migliore=p;
    }
   }
-  if(migliore>best.punti) best={id,punti:migliore};
+  /* a pari punteggio vince chi spiega più parole della riga: "LATTE PARZ.
+     SCREMATO" è il parzialmente scremato, non il latte intero, perché del
+     latte intero quella riga avrebbe spiegato solo la prima parola */
+  if(migliore>best.punti+1e-9 ||
+     (migliore>best.punti-1e-9 && prese.size>best.quante))
+   best={id,punti:migliore,quante:prese.size};
  }
- return best;
+ return {id:best.id,punti:best.punti};
 }
 
 /* da una riga grezza a una riga di scontrino, oppure a uno scarto motivato */
@@ -3096,11 +3149,11 @@ function rigaDaColonne(riga,col){
   if(prezzo===null && p!==null){ prezzo=p; xPrezzo=ws[i].bbox.x0; }
   if(RE_IVA.test(ws[i].text.trim())) xIva=Math.min(xIva,ws[i].bbox.x0);
  }
- /* colonne di riserva, quando su questa riga il prezzo non si legge */
- if(col){
-  if(xPrezzo===Infinity && col.prezzo!==Infinity) xPrezzo=col.prezzo;
-  if(xIva===Infinity && col.iva!==Infinity) xIva=col.iva;
- }
+ /* colonna di riserva, quando su questa riga il prezzo non si legge.
+    Per l'IVA non lo faccio: basta una riga di sconto ("SCONTO 20%") perché
+    quella colonna finisca in mezzo ai nomi e li tagli tutti. L'IVA la uso
+    solo dove la vedo davvero, su quella riga. */
+ if(col && xPrezzo===Infinity && col.prezzo!==Infinity) xPrezzo=col.prezzo;
  const limite=Math.min(xPrezzo,xIva)-4;
  if(!isFinite(limite)) return null;
  /* la sporcizia del margine è corta e storta; una parola di tre lettere o più
@@ -3223,7 +3276,7 @@ function vScontrino(){
    <section class="sec">
      <div class="sec-h"><h2>Negozi riconosciuti</h2><span>un profilo per catena</span></div>
      <div class="chips" style="flex-wrap:wrap;overflow:visible">
-       ${["In's Mercato",'Conad','Esselunga','Lidl','Carrefour','Eurospin','Bennet','Pam','MD','Alimentari sotto casa']
+       ${["In's Mercato",'Conad','Esselunga','Lidl','Carrefour','Eurospin','Bennet','Pam','MD','Coop','Penny','Despar','Il Gigante','Crai','Todis','Aldi','Basko','Iper','Famila','Tigros','Alimentari sotto casa']
          .map(s=>`<span class="chip">${esc(s)}</span>`).join('')}
      </div>
      <p class="muted">Ogni catena scrive pesi, sconti e abbreviazioni a modo suo: il motore tiene un profilo per ognuna e una regola generica per le altre.</p>
@@ -4054,7 +4107,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261119-1447';
+const VERSIONE='20261119-1518';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
