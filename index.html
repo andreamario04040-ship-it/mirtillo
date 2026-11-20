@@ -1157,7 +1157,281 @@ let RECIPES=[
  {id:'bruschette',n:'Bruschette',e:'🍞',min:15,d:1,serv:2,tag:'Svelta',slots:['cena'],
   ing:[['pane',200],['pomodori',300],['aglio',1],['basilico',1],['olio',25]],
   steps:['Tosta il pane e strofinalo con l’aglio.','Pomodori a cubetti con olio, sale e basilico.',
-         'Condisci all’ultimo, o il pane si bagna.']}
+         'Condisci all’ultimo, o il pane si bagna.']},
+
+ /* ---- colazione ---- */
+ {id:'ygreco',n:'Yogurt greco e frutti di bosco',e:'🫐',min:5,d:1,serv:2,tag:'Svelta',slots:['colazione'],
+  ing:[['yogurtgreco',2],['fruttibosco',120],['miele',20],['noci',30]],
+  steps:['Yogurt nelle ciotole.','Sopra i frutti di bosco, il miele e le noci spezzate.']},
+ {id:'pannutella',n:'Pane e crema di nocciole',e:'🍫',min:5,d:1,serv:2,tag:'Coccola',slots:['colazione'],
+  ing:[['pane',120],['nutella',50],['latte',300]],
+  steps:['Scalda il latte.','Spalma la crema sul pane, meglio se appena tostato.']},
+ {id:'cerealilatte',n:'Cereali e banana',e:'🥣',min:3,d:1,serv:2,tag:'Svelta',slots:['colazione'],
+  ing:[['cereali',80],['latte',300],['banane',140]],
+  steps:['Cereali nella scodella, latte freddo sopra.','Banana a rondelle.']},
+ {id:'toastarachidi',n:'Toast e burro d’arachidi',e:'🥜',min:6,d:1,serv:2,tag:'Proteica',slots:['colazione'],
+  ing:[['panebauletto',4],['burroarachidi',40],['banane',120]],
+  steps:['Tosta le fette.','Burro d’arachidi e banana a fettine sopra.']},
+ {id:'frullato',n:'Frullato di frutta',e:'🥤',min:6,d:1,serv:2,tag:'Svelta',slots:['colazione'],
+  ing:[['banane',140],['fragole',180],['latte',250],['miele',15]],
+  steps:['Tutto nel frullatore.','Frulla finché è liscio e bevilo subito.']},
+ {id:'avocadotoast',n:'Avocado toast con uovo',e:'🥑',min:12,d:2,serv:2,tag:'Proteica',slots:['colazione'],
+  ing:[['pane',120],['avocado',1],['uova',2],['olio',10],['pepe',1]],
+  steps:['Schiaccia l’avocado con olio, sale e pepe.','Tosta il pane e spalmalo.',
+         'Un uovo in camicia o all’occhio di bue sopra ogni fetta.']},
+ {id:'tegallette',n:'Tè, gallette e miele',e:'🍵',min:4,d:1,serv:2,tag:'Svelta',slots:['colazione'],
+  ing:[['te',2],['gallette',60],['miele',25],['marmellata',30]],
+  steps:['Acqua sul fuoco e tè in infusione tre minuti.','Gallette con miele o marmellata.']},
+ {id:'omelette',n:'Omelette al formaggio',e:'🧈',min:10,d:2,serv:2,tag:'Proteica',slots:['colazione','cena'],
+  ing:[['uova',4],['emmental',60],['burro',15],['pepe',1]],
+  steps:['Sbatti le uova con sale e pepe.','Burro in padella, uova e coperchio due minuti.',
+         'Formaggio al centro, piega a mezzaluna e spegni.']},
+ {id:'tortamele',n:'Torta di mele',e:'🍰',min:65,d:3,serv:8,tag:'Della domenica',slots:['colazione'],
+  ing:[['farina',300],['mele',600],['uova',3],['zucchero',150],['burro',100],['lievito',1],['latte',100]],
+  steps:['Monta uova e zucchero, poi burro fuso, latte, farina e lievito.',
+         'Metà mele a dadini nell’impasto, le altre a fette sopra.',
+         'Forno a 180° per 45 minuti: la prova dello stuzzicadenti non sbaglia.']},
+
+ /* ---- pranzi freddi e piatti veloci ---- */
+ {id:'instonnomais',n:'Insalata tonno e mais',e:'🥗',min:8,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['insalata',180],['tonno',1],['maisscatola',150],['olive',50],['olio',20]],
+  steps:['Scola il tonno e il mais.','Tutto in una ciotola con olio, sale e le olive.']},
+ {id:'paninocrudo',n:'Panino crudo e mozzarella',e:'🥪',min:8,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['pane',200],['prosciuttocrudo',100],['mozzarella',125],['pomodori',120],['olio',10]],
+  steps:['Apri il pane e condisci col filo d’olio.','Mozzarella a fette, pomodoro, crudo sopra.']},
+ {id:'paninobresaola',n:'Panino bresaola e rucola',e:'🥬',min:8,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['pane',200],['bresaola',90],['rucola',60],['parmigiano',40],['limoni',1]],
+  steps:['Condisci la bresaola con limone e olio.','Rucola e scaglie di parmigiano nel panino.']},
+ {id:'couscousverdure',n:'Couscous alle verdure',e:'🍲',min:20,d:2,serv:2,tag:'Pranzo freddo',slots:['pranzo','cena'],
+  ing:[['couscous',160],['zucchine',200],['peperoni',180],['pomodorini',150],['olio',25]],
+  steps:['Verdure a dadini in padella con olio, dieci minuti.',
+         'Couscous coperto con acqua bollente salata, cinque minuti e sgrana con la forchetta.',
+         'Unisci tutto e aggiusta di sale.']},
+ {id:'quinoabowl',n:'Insalata di quinoa e ceci',e:'🥙',min:22,d:2,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['quinoa',150],['ceci',1],['pomodorini',150],['cetrioli',1],['feta',100],['olio',20]],
+  steps:['Lessa la quinoa quindici minuti e raffreddala.','Unisci ceci scolati, pomodorini, cetriolo e feta.',
+         'Olio, sale e in frigo fino al momento.']},
+ {id:'piadinatonno',n:'Piadina tonno e maionese',e:'🌯',min:8,d:1,serv:2,tag:'Svelta',slots:['pranzo'],
+  ing:[['piadina',2],['tonno',1],['maionese',40],['insalata',80]],
+  steps:['Scalda la piadina in padella un minuto per lato.','Maionese, tonno scolato, insalata e arrotola.']},
+ {id:'hummusverdure',n:'Hummus e verdure crude',e:'🥕',min:10,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['hummus',180],['carote',180],['cetrioli',1],['pane',120]],
+  steps:['Taglia carote e cetriolo a bastoncini.','Hummus in una ciotola, pane tostato a parte.']},
+ {id:'insalatapollo',n:'Insalata di pollo',e:'🍗',min:20,d:2,serv:2,tag:'Proteica',slots:['pranzo'],
+  ing:[['pollo',300],['insalata',180],['pomodorini',150],['maisscatola',120],['olio',20]],
+  steps:['Pollo a straccetti in padella con olio e sale, otto minuti.',
+         'Fallo intiepidire e uniscilo all’insalata con pomodorini e mais.']},
+ {id:'uovatonno',n:'Uova ripiene al tonno',e:'🥚',min:20,d:2,serv:2,tag:'Proteica',slots:['pranzo'],
+  ing:[['uova',4],['tonno',1],['maionese',50],['prezzemolo',1]],
+  steps:['Rassoda le uova nove minuti e raffreddale.',
+         'Tagliale a metà, schiaccia i tuorli con tonno e maionese.','Riempi e spolvera di prezzemolo.']},
+ {id:'toastprosciutto',n:'Toast prosciutto e formaggio',e:'🧇',min:8,d:1,serv:2,tag:'Svelta',slots:['pranzo'],
+  ing:[['panebauletto',4],['prosciuttocotto',100],['emmental',80],['burro',15]],
+  steps:['Imburra le fette dal lato esterno.','Prosciutto e formaggio dentro, in padella schiacciando.',
+         'Due minuti per lato: deve filare.']},
+
+ /* ---- pasta ---- */
+ {id:'amatriciana',n:'Amatriciana',e:'🍝',min:25,d:2,serv:2,tag:'Classica',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['guanciale',120],['pelati',350],['pecorino',50],['peperoncino',1]],
+  steps:['Guanciale a listarelle in padella fredda, finché è croccante.',
+         'Togline metà, aggiungi pelati e peperoncino, dieci minuti.',
+         'Pasta al dente nel sugo, pecorino e il guanciale tenuto da parte.']},
+ {id:'caciopepe',n:'Cacio e pepe',e:'🧀',min:18,d:3,serv:2,tag:'Classica',slots:['pranzo','cena'],
+  ing:[['spaghetti',180],['pecorino',110],['pepe',3]],
+  steps:['Pepe tostato in padella, poi un po’ d’acqua di cottura.',
+         'Pecorino e acqua tiepida in una ciotola: crema liscia, senza fretta.',
+         'Spaghetti molto al dente, fuori dal fuoco, e manteca.']},
+ {id:'gricia',n:'Pasta alla gricia',e:'🥓',min:20,d:2,serv:2,tag:'Classica',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['guanciale',130],['pecorino',70],['pepe',2]],
+  steps:['Guanciale croccante in padella, grasso da parte.',
+         'Pasta al dente, pecorino e acqua di cottura fuori dal fuoco.']},
+ {id:'pastasalmone',n:'Pasta salmone e panna',e:'🐟',min:20,d:2,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['salmoneaffum',120],['panna',150],['scalogno',1],['pepe',1]],
+  steps:['Scalogno tritato in padella con un filo d’olio.',
+         'Salmone a pezzetti, poi la panna e due minuti.','Pasta dentro e pepe macinato.']},
+ {id:'pastabroccoli',n:'Pasta e broccoli',e:'🥦',min:25,d:2,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['broccoli',400],['aglio',2],['peperoncino',1],['olio',25]],
+  steps:['Lessa i broccoli nell’acqua della pasta e buttaci la pasta.',
+         'Aglio e peperoncino in olio, poi i broccoli schiacciati con la forchetta.',
+         'Pasta dentro con un po’ d’acqua: deve restare cremosa.']},
+ {id:'pastacarciofi',n:'Pasta ai carciofi',e:'🌿',min:30,d:3,serv:2,tag:'Classica',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['carciofi',3],['aglio',1],['prezzemolo',1],['olio',25],['limoni',1]],
+  steps:['Pulisci i carciofi e tienili in acqua e limone.',
+         'A fettine in padella con aglio e olio, un dito d’acqua, quindici minuti.',
+         'Pasta dentro col prezzemolo.']},
+ {id:'pastafunghi',n:'Pasta ai funghi',e:'🍄',min:25,d:2,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['funghi',350],['panna',100],['prezzemolo',1],['aglio',1]],
+  steps:['Funghi a fette in padella con aglio e olio, a fuoco vivo.',
+         'Quando hanno perso l’acqua, panna e sale.','Pasta dentro e prezzemolo.']},
+ {id:'pastaricotta',n:'Pasta ricotta e pomodorini',e:'🫒',min:18,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['ricotta',180],['pomodorini',200],['basilico',1],['olio',15]],
+  steps:['Pomodorini in padella con olio e sale, dieci minuti.',
+         'Ricotta in una ciotola con due cucchiai d’acqua di cottura.','Unisci tutto e basilico.']},
+ {id:'pastagamberi',n:'Spaghetti gamberi e zucchine',e:'🦐',min:25,d:3,serv:2,tag:'Della domenica',slots:['cena'],
+  ing:[['spaghetti',180],['gamberi',250],['zucchine',250],['aglio',1],['vino_bianco',60],['olio',25]],
+  steps:['Zucchine a julienne in padella con aglio e olio.',
+         'Gamberi, sfuma col vino e spegni appena diventano rosa.',
+         'Spaghetti al dente dentro, mantecando con l’acqua di cottura.']},
+ {id:'pastaintverdure',n:'Pasta integrale alle verdure',e:'🥗',min:25,d:2,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
+  ing:[['pastaintegrale',180],['zucchine',200],['carote',120],['pomodorini',150],['olio',25]],
+  steps:['Verdure a dadini piccoli in padella con olio, dodici minuti.',
+         'Pasta dentro con un mestolo d’acqua di cottura.']},
+ {id:'lasagne',n:'Lasagne al forno',e:'🍲',min:80,d:4,serv:6,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['lasagne',250],['macinato',450],['passata',500],['besciamella',500],['parmigiano',100],['cipolla',1]],
+  steps:['Ragù: cipolla, macinato, passata e un’ora di fuoco basso.',
+         'Alterna sfoglie, ragù, besciamella e parmigiano.',
+         'Forno a 180° per 35 minuti, gli ultimi cinque sotto il grill.']},
+ {id:'gnocchisorrentina',n:'Gnocchi alla sorrentina',e:'🥘',min:30,d:2,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['gnocchi',500],['passata',350],['mozzarella',125],['basilico',1],['parmigiano',40]],
+  steps:['Sugo di pomodoro e basilico, quindici minuti.',
+         'Gnocchi lessati nel sugo, poi in pirofila con mozzarella a cubetti.',
+         'Forno a 200° dieci minuti, finché fa la crosticina.']},
+ {id:'tortellinipanna',n:'Tortellini panna e prosciutto',e:'🍝',min:15,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['tortellini',250],['panna',150],['prosciuttocotto',100],['parmigiano',40]],
+  steps:['Prosciutto a dadini in padella, poi la panna.',
+         'Tortellini lessati dentro, parmigiano e via.']},
+ {id:'pastinabrodo',n:'Pastina in brodo',e:'🍵',min:15,d:1,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['pastina',90],['brododado',600],['parmigiano',30]],
+  steps:['Porta il brodo a bollore.','Pastina dentro per i minuti che dice la scatola.','Parmigiano nel piatto.']},
+ {id:'orzotto',n:'Orzotto alle verdure',e:'🌾',min:40,d:2,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['orzo',180],['carote',120],['sedano',100],['zucchine',150],['dado',1],['olio',20]],
+  steps:['Soffritto di carota e sedano.','Orzo tostato un minuto, poi brodo poco per volta.',
+         'Zucchine a metà cottura: trenta minuti in tutto.']},
+ {id:'polentafunghi',n:'Polenta e funghi',e:'🌽',min:45,d:2,serv:2,tag:'Comfort',slots:['cena'],
+  ing:[['polenta',200],['funghi',350],['aglio',1],['prezzemolo',1],['olio',25]],
+  steps:['Polenta nell’acqua bollente salata, mescolando.',
+         'Funghi in padella con aglio, olio e prezzemolo.','Servi i funghi sopra la polenta.']},
+
+ /* ---- risotti ---- */
+ {id:'risottozucca',n:'Risotto alla zucca',e:'🎃',min:40,d:3,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['riso',180],['zucca',450],['cipolla',1],['parmigiano',50],['burro',25],['dado',1]],
+  steps:['Zucca a dadini con la cipolla, finché si spappola.',
+         'Riso tostato, poi brodo un mestolo per volta, diciotto minuti.',
+         'Fuori dal fuoco burro e parmigiano, e due minuti coperto.']},
+ {id:'risottoparmigiano',n:'Risotto alla parmigiana',e:'🧈',min:30,d:2,serv:2,tag:'Classico',slots:['pranzo','cena'],
+  ing:[['riso',180],['parmigiano',80],['burro',35],['cipolla',1],['dado',1],['vino_bianco',60]],
+  steps:['Cipolla nel burro, riso tostato, sfuma col vino.',
+         'Brodo poco per volta per diciotto minuti.','Manteca con burro freddo e parmigiano.']},
+ {id:'risottoasparagi',n:'Risotto agli asparagi',e:'🌱',min:40,d:3,serv:2,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['riso',180],['asparagi',350],['parmigiano',50],['scalogno',1],['burro',25],['dado',1]],
+  steps:['Tieni da parte le punte; i gambi nel brodo danno sapore.',
+         'Scalogno, riso tostato, brodo poco per volta.','Punte negli ultimi cinque minuti, poi manteca.']},
+ {id:'risobasmativerdure',n:'Riso basmati e verdure',e:'🍚',min:20,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['risobasmati',180],['verduresurg',350],['salsasoia',25],['olio',15]],
+  steps:['Riso lessato dieci minuti e scolato.',
+         'Verdure in padella a fuoco vivo con olio.','Riso dentro, salsa di soia e salta due minuti.']},
+
+ /* ---- carne ---- */
+ {id:'hamburgerpadella',n:'Hamburger in padella',e:'🍔',min:15,d:1,serv:2,tag:'Svelta',slots:['cena'],
+  ing:[['hamburger',2],['pane',160],['insalata',60],['ketchup',25],['emmental',60]],
+  steps:['Padella bollente, hamburger tre minuti per lato.',
+         'Formaggio sopra l’ultimo minuto, col coperchio.','Pane tostato, insalata e ketchup.']},
+ {id:'salsicciapatate',n:'Salsiccia e patate al forno',e:'🥔',min:55,d:2,serv:2,tag:'Comfort',slots:['cena'],
+  ing:[['salsiccia',360],['patate',500],['rosmarino',1],['olio',25]],
+  steps:['Patate a tocchi con olio, sale e rosmarino in teglia.',
+         'Forno a 200° per venti minuti, poi aggiungi le salsicce.',
+         'Altri venticinque minuti girando una volta.']},
+ {id:'spezzatinopatate',n:'Spezzatino con patate',e:'🍖',min:95,d:3,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['spezzatino',600],['patate',500],['passata',250],['carote',150],['vino_bianco',120],['cipolla',1]],
+  steps:['Rosola la carne infarinata, sfuma col vino.',
+         'Cipolla, carote, passata e acqua a coprire: un’ora a fuoco basso.',
+         'Patate a tocchi negli ultimi venticinque minuti.']},
+ {id:'pollopeperoni',n:'Pollo ai peperoni',e:'🫑',min:40,d:2,serv:2,tag:'Classico',slots:['pranzo','cena'],
+  ing:[['pollo',400],['peperoni',350],['passata',200],['cipolla',1],['olio',25]],
+  steps:['Rosola il pollo a pezzi e tienilo da parte.',
+         'Cipolla e peperoni a falde, dieci minuti.','Passata, pollo dentro, venti minuti col coperchio.']},
+ {id:'tacchinolimone',n:'Fettine di tacchino al limone',e:'🍋',min:18,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['tacchino',400],['limoni',1],['farina',40],['burro',25],['prezzemolo',1]],
+  steps:['Infarina le fettine leggermente.','Burro in padella, due minuti per lato.',
+         'Succo di limone, un po’ d’acqua e prezzemolo: la salsina si lega da sé.']},
+ {id:'polpettone',n:'Polpettone al forno',e:'🍖',min:75,d:3,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['macinato',500],['uova',2],['pangrattato',90],['parmigiano',60],['prosciuttocotto',80]],
+  steps:['Impasta carne, uova, pangrattato e parmigiano.',
+         'Stendi, metti il prosciutto al centro e arrotola.',
+         'Forno a 180° per cinquanta minuti, poi dieci minuti di riposo prima di tagliare.']},
+ {id:'coniglioforno',n:'Coniglio al forno',e:'🍗',min:80,d:3,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['coniglio',700],['patate',500],['rosmarino',1],['vino_bianco',120],['aglio',2],['olio',30]],
+  steps:['Coniglio a pezzi in teglia con aglio, rosmarino, olio e sale.',
+         'Forno a 190°, sfuma col vino dopo venti minuti.',
+         'Patate dentro e altri quaranta minuti girando.']},
+ {id:'roastbeefrucola',n:'Roast beef con rucola',e:'🥩',min:10,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo','cena'],
+  ing:[['roastbeef',250],['rucola',70],['parmigiano',50],['balsamico',20],['olio',15]],
+  steps:['Rucola nel piatto, roast beef sopra a fette sottili.',
+         'Scaglie di parmigiano, olio e qualche goccia di balsamico.']},
+ {id:'cotechinolenticchie',n:'Cotechino e lenticchie',e:'🫘',min:70,d:2,serv:4,tag:'Della domenica',slots:['cena'],
+  ing:[['cotechino',500],['lenticchie',350],['carote',120],['sedano',80],['cipolla',1]],
+  steps:['Cotechino in acqua, a fuoco basso, un’ora.',
+         'Lenticchie con soffritto e acqua, trenta minuti.','Servi le lenticchie sotto, il cotechino a fette sopra.']},
+
+ /* ---- pesce ---- */
+ {id:'merluzzoforno',n:'Merluzzo al forno',e:'🐟',min:40,d:2,serv:2,tag:'Proteica',slots:['cena'],
+  ing:[['merluzzo',400],['patate',400],['pomodorini',150],['olive',60],['olio',25]],
+  steps:['Patate a fette sottili in teglia con olio e sale, quindici minuti a 200°.',
+         'Merluzzo sopra con pomodorini e olive.','Altri venti minuti.']},
+ {id:'orataforno',n:'Orata al forno',e:'🐠',min:45,d:3,serv:2,tag:'Della domenica',slots:['cena'],
+  ing:[['orata',2],['patate',450],['limoni',1],['rosmarino',1],['olio',30]],
+  steps:['Pulisci le orate e mettici dentro limone e rosmarino.',
+         'Patate a fette sotto, pesce sopra, olio e sale.','Forno a 190° per trenta minuti.']},
+ {id:'pescespadapomodorini',n:'Pesce spada con pomodorini',e:'🍅',min:20,d:2,serv:2,tag:'Proteica',slots:['cena'],
+  ing:[['pescespada',350],['pomodorini',250],['capperi',25],['olive',60],['olio',25]],
+  steps:['Pomodorini, capperi e olive in padella, otto minuti.',
+         'Pesce spada dentro, coperchio, sei minuti girandolo una volta.']},
+ {id:'calamariumido',n:'Calamari in umido',e:'🦑',min:45,d:2,serv:2,tag:'Classico',slots:['cena'],
+  ing:[['calamari',500],['passata',350],['aglio',2],['prezzemolo',1],['olio',25],['vino_bianco',60]],
+  steps:['Aglio in olio, calamari ad anelli, sfuma col vino.',
+         'Passata e sale, trenta minuti a fuoco basso col coperchio.','Prezzemolo alla fine.']},
+ {id:'cozzemarinara',n:'Cozze alla marinara',e:'🦪',min:25,d:2,serv:2,tag:'Della domenica',slots:['cena'],
+  ing:[['cozze',1200],['pomodorini',200],['aglio',2],['prezzemolo',1],['pane',180],['olio',25]],
+  steps:['Pulisci bene le cozze sotto l’acqua.',
+         'Aglio e olio in pentola larga, cozze e coperchio: si aprono in cinque minuti.',
+         'Pomodorini e prezzemolo, e pane tostato per il fondo.']},
+ {id:'sgombrofagioli',n:'Insalata di sgombro e fagioli',e:'🫙',min:10,d:1,serv:2,tag:'Svuota-dispensa',slots:['pranzo'],
+  ing:[['sgombro',200],['fagioli',1],['cipollotto',1],['prezzemolo',1],['olio',20]],
+  steps:['Scola fagioli e sgombro.','Cipollotto a rondelle sottili, olio, sale e prezzemolo.']},
+ {id:'bastoncinipatatine',n:'Bastoncini e patatine al forno',e:'🍟',min:28,d:1,serv:2,tag:'Svelta',slots:['cena'],
+  ing:[['bastoncini',8],['patatinefritte',350]],
+  steps:['Forno a 220° con la teglia già dentro.','Tutto in un solo strato, venti minuti girando a metà.']},
+
+ /* ---- verdure, zuppe, forno ---- */
+ {id:'minestrone',n:'Minestrone',e:'🥬',min:45,d:1,serv:4,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['minestrone',600],['patate',250],['pastina',80],['parmigiano',40],['olio',20]],
+  steps:['Verdure e patate in pentola con acqua salata, mezz’ora.',
+         'Pastina dentro negli ultimi minuti.','Olio a crudo e parmigiano.']},
+ {id:'zuppaverza',n:'Zuppa di verza e patate',e:'🍲',min:45,d:1,serv:4,tag:'Comfort',slots:['cena'],
+  ing:[['verza',1],['patate',400],['pane',180],['dado',1],['olio',25]],
+  steps:['Verza a striscioline e patate a tocchi, acqua a coprire.',
+         'Mezz’ora a fuoco basso, schiacciando qualche patata.','Pane tostato nel piatto e olio a crudo.']},
+ {id:'vellutataporri',n:'Vellutata di porri e patate',e:'🥣',min:40,d:2,serv:2,tag:'Comfort',slots:['cena'],
+  ing:[['porro',2],['patate',450],['panna',100],['dado',1],['olio',20]],
+  steps:['Porri a rondelle in pentola con olio, cinque minuti.',
+         'Patate, brodo a coprire, venticinque minuti.','Frulla e finisci con la panna.']},
+ {id:'cavolfioregratin',n:'Cavolfiore gratinato',e:'🥦',min:45,d:2,serv:4,tag:'Comfort',slots:['cena'],
+  ing:[['cavolfiore',1],['besciamella',350],['parmigiano',60],['pangrattato',40]],
+  steps:['Cavolfiore a cimette, lessato dieci minuti.',
+         'In pirofila con besciamella, parmigiano e pangrattato.','Forno a 200° per venti minuti.']},
+ {id:'peperonata',n:'Peperonata',e:'🫑',min:40,d:1,serv:4,tag:'Classica',slots:['pranzo','cena'],
+  ing:[['peperoni',600],['pomodori',350],['cipolla',1],['olio',30],['basilico',1]],
+  steps:['Cipolla in olio, peperoni a falde, dieci minuti.',
+         'Pomodori a pezzi e sale, mezz’ora a fuoco basso.','Basilico a fuoco spento.']},
+ {id:'fagiolinilimone',n:'Fagiolini all’olio e limone',e:'🫛',min:20,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['fagiolini',400],['limoni',1],['olio',25]],
+  steps:['Fagiolini in acqua salata, dodici minuti.','Scolali e condisci da tiepidi con olio, limone e sale.']},
+ {id:'frittataspinaci',n:'Frittata di spinaci',e:'🍳',min:20,d:2,serv:2,tag:'Proteica',slots:['pranzo','cena'],
+  ing:[['uova',4],['spinaci',350],['parmigiano',50],['olio',20]],
+  steps:['Spinaci in padella finché perdono l’acqua.',
+         'Uova sbattute col parmigiano dentro.','Coperchio cinque minuti, poi gira e altri tre.']},
+ {id:'tofuverdure',n:'Tofu e verdure in padella',e:'🍜',min:20,d:2,serv:2,tag:'Proteica',slots:['pranzo','cena'],
+  ing:[['tofu',300],['verduresurg',350],['salsasoia',30],['zenzero',15],['olio',20]],
+  steps:['Tofu a cubi, rosolato su tutti i lati.',
+         'Verdure e zenzero grattugiato a fuoco vivo.','Salsa di soia e due minuti.']},
+ {id:'pizzacasa',n:'Pizza margherita fatta in casa',e:'🍕',min:150,d:4,serv:4,tag:'Della domenica',slots:['cena'],
+  ing:[['farina',500],['lievitobirra',1],['passata',250],['mozzarella',250],['basilico',1],['olio',25]],
+  steps:['Impasta farina, acqua tiepida, lievito e sale: due ore di lievitatura.',
+         'Stendi, passata e un filo d’olio, forno al massimo.',
+         'Mozzarella negli ultimi cinque minuti, basilico alla fine.']},
+ {id:'pizzaprontaforno',n:'Base pizza pronta al forno',e:'🍕',min:15,d:1,serv:2,tag:'Svelta',slots:['cena'],
+  ing:[['pizzapronta',1],['passata',120],['mozzarella',125],['origano',1]],
+  steps:['Passata sulla base, mozzarella e origano.','Forno a 220° per dieci minuti.']}
 ];
 
 /* piano dei prossimi 7 giorni */
@@ -1276,14 +1550,20 @@ function simula(){
  PLAN.forEach((d,di)=>SLOTS.forEach(slot=>{
   const id=d.meals[slot]; if(!id) return;
   const r=R(id); if(!r) return;
-  const manca=[], f=fattore();
+  const manca=[], f=fattore(), usati={};
+  const avere=id=>sim[id]||0;
+  const usa=[];
   r.ing.forEach(([k,q0])=>{
-   const q=Math.round(q0*f*10)/10, i=ING[k];
+   const q=Math.round(q0*f*10)/10;
+   const uso=scegli(k,q,avere,usati);
+   usa.push([uso,q0]);
+   const i=ING[uso];
    if(!i){manca.push([k,q]);return;}
+   usati[uso]=1;
    if(i.staple) return;
-   if((sim[k]||0)<q) manca.push([k, Math.round((q-(sim[k]||0))*10)/10]);
+   if((sim[uso]||0)<q) manca.push([uso, Math.round((q-(sim[uso]||0))*10)/10]);
   });
-  r.ing.forEach(([k,q0])=>{const i=ING[k];
+  usa.forEach(([k,q0])=>{const i=ING[k];
    if(i&&!i.staple) sim[k]=Math.max(0,(sim[k]||0)-q0*f);});
   out.push({di,slot,r,manca});
  }));
@@ -1462,6 +1742,41 @@ function calendarHTML(){
 }
 
 /* ===================== Home ===================== */
+/* I consigli della home. Prima quelle che puoi fare DAVVERO, con quello che
+   hai in dispensa in questo momento. Solo dopo, separate e dette chiaramente,
+   quelle a cui manca una cosa o due: così si vede subito la differenza fra
+   "stasera" e "quando passo al supermercato". */
+function consigliHTML(){
+ const soloColaz=r=>r.slots.length===1&&r.slots[0]==='colazione';
+ const dati=RECIPES.filter(r=>!soloColaz(r)&&!vietata(r)).map(r=>({r,c:check(r)}));
+ const ora=dati.filter(x=>!x.c.gap).sort((a,b)=>abitudine(b.r)-abitudine(a.r)).slice(0,10);
+ const poco=dati.filter(x=>x.c.gap&&x.c.gap<=2)
+   .sort((a,b)=>(a.c.gap-b.c.gap)||(pronta(b.r)-pronta(a.r))).slice(0,10);
+ if(!ora.length&&!poco.length) return '';
+ const nome=k=>ING[k]?ING[k].n.toLowerCase():k;
+ const carta=({r,c})=>`<button class="rcard dish" data-a="recipe" data-id="${r.id}">
+   <div class="thumb">${r.e}</div>
+   <div class="small">${r.min} min · ${eur(perPorz(r))}</div>
+   <h4>${esc(r.n)}</h4>
+   <span>${diffEti(r,1)}</span>
+   ${c.gap?`<span class="pill warn">ti serve ${[...c.miss,...c.part].slice(0,2).map(x=>nome(x.k)).join(', ')}</span>`
+          :`<span class="pill ok">✓ ce l’hai tutto</span>`}
+ </button>`;
+ return `
+ ${ora.length?`<section class="sec">
+   <div class="sec-h"><h2>Stasera, senza uscire</h2>
+     <button class="more" data-a="recf" data-f="pronte">tutte (${dati.filter(x=>!x.c.gap).length})</button></div>
+   <div class="scroller">${ora.map(carta).join('')}</div>
+ </section>`:`<div class="card" style="padding:18px;margin-top:14px">
+   <div class="row"><span class="blob av" style="background:var(--verde-bg)">🛒</span>
+   <span class="col grow"><strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Con quello che c’è non esce un piatto intero</strong>
+   <span class="small">Appena carichi una spesa qui compaiono le ricette che puoi fare subito.</span></span></div>
+ </div>`}
+ ${poco.length?`<section class="sec">
+   <div class="sec-h"><h2>Ti manca poco</h2><span>una o due cose da prendere</span></div>
+   <div class="scroller">${poco.map(carta).join('')}</div>
+ </section>`:''}`;
+}
 function vOggi(){
  const probl=problemi();
  const oggi=PLAN[0].meals;
@@ -1487,6 +1802,8 @@ function vOggi(){
    <button class="stat" data-a="go" data-s="spesa"><i class="ic">⏳</i><b class="tnum">${inEsaurimento().length}</b><span>sta finendo</span></button>
    <button class="stat" data-a="go" data-s="ricette"><i class="ic">🍳</i><b class="tnum">${pronte}</b><span>ricette pronte</span></button>
  </div>
+
+ ${consigliHTML()}
 
  <section class="sec">
    <div class="sec-h"><h2>Nei prossimi giorni</h2>
@@ -1730,16 +2047,98 @@ function vSpesa(){
 }
 
 /* ===================== Ricette ===================== */
+
+/* ===================== le varianti =====================
+   Una ricetta non è una lista chiusa. La piadina con lo stracchino è la
+   stessa piadina con la scamorza o col philadelphia, e la pasta corta si fa
+   con gli spaghetti senza che cambi niente. Se non lo so, mando qualcuno a
+   comprare lo stracchino mentre in frigo c'è la scamorza.
+   Regola che tengo stretta: si scambiano solo cose con la STESSA unità di
+   misura, altrimenti "180" smette di voler dire qualcosa. */
+const FAMIGLIE=[
+ ['pasta_mista','pasta_lunga','spaghetti','pastaintegrale','pastasenzaglutine'],
+ ['riso','risobasmati'],
+ ['latte','lattepas','lattesenza','lattevegetale'],
+ ['panna','pannacucina'],
+ ['passata','pelati','sugopronto'],
+ ['pomodori','pomodorini'],
+ ['parmigiano','pecorino'],
+ /* i formaggi da farcire si scambiano fra loro: la piadina con lo
+    stracchino è buona anche con la scamorza. Il parmigiano no: quello è
+    da grattugia e sta in una famiglia sua. */
+ ['stracchino','philadelphia','ricotta','scamorza','mozzarella','emmental',
+  'taleggio','gorgonzola','burrata'],
+ /* stessa cosa per l'affettato dentro un panino o una piadina */
+ ['prosciuttocrudo','prosciuttocotto','speck','bresaola','salame','mortadella'],
+ ['insalata','rucola','radicchio','spinacino'],
+ ['spinaci','spinacino'],
+ ['yogurt','yogurtgreco','yogurtfrutta'],
+ ['fagioli','ceci'],
+ ['tonno','tonno2'],
+ ['pollo','tacchino','cosciapollo','lonza'],
+ ['macinato','salsiccia'],
+ ['merluzzo','sogliola','pescespada'],
+ ['cipolla','scalogno','cipollotto','porro'],
+ ['zucchine','zucchine2'],
+ ['funghi','funghi2'],
+ ['limoni','limoni2','lime'],
+ ['farina','farinaintegrale','semola'],
+ ['zucchero','zuccherocanna'],
+ ['gnocchi','pastafresca'],
+ ['patate','patatedolci'],
+ ['broccoli','cavolini'],
+ ['biscotti','fette'],
+ ['marmellata','miele'],
+ ['aceto','balsamico'],
+ ['vino_bianco','vinorosso']
+];
+/* La tabella si costruisce al primo uso, non qui: all'avvio la dispensa
+   conosce solo i suoi alimenti, e tutto il resto del catalogo arriva un
+   momento dopo. Costruendola subito mi perdevo per strada il philadelphia,
+   lo speck e tre quarti delle varianti, senza che niente si lamentasse. */
+let _SOST=null;
+function sostituti(k){
+ if(!_SOST){
+  _SOST={};
+  FAMIGLIE.forEach(g=>g.forEach(x=>{
+   if(!ING[x]) return;
+   g.forEach(a=>{ if(a!==x&&ING[a]&&ING[a].u===ING[x].u&&!(_SOST[x]||[]).includes(a))
+     (_SOST[x]=_SOST[x]||[]).push(a); });
+  }));
+ }
+ return _SOST[k]||[];
+}
+/* Cosa uso davvero per questo ingrediente, viste le scorte.
+   "avere" dice quanto ce n'è (in dispensa adesso, o nella simulazione della
+   settimana), "usati" impedisce che una sola scamorza copra due ingredienti. */
+function scegli(k,q,avere,usati){
+ const ok=id=>{const i=ING[id]; return i&&(i.staple?avere(id)>0:avere(id)>=q);};
+ if(!usati[k]&&ok(k)) return k;
+ const alt=sostituti(k).filter(a=>!usati[a]);
+ const pieno=alt.find(ok);
+ if(pieno) return pieno;
+ if(ING[k]&&avere(k)>0) return k;
+ const parz=alt.find(a=>avere(a)>0);
+ return parz||k;
+}
+const altrimenti=k=>sostituti(k).filter(a=>ING[a]);
+
 function check(r,scale){
- const f=(scale||r.serv)/r.serv, miss=[],part=[],have=[];
+ const f=(scale||r.serv)/r.serv, miss=[],part=[],have=[],need=[],usati={};
+ const avere=id=>ING[id]?ING[id].q:0;
  r.ing.forEach(([k,q0])=>{
-  const q=Math.round(q0*f*10)/10, i=ING[k];
-  if(!i){miss.push({k,q});return;}
-  if(i.staple&&i.q>0){have.push({k,q});return;}
-  if(i.q<=0) miss.push({k,q}); else if(i.q<q) part.push({k,q}); else have.push({k,q});
+  const q=Math.round(q0*f*10)/10;
+  const uso=scegli(k,q,avere,usati);
+  const i=ING[uso];
+  const v={k,q,uso};
+  need.push(v);
+  if(!i){miss.push(v);return;}
+  usati[uso]=1;
+  if(i.staple&&i.q>0){have.push(v);return;}
+  if(i.q<=0) miss.push(v); else if(i.q<q) part.push(v); else have.push(v);
  });
- return {miss,part,have,gap:miss.length+part.length,
-   need:r.ing.map(([k,q])=>({k,q:Math.round(q*f*10)/10}))};
+ return {miss,part,have,need,gap:miss.length+part.length,
+   cambi:need.filter(v=>v.uso!==v.k)};
 }
 function vRicette(){
  const dati=RECIPES.map(r=>({r,c:check(r)}));
@@ -1813,15 +2212,22 @@ function vRicetta(){
    <div class="sec-h"><h2>Ingredienti</h2><span>${c.have.length} su ${c.need.length} in casa</span></div>
    <div class="card" style="padding:14px 16px">
      ${c.need.map(x=>{
-       const i=ING[x.k], m=c.miss.find(y=>y.k===x.k), p=c.part.find(y=>y.k===x.k);
+       const i=ING[x.uso], orig=ING[x.k];
+       const m=c.miss.includes(x), p=c.part.includes(x);
        const t=m?'n':p?'p':'y';
+       const cambio=x.uso!==x.k;
+       /* le altre cose che andrebbero bene lo stesso: utile quando manca */
+       const altre=altrimenti(x.k).filter(a=>a!==x.uso)
+         .map(a=>ING[a].n.toLowerCase());
        return `<div class="ing">
          <span class="tick ${t}">${t==='y'?'✓':t==='p'?'!':'✕'}</span>
          <span class="col grow">
-           <span class="name">${esc(i?i.n:x.k)}</span>
-           <span class="small">${m?'non ce l’hai':p?`ne hai solo ${qty(i.q,i.u)}`:`in dispensa ${qty(i.q,i.u)}`}</span>
+           <span class="name">${esc(orig?orig.n:x.k)}${cambio?` <span class="small" style="font-weight:600">→ ${esc(i.n.toLowerCase())}</span>`:''}</span>
+           <span class="small">${cambio?`non ce l’hai, ma in dispensa c’è ${qty(i.q,i.u)} di ${esc(i.n.toLowerCase())}`
+             :m?(altre.length?`non ce l’hai · va bene anche ${esc(altre.slice(0,2).join(' o '))}`:'non ce l’hai')
+             :p?`ne hai solo ${qty(i.q,i.u)}`:`in dispensa ${qty(i.q,i.u)}`}</span>
          </span>
-         <span class="tnum" style="font-weight:800;font-size:14.5px;color:var(--verde-scuro)">${qty(x.q,i?i.u:'g')}</span>
+         <span class="tnum" style="font-weight:800;font-size:14.5px;color:var(--verde-scuro)">${qty(x.q,i?i.u:(orig?orig.u:'g'))}</span>
        </div>`;}).join('')}
    </div>
  </section>
@@ -1832,13 +2238,30 @@ function vRicetta(){
  </section>
 
  <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">
-   <button class="btn primary wide" data-a="plan" data-id="${r.id}">📅 Mettila nel piano</button>
+   ${S.recFrom==='oggi'?'':
+     `<button class="btn primary wide" data-a="plan" data-id="${r.id}">📅 Mettila nel piano</button>`}
    <button class="btn wide ${c.gap?'':'dark'}" data-a="cooked" data-id="${r.id}" ${c.gap?'disabled':''}>
      🍽️ L’ho cucinata — scala dalla dispensa</button>
  </div>`;
 }
 
 /* ===================== proposte ===================== */
+/* Quanto è pronta una ricetta con quello che c'è in casa ADESSO.
+   1 = la fai subito, 0 = manca tutto. Gli ingredienti che ci sono ma non
+   bastano contano metà, perché un etto di parmigiano in meno non è come
+   non avere il pollo. Questo numero viene prima di ogni altra cosa quando
+   devo consigliare: una ricetta che ti fa uscire a fare la spesa non è un
+   consiglio, è un compito. */
+function pronta(r,scale){
+ const c=check(r,scale), n=r.ing.length||1;
+ return (c.have.length+c.part.length*0.5)/n;
+}
+const cucinabile=(r,scale)=>check(r,scale).gap===0;
+/* l'ordine dei consigli: prima quelle che puoi fare, poi quelle a cui manca
+   poco, e a pari condizioni quelle con dentro le cose che usi di più */
+const perConsiglio=(a,b)=>
+ (cucinabile(b)-cucinabile(a)) || (pronta(b)-pronta(a)) || (abitudine(b)-abitudine(a));
+
 function candidati(){
  const usate=new Set(); PLAN.forEach(d=>SLOTS.forEach(s=>d.meals[s]&&usate.add(d.meals[s])));
  return RECIPES.filter(r=>{
@@ -1849,7 +2272,7 @@ function candidati(){
   if(dOf(r)>S.diffMax) return false;
   if(r.ing.some(([k])=>ING[k]&&ING[k].only&&ING[k].only!==S.store)) return false;
   return true;
- }).sort((a,b)=>abitudine(b)-abitudine(a));
+ }).sort(perConsiglio);
 }
 function esclusi(){
  return RECIPES.filter(r=>!r.slots.includes('colazione') &&
@@ -1880,7 +2303,7 @@ function proposteSlot(di,slot){
    && !r.ing.some(([k])=>ING[k]&&ING[k].only&&ING[k].only!==S.store);
  let pool=RECIPES.filter(r=>r.slots.includes(slot)&&r.id!==attuale&&ok(r));
  if(!pool.length) pool=RECIPES.filter(r=>r.slots.includes(slot)&&r.id!==attuale);
- pool.sort((a,b)=>(usate.has(a.id)-usate.has(b.id))||(abitudine(b)-abitudine(a)));
+ pool.sort((a,b)=>(usate.has(a.id)-usate.has(b.id))||perConsiglio(a,b));
  const from=S.screen;
  closeSheet();
  S.prop={mode:'slot',di,slot,pool,i:0,accepted:[],rejected:[],step:'deck',from};
@@ -2136,7 +2559,8 @@ function vManuale(){
    confezione solita se si pesa. Resta solo una proposta: il numero è tuo. */
 function propostaManuale(k){
  const i=ING[k]; if(!i) return 1;
- return aPezzi(k)?1:i.f;
+ if(aPezzi(k)) return 1;           /* si conta a pezzi: uno, poi aggiusti */
+ return confezione(k);             /* una confezione, non la dispensa piena */
 }
 function aggiornaTotaleManuale(){
  const n=Object.keys(S.man.sel).filter(k=>S.man.sel[k]>0).length;
@@ -3113,6 +3537,25 @@ function leggiQuantita(testo){
    ||t.match(/\b(?:pz|pezzi)\.?\s?(\d{1,2})(?:\s|$)/)   /* certe catene lo scrivono al contrario: "PZ 2" */
    ||t.match(/\b(?:conf|cf)\.?\s?(\d{1,2})(?:\s|$)/);
  if(mz&&molt===1) molt=Math.min(30,parseInt(mz[1],10)||1);
+ /* un numero piccolo e nudo scritto DOPO il nome ("UOVA FRESCHE 6",
+    "BANANE 4") dice quante cose hai preso. Prima del nome invece è il
+    numero di riga della cassa, e quello non c'entra. Lo tengo da parte:
+    vale solo per le cose che si contano, e lo decide misura(). */
+ const senzaPrezzo=t.replace(/\d+[.,]\d{2}\s*[a-z]?\s*$/,'');
+ let conta=null;
+ if(!mx&&!mz){
+  const pezzi=senzaPrezzo.split(/\s+/);
+  const primaParola=pezzi.findIndex(w=>(w.match(/[a-z]/g)||[]).length>=2);
+  if(primaParola>=0){
+   /* prendo l'ULTIMO: quando le colonne non si trovano leggo la riga due
+      volte di seguito, e davanti ci può stare il numero di riga della cassa
+      ("1 UOVA FRESCHE 6"). Quello che conta sta in fondo al nome. */
+   const nudi=pezzi.slice(primaParola+1)
+     .filter(w=>/^\d{1,2}$/.test(w)).map(w=>parseInt(w,10))
+     .filter(n=>n>=1&&n<=30);
+   if(nudi.length) conta=nudi[nudi.length-1];
+  }
+ }
  const mp=t.match(/(\d+(?:[.,]\d+)?)\s?(kg|gr|g|ml|cl|lt|l)\b/);
  if(mp){
   let v=parseFloat(mp[1].replace(',','.')), u=mp[2];
@@ -3121,16 +3564,15 @@ function leggiQuantita(testo){
   const bilancia=/[.,]\d{3}$/.test(mp[1]);
   if(u==='kg'){v*=1000;u='g';} else if(u==='gr'){u='g';}
   else if(u==='lt'||u==='l'){v*=1000;u='ml';} else if(u==='cl'){v*=10;u='ml';}
-  return {v:Math.round(v*molt*10)/10,u,molt,pesato:bilancia};
+  return {v:Math.round(v*molt*10)/10,u,molt,pesato:bilancia,conta};
  }
  const mw=t.match(/(?:^|\s)(0[.,]\d{3})(?:\s|$)/);
- if(mw) return {v:Math.round(parseFloat(mw[1].replace(',','.'))*1000),u:'g',molt,pesato:true};
+ if(mw) return {v:Math.round(parseFloat(mw[1].replace(',','.'))*1000),u:'g',molt,pesato:true,conta};
  /* un numero nudo fra 50 e 2000, senza virgola, di solito è la grammatura */
- const senzaPrezzo=t.replace(/\d+[.,]\d{2}\s*[a-z]?\s*$/,'');
  const mn=senzaPrezzo.match(/(?:^|\s)(\d{2,4})(?:\s|$)(?![^]*\d{2,4}(?:\s|$))/);
  if(mn){ const v=parseInt(mn[1],10);
-  if(v>=50&&v<=2000) return {v:v*molt,u:'g',molt,pesato:false}; }
- return {v:null,u:null,molt,pesato:false};
+  if(v>=50&&v<=2000) return {v:v*molt,u:'g',molt,pesato:false,conta}; }
+ return {v:null,u:null,molt,pesato:false,conta};
 }
 
 /* Cerca l'ingrediente che somiglia di più alla descrizione.
@@ -3547,7 +3989,10 @@ function vScontrino(){
        </div>`+
        da.map(({l,i})=>{
         const ing=ING[l.id], peso=ing.u==='g'||ing.u==='ml';
-        const scelti=[1,2,3,4,6,8];
+        /* fra i numeri da toccare ci deve essere anche quello che propongo,
+           altrimenti nessuno è acceso e sembra che non abbia scelto niente */
+        const scelti=[...new Set([1,2,3,4,6,8,10,12,l.q])]
+          .filter(n=>n>0&&n<=30).sort((a,b)=>a-b);
         return `<div class="card" style="padding:14px;margin-bottom:10px">
           <div class="row">
             <span class="tile av-sm" style="background:var(--verde-bg)">${ing.e}</span>
@@ -3558,7 +4003,7 @@ function vScontrino(){
           </div>
           <div class="chips" style="margin-top:11px;flex-wrap:wrap;overflow:visible">
             ${scelti.map(n=>`<button class="chip tnum" data-a="quanti" data-i="${i}" data-v="${n}"
-              aria-pressed="${l.q===n&&l.u!==ing.u}">${n}</button>`).join('')}
+              aria-pressed="${l.q===n}">${n}</button>`).join('')}
             ${peso?`<button class="chip" data-a="apeso" data-i="${i}">⚖️ al peso</button>`:''}
           </div>
         </div>`;}).join('');
@@ -3898,7 +4343,9 @@ document.addEventListener('click',e=>{
    S.screen='piano'; render(); }
  else if(a==='invf'){ S.invFilter=t.dataset.f; render(true); }
  else if(a==='cerca-pulisci'){ S.invQuery=''; render(true); }
- else if(a==='recf'){ S.recFilter=t.dataset.f; render(true); }
+ else if(a==='recf'){ S.recFilter=t.dataset.f;
+   /* dalla home questo filtro è una scorciatoia: porta anche là */
+   if(S.screen!=='ricette'){ S.screen='ricette'; render(); } else render(true); }
  else if(a==='use'){ apriUso(t.dataset.id); }
  else if(a==='uso-passo'){ cambiaUso((S.uso?S.uso.q:0)+(+t.dataset.d)*passoUso(S.uso.k)); }
  else if(a==='uso-meta'){ cambiaUso((S.uso?S.uso.q:0)/2); }
@@ -3922,7 +4369,7 @@ document.addEventListener('click',e=>{
    if(ing){ l.q=+t.dataset.v; l.u=ing.u; l.stato='certa'; l.c=1; l.on=true; }
    render(true); }
  else if(a==='apeso'){ const l=S.lines[+t.dataset.i], ing=l&&ING[l.id];
-   if(ing){ l.u=ing.u; l.q=ing.f; l.stato='certa'; l.c=1; l.on=true; }
+   if(ing){ l.u=ing.u; l.q=confezione(l.id); l.stato='certa'; l.c=1; l.on=true; }
    render(true); toast('Messo a peso: con la matita cambi i grammi'); }
  else if(a==='conf-no'){ const i=+t.dataset.i, l=S.lines[i];
    if(l){ impara(l.raw,false); S.others.push({raw:l.raw,why:'me l’hai detto tu'});
@@ -4255,7 +4702,7 @@ function applicaScontrino(){
 }
 function cucinata(id){
  const r=R(id), c=check(r,S.serv); let n=0;
- c.need.forEach(x=>{const i=ING[x.k]; if(!i||i.staple) return;
+ c.need.forEach(x=>{const i=ING[x.uso||x.k]; if(!i||i.staple) return;
   i.q=Math.max(0,Math.round((i.q-x.q)*10)/10); n++;});
  toast(`Buon appetito! ${n} ingredienti scalati`);
  S.screen='dispensa'; render();
@@ -4374,7 +4821,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261119-1701';
+const VERSIONE='20261120-0022';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
@@ -4620,10 +5067,36 @@ const DOMANDE={
  bastoncini:'Quanti bastoncini?', salsiccia:'Quante salsicce?'
 };
 const aPezzi=id=>!!PEZZO[id];
+/* Quanto ne entra in casa con UNA spesa normale, nell'unità della dispensa.
+   Prima questo numero lo prendevo da "f", che è un'altra cosa: f è la
+   dispensa piena. Risultato: una confezione di uova diventava dieci uova,
+   un pacco di fette biscottate trenta fette, una scatoletta di tonno tre.
+   Numeri che non venivano da nessuna parte. Qui invece c'è scritta la
+   confezione che si compra davvero. */
+const CONF={
+ uova:6, yogurt:4, yogurtgreco:2, salmone:2, fagioli:1, ceci:1, tonno:1,
+ lievito:4, fette:30, biscotti:30, dado:10, aglio:8, limoni:4, limoni2:4,
+ basilico:1, prezzemolo:1, rosmarino:6, cipolla:3, scalogno:3, porro:2,
+ mozzarella:125, burrata:125, scamorza:250, panebauletto:20
+};
+/* su queste la quantità cambia troppo da spesa a spesa: propongo e chiedo */
+const VARIA=new Set(['uova','tonno','fagioli','ceci','cipolla','limoni','limoni2',
+ 'scalogno','porro','yogurt','salmone','aglio']);
+/* quanto propongo quando lo scontrino non dice niente */
+function confezione(id){
+ const i=ING[id]; if(!i) return 1;
+ /* una spesa non può riempire la dispensa più di quanto ci sta: se un
+    numero qui sopra è sbagliato, almeno non diventa assurdo */
+ if(CONF[id]!==undefined) return Math.min(CONF[id],i.f);
+ if(i.u==='g'||i.u==='ml') return Math.round(i.f*10)/10;  /* qui f è la confezione */
+ return 1;   /* si conta e non so la confezione: uno, e lo chiedo */
+}
 /* si conta davvero? Le uova e gli hamburger sì; le mele si pesano, anche se
    so quanto pesa una mela, perché nessuno compra "sei mele" alla cassa. */
 function contaDavvero(id){
- const i=ING[id]; if(!i||!aPezzi(id)) return false;
+ const i=ING[id]; if(!i) return false;
+ if(VARIA.has(id)) return true;
+ if(!aPezzi(id)) return i.u!=='g'&&i.u!=='ml'&&CONF[id]===undefined;
  if(i.u!=='g'&&i.u!=='ml') return true;
  return pezziTipici(id)<=4;
 }
@@ -4687,12 +5160,15 @@ function misura(id,let_){
   const conta=!(i.u==='g'||i.u==='ml');
   return conta?{q:molt,u:i.u}:{q:Math.round(i.f*molt*10)/10,u:i.u};
  }
- /* 3. nessun numero, o un numero di cui non mi fido: la confezione solita.
+ /* 3. "UOVA FRESCHE 6": il numero è scritto lì, e per le cose che si
+       contano vuol dire sei uova. Non è una stima, è un dato. */
+ if(let_.conta&&(aPezzi(id)||!(i.u==='g'||i.u==='ml')))
+  return {q:let_.conta,u:unitaPezzo(id)};
+ /* 4. nessun numero, o un numero di cui non mi fido: la confezione solita.
        Se quella cosa si compra contandola ti chiedo quanti, perché
        "hamburger" senza grammi non vuol dire 110 g: vuol dire uno, o due,
        o quattro. E se il peso l'ho buttato via te lo dico. */
- const pesa=i.u==='g'||i.u==='ml';
- return {q:pesa?Math.round(i.f*10)/10:pezziTipici(id),u:i.u,
+ return {q:confezione(id),u:i.u,
          chiedi:contaDavvero(id),pesoDubbio:strano};
 }
 /* la domanda, con le parole dell'alimento quando le ho */
