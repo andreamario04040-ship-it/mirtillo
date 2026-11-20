@@ -563,6 +563,46 @@ body.onboarding .app{padding-bottom:40px}
   transition:opacity var(--t-cambio) var(--mov),transform var(--t-cambio) var(--mov-molla)}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
 #toast.conazione{display:flex;align-items:center;gap:14px;pointer-events:auto}
+
+/* ---------- i mirtilli in fondo alla home ---------- */
+.bosco-sec{margin-top:26px;margin-bottom:0;text-align:center}
+.bosco{display:block;width:100%;max-width:420px;margin:0 auto;overflow:visible}
+.bosco .terra{fill:var(--verde-bg)}
+.bosco .ombra-b{fill:rgba(var(--ombra-scura),.16)}
+.bosco .stella{fill:#2B3585;opacity:.55}
+.bosco .bacca{cursor:pointer}
+.bosco .bacca,.bosco .ombra-b{transform-box:fill-box;transform-origin:50% 100%}
+/* a riposo si alzano appena, ognuno con il suo tempo: se partissero
+   insieme sembrerebbe un meccanismo, non cinque mirtilli */
+.bosco .bacca{animation:galleggia 3.4s cubic-bezier(.45,0,.55,1) calc(var(--i) * .31s) infinite alternate}
+.bosco .ombra-b{animation:ombretta 3.4s cubic-bezier(.45,0,.55,1) calc(var(--i) * .31s) infinite alternate}
+@keyframes galleggia{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+@keyframes ombretta{from{transform:scale(1);opacity:1}to{transform:scale(.88);opacity:.75}}
+/* toccato: si schiaccia, parte, ricade e si assesta. Le curve sono scritte
+   per esteso perché dentro i keyframes le variabili non vengono lette */
+.bosco .bacca.salta{animation:salto .78s both}
+.bosco .ombra-b.salta{animation:ombrasalto .78s both}
+@keyframes salto{
+  0%  {transform:translateY(0) scale(1,1);      animation-timing-function:cubic-bezier(.32,0,.67,0)}
+  16% {transform:translateY(2px) scale(1.2,.8); animation-timing-function:cubic-bezier(.33,1,.68,1)}
+  46% {transform:translateY(-34px) scale(.9,1.12); animation-timing-function:cubic-bezier(.32,0,.67,0)}
+  74% {transform:translateY(0) scale(1.14,.88); animation-timing-function:cubic-bezier(.34,1.18,.64,1)}
+  100%{transform:translateY(0) scale(1,1)}
+}
+@keyframes ombrasalto{
+  0%  {transform:scale(1);opacity:1;   animation-timing-function:cubic-bezier(.33,1,.68,1)}
+  46% {transform:scale(.5);opacity:.4; animation-timing-function:cubic-bezier(.32,0,.67,0)}
+  74% {transform:scale(1.12);opacity:1;animation-timing-function:cubic-bezier(.34,1.18,.64,1)}
+  100%{transform:scale(1);opacity:1}
+}
+.bosco .bacca.salta .stella{animation:giracalice .78s cubic-bezier(.33,1,.68,1) both;
+  transform-box:fill-box;transform-origin:center}
+@keyframes giracalice{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.bosco-dice{margin:10px 0 0;font-family:var(--font-display);font-weight:800;
+  font-size:14px;color:var(--ink-3);min-height:19px;
+  animation:none}
+/* in un telefono stretto stanno comunque larghi quanto la pagina */
+@media (max-width:380px){ .bosco{max-width:100%} }
 .toast-az{flex:0 0 auto;color:var(--crema);font-weight:900;font-size:13.5px;
   text-decoration:underline;text-underline-offset:3px;padding:2px 0}
 .pop{animation:pop .4s var(--mov-molla)}
@@ -3007,10 +3047,23 @@ const STORES=["In's Mercato",'Conad','Lidl','Esselunga','Carrefour','Eurospin',
 const el=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const R=id=>RECIPES.find(x=>x.id===id);
+/* "1 spicchi" e "2 vaso" si leggono male, e adesso queste unità si vedono
+   dappertutto: un singolare e un plurale per ognuna */
+const UNITA={
+ spicchi:['spicchio','spicchi'], vaso:['vaso','vasi'],
+ mazzetto:['mazzetto','mazzetti'], rametti:['rametto','rametti'],
+ scatole:['scatola','scatole'], bustine:['bustina','bustine'],
+ cubetti:['cubetto','cubetti'], vasi:['vaso','vasi'], mazzetti:['mazzetto','mazzetti']
+};
+function unitaScritta(n,u){
+ const c=UNITA[u]; if(!c) return u;
+ return Math.abs(n-1)<0.01 ? c[0] : c[1];
+}
 function qty(n,u){
  if(u==='g'&&n>=1000) return (n/1000).toFixed(n%1000?1:0).replace('.',',')+' kg';
  if(u==='ml'&&n>=1000) return (n/1000).toFixed(n%1000?1:0).replace('.',',')+' L';
- return String(Math.round(n*10)/10).replace('.',',')+' '+u;
+ const v=Math.round(n*10)/10;
+ return String(v).replace('.',',')+' '+unitaScritta(v,u);
 }
 const eur=n=>n.toFixed(2).replace('.',',')+' €';
 function cost(r){ // costo totale della ricetta
@@ -3059,21 +3112,21 @@ function simula(){
  PLAN.forEach((d,di)=>SLOTS.forEach(slot=>{
   const id=d.meals[slot]; if(!id) return;
   const r=R(id); if(!r) return;
-  const manca=[], f=fattore(), usati={};
+  const manca=[], f=fattore(), usati={}, tipi=tipiRicetta(r);
   const avere=id=>sim[id]||0;
   const usa=[];
   r.ing.forEach(([k,q0])=>{
    const q=Math.round(q0*f*10)/10;
-   const uso=scegli(k,q,avere,usati);
-   usa.push([uso,q0]);
-   const i=ING[uso];
+   const sc=scegli(k,q,avere,usati,tipi);
+   usa.push([sc.uso,sc.q]);
+   const i=ING[sc.uso];
    if(!i){manca.push([k,q]);return;}
-   usati[uso]=1;
+   usati[sc.uso]=1;
    if(i.staple) return;
-   if((sim[uso]||0)<q) manca.push([uso, Math.round((q-(sim[uso]||0))*10)/10]);
+   if((sim[sc.uso]||0)<sc.q) manca.push([sc.uso, Math.round((sc.q-(sim[sc.uso]||0))*10)/10]);
   });
-  usa.forEach(([k,q0])=>{const i=ING[k];
-   if(i&&!i.staple) sim[k]=Math.max(0,(sim[k]||0)-q0*f);});
+  usa.forEach(([k,qq])=>{const i=ING[k];
+   if(i&&!i.staple) sim[k]=Math.max(0,(sim[k]||0)-qq);});
   out.push({di,slot,r,manca});
  }));
  return out;
@@ -3352,6 +3405,77 @@ function vOggi(){
  <div style="margin-top:18px">
    <button class="btn primary wide" data-a="go" data-s="spesa">🛒 Vai alla spesa</button>
  </div>`;
+}
+
+/* ===================== i mirtilli del primo avvio =====================
+   Stanno solo qui, nella pagina che si apre la prima volta: è l'unico
+   momento in cui uno non sa ancora cosa farsene dell'app, e una cosa che
+   risponde al dito dice "si tocca" meglio di qualunque frase. Dopo non
+   servono più, e infatti spariscono.
+   Stanno fermi quasi sempre, si alzano di cinque pixel ogni tre secondi e
+   mezzo, e se li tocchi saltano. Tutto in transform e opacity. */
+function stellaPath(r){
+ /* il calice del mirtillo: cinque punte, come sulla bacca vera */
+ const punte=[];
+ for(let i=0;i<10;i++){
+  const ang=-Math.PI/2 + i*Math.PI/5;
+  const rr=i%2 ? r*0.46 : r;
+  punte.push((Math.cos(ang)*rr).toFixed(2)+' '+(Math.sin(ang)*rr).toFixed(2));
+ }
+ return 'M'+punte.join(' L')+' Z';
+}
+const BACCHE=[[42,21],[100,15],[158,24],[214,16],[268,19]];
+function boscoHTML(){
+ const bacche=BACCHE.map(([x,r],i)=>`
+   <g transform="translate(${x},${104-r})">
+     <ellipse class="ombra-b" style="--i:${i}" cx="0" cy="${r+7}" rx="${(r*0.92).toFixed(1)}" ry="${(r*0.2).toFixed(1)}"/>
+     <g class="bacca" data-a="bacca" data-i="${i}" style="--i:${i}">
+       <circle r="${r}" fill="url(#bg-bacca)"/>
+       <ellipse class="luce" cx="${(-r*0.36).toFixed(1)}" cy="${(-r*0.4).toFixed(1)}"
+         rx="${(r*0.34).toFixed(1)}" ry="${(r*0.22).toFixed(1)}" fill="#fff" opacity=".3"
+         transform="rotate(-26)"/>
+       <path class="stella" d="${stellaPath(r*0.3)}" transform="translate(0,${(-r*0.3).toFixed(1)})"/>
+     </g>
+   </g>`).join('');
+ return `
+ <section class="sec bosco-sec" aria-hidden="true">
+   <svg class="bosco" viewBox="0 0 320 132" preserveAspectRatio="xMidYMax meet">
+     <defs><radialGradient id="bg-bacca" cx="34%" cy="28%" r="80%">
+       <stop offset="0" stop-color="#8E97E4"/><stop offset="52%" stop-color="#4A56B5"/>
+       <stop offset="100%" stop-color="#333E96"/></radialGradient></defs>
+     <rect class="terra" x="10" y="108" width="300" height="17" rx="8.5"/>
+     ${bacche}
+   </svg>
+   <p class="bosco-dice" id="bosco-dice">Toccali.</p>
+ </section>`;
+}
+const BOSCO_DICE=['Oh.','Ancora?','Uno alla volta.','Ehi.','Va bene, mi muovo.','Fermo lì.','Ancora uno?'];
+let boscoTocchi=new Set(), boscoFrase=0;
+function toccaBacca(g){
+ const i=+g.dataset.i;
+ const svg=g.closest('svg'); if(!svg) return;
+ const ombra=svg.querySelectorAll('.ombra-b')[i];
+ salta(g,ombra,0);
+ boscoTocchi.add(i);
+ const dice=el('bosco-dice');
+ if(boscoTocchi.size>=BACCHE.length){
+  /* toccate tutte: un'onda da sinistra a destra, e si ricomincia */
+  boscoTocchi.clear();
+  svg.querySelectorAll('.bacca').forEach((b,n)=>{
+   if(n===i) return;
+   salta(b,svg.querySelectorAll('.ombra-b')[n],60+Math.abs(n-i)*70);
+  });
+  if(dice) dice.textContent='Tutti insieme, allora.';
+ } else if(dice){
+  dice.textContent=BOSCO_DICE[boscoFrase++ % BOSCO_DICE.length];
+ }
+}
+function salta(g,ombra,ritardo){
+ const parti=(e)=>{ if(!e) return;
+  e.classList.remove('salta'); void e.offsetWidth; e.classList.add('salta');
+  e.addEventListener('animationend',()=>e.classList.remove('salta'),{once:true}); };
+ if(ritardo){ setTimeout(()=>{parti(g);parti(ombra);},ritardo); }
+ else { parti(g); parti(ombra); }
 }
 
 function mealRow(di,slot,modo){
@@ -3757,15 +3881,142 @@ function sostituti(k){
 /* Cosa uso davvero per questo ingrediente, viste le scorte.
    "avere" dice quanto ce n'è (in dispensa adesso, o nella simulazione della
    settimana), "usati" impedisce che una sola scamorza copra due ingredienti. */
-function scegli(k,q,avere,usati){
- const ok=id=>{const i=ING[id]; return i&&(i.staple?avere(id)>0:avere(id)>=q);};
- if(!usati[k]&&ok(k)) return k;
+/* ===================== scambi che valgono solo a volte =====================
+   Le FAMIGLIE qui sopra sono equivalenze: lo scalogno al posto della
+   cipolla va bene e basta, uno per uno. Ma ci sono scambi che funzionano
+   solo in certe preparazioni, non sempre nella stessa quantità, e che
+   cambiano un po' il risultato. L'olio al posto del burro in padella non
+   si sente quasi; in una frolla cambia il biscotto. Quindi per ognuno
+   tengo: quanto ne va (q), dove vale (dove), e che differenza fa (nota).
+   La differenza va detta: è l'unica cosa che distingue un consiglio da
+   una sostituzione fatta di nascosto. */
+const SCAMBI=[
+ {da:'burro',a:'olio',q:0.8,dove:['padella','forno','bollito'],
+  nota:'in padella non si sente quasi; viene un po’ più asciutto'},
+ {da:'burro',a:'olio',q:0.8,dove:['dolce'],
+  nota:'nei dolci cambia: più umido e meno friabile'},
+ {da:'olio',a:'burro',q:1.2,dove:['padella','forno'],
+  nota:'più tondo di sapore, ma brucia prima: fuoco più basso'},
+ {da:'panna',a:'latte',q:1,dove:['padella','forno'],
+  nota:'resta più liquido: fallo restringere qualche minuto in più'},
+ {da:'latte',a:'panna',q:1,dove:['padella'],nota:'viene più ricco e più denso'},
+ {da:'prezzemolo',a:'basilico',q:1,dove:['padella','crudo'],
+  nota:'il basilico tira al dolce: bene col pomodoro, meno col pesce'},
+ {da:'basilico',a:'prezzemolo',q:1,dove:['padella','crudo'],
+  nota:'il prezzemolo è più neutro, non profuma allo stesso modo'},
+ {da:'zucchero',a:'miele',q:0.75,dove:['dolce'],
+  nota:'il miele dolcifica di più e tiene umido: ne serve meno'},
+ {da:'miele',a:'zucchero',q:1.3,dove:['dolce'],nota:'serve più zucchero per la stessa dolcezza'},
+ {da:'lievito',a:'bicarbonato',q:0.5,dove:['dolce'],
+  nota:'funziona solo se nell’impasto c’è qualcosa di acido (yogurt, limone)'},
+ {da:'aceto',a:'limoni',q:1,dove:['crudo'],nota:'il limone è più profumato e meno pungente'},
+ {da:'limoni',a:'aceto',q:1,dove:['crudo'],nota:'l’aceto è più aggressivo: mettine un filo in meno'},
+ {da:'vino_bianco',a:'brododado',q:1,dove:['padella'],
+  nota:'senza alcol: manca l’acidità, aggiungi mezzo cucchiaio di limone'},
+ {da:'maionese',a:'yogurtgreco',q:1,dove:['crudo'],nota:'più leggera e un po’ acida'},
+ {da:'pangrattato',a:'crackers',q:1,dove:['forno','padella'],nota:'i crackers sono già salati: meno sale'},
+ {da:'passata',a:'pomodori',q:1.2,dove:['padella','bollito','forno'],
+  nota:'con i pomodori freschi serve qualche minuto in più e viene più acquoso'},
+ {da:'passata',a:'pomodorini',q:1.2,dove:['padella','bollito'],
+  nota:'i pomodorini sono più dolci: il sugo viene meno acido'},
+ {da:'pelati',a:'pomodori',q:1.1,dove:['padella','bollito'],
+  nota:'i pomodori freschi vanno spellati, o si sentono le bucce'},
+ {da:'passata',a:'concentrato',q:0.25,dove:['padella','bollito'],
+  nota:'il concentrato è molto più forte: allungalo con acqua'},
+ {da:'besciamella',a:'panna',q:1,dove:['forno'],nota:'gratina meno e resta più liquido'},
+ {da:'parmigiano',a:'emmental',q:1,dove:['forno'],nota:'fila invece di gratinare: crosta diversa'},
+ {da:'patate',a:'patatedolci',q:1,dove:['forno'],nota:'molto più dolci, e cuociono prima'},
+ {da:'riso',a:'orzo',q:1,dove:['bollito'],nota:'l’orzo resta più sodo e ci mette dieci minuti in più'},
+ {da:'farina',a:'farinaintegrale',q:1,dove:['lievitato','dolce'],
+  nota:'assorbe più acqua: se l’impasto è duro aggiungine un goccio'},
+ {da:'uova',a:'banane',q:50,dove:['dolce'],
+  nota:'mezza banana schiacciata per uovo: lega, ma si sente il sapore'}
+];
+/* note anche sugli equivalenti, dove la differenza c'è lo stesso */
+const NOTE_SCAMBIO={
+ 'yogurt>yogurtgreco':'il greco è più denso: la crema viene più soda',
+ 'yogurtgreco>yogurt':'il bianco è più liquido: potrebbe servire meno latte',
+ 'pomodori>pomodorini':'i pomodorini sono più dolci e si disfano prima',
+ 'pomodorini>pomodori':'i pomodori grandi hanno più acqua: cuocili qualche minuto in più',
+ 'latte>lattevegetale':'senza lattosio il sapore è un po’ diverso, la resa no',
+ 'spaghetti>pasta_mista':'cambia la forma, non il piatto',
+ 'piadina>tortillas':'la tortilla è più sottile: scaldala pochissimo',
+ 'parmigiano>pecorino':'il pecorino è più salato e più deciso',
+ 'stracchino>scamorza':'la scamorza fila e non si spalma',
+ 'prosciuttocrudo>prosciuttocotto':'il cotto è più dolce e meno saporito',
+ 'burro>olio':'più asciutto, meno tondo',
+ 'funghi>champignon':'gli champignon profumano molto meno dei porcini'
+};
+/* dove si usa una ricetta: lo ricavo da come è scritta, una volta sola */
+const TIPI_MEMO={};
+/* queste cose vogliono l'acqua bollente, comunque sia scritta la ricetta */
+const BOLLITI=new Set(['pasta_mista','spaghetti','pasta_lunga','pastaintegrale',
+ 'pastasenzaglutine','pastina','lasagne','pastafresca','tortellini','gnocchi',
+ 'riso','risobasmati','risosushi','orzo','farro','polenta','couscous','quinoa',
+ 'bulgur','noodles','lenticchie','lenticchierosse','semola']);
+function tipiRicetta(r){
+ if(TIPI_MEMO[r.id]) return TIPI_MEMO[r.id];
+ const nome=normalizza(r.n), tag=normalizza(r.tag||''), passi=normalizza(r.steps.join(' '));
+ const T=new Set();
+ /* la cottura la dicono i passaggi, e solo le parole che vogliono dire
+    davvero quella cosa: "olio a crudo" sta in mezzo a mille sughi cotti,
+    e "zucchero" in mezzo a mille piatti salati. La prima versione di
+    questa funzione ci cascava e faceva risultare la pasta al pomodoro
+    un dolce crudo. */
+ if(/forno|teglia|pirofila|gratin|grill/.test(passi)) T.add('forno');
+ if(/padella|rosola|soffritt|saltat|trifolat|friggi|frittura|tegame/.test(passi)) T.add('padella');
+ if(/lievit|impast|frolla|sfoglia/.test(passi)) T.add('lievitato');
+ if(/lessa|bollore|brodo|zuppa|minestra|acqua salata|pentola/.test(passi)) T.add('bollito');
+ const dolce = tag==='dolce'
+   || /torta|crostata|biscott|budino|mousse|tiramisu|panna cotta|ciambell|muffin|plumcake|pancake|strudel|salame di cioccolato|crema pasticcera|zuppa inglese|creme caramel|bigne|frittelle|macedonia|gelato|affogato|crepes dolci|cioccolata calda|frullato|smoothie/.test(nome);
+ T.add(dolce?'dolce':'salato');
+ if(!dolce && (tag==='pranzo freddo'
+   || /insalat|carpaccio|tartare|panino|tramezzin|bruschett|caprese|panzanella|hummus|tzatziki|poke|crudo/.test(nome)))
+  T.add('crudo');
+ /* i passaggi non dicono sempre "padella": "aglio in olio, togli l'aglio
+    quando è biondo" è una padella, ma non la nomina. Allora guardo anche
+    cosa c'è dentro, e in mancanza d'altro do per buone le due cotture
+    normali: qualcosa che cuoce dieci minuti non si mangia crudo. */
+ if(r.ing.some(([k])=>BOLLITI.has(k))) T.add('bollito');
+ if(!T.has('crudo')&&!T.has('forno')&&!T.has('padella')&&!T.has('bollito')&&r.min>=8){
+  T.add('padella'); T.add('bollito');
+ }
+ TIPI_MEMO[r.id]=T;
+ return T;
+}
+/* lo scambio buono per QUESTA ricetta, se c'è */
+function scambiPer(k,tipi){
+ if(!tipi) return [];
+ const buoni=SCAMBI.filter(x=>x.da===k&&ING[x.a]&&x.dove.some(d=>tipi.has(d)));
+ /* se il piatto è un dolce vince la riga scritta per i dolci: il burro
+    sostituito in una frolla non è come il burro sostituito in padella */
+ if(tipi.has('dolce')){
+  const perDolci=buoni.filter(x=>x.dove.includes('dolce'));
+  const resto=buoni.filter(x=>!x.dove.includes('dolce'));
+  return [...perDolci,...resto];
+ }
+ return buoni.filter(x=>!(x.dove.length===1&&x.dove[0]==='dolce'));
+}
+const notaScambio=(da,a)=>NOTE_SCAMBIO[da+'>'+a]||NOTE_SCAMBIO[a+'>'+da]||'';
+
+function scegli(k,q,avere,usati,tipi){
+ const basta=(id,qq)=>{const i=ING[id]; return i&&(i.staple?avere(id)>0:avere(id)>=qq);};
+ if(!usati[k]&&basta(k,q)) return {uso:k,q};
+ /* 1. gli equivalenti: stessa cosa, stessa quantità */
  const alt=sostituti(k).filter(a=>!usati[a]);
- const pieno=alt.find(ok);
- if(pieno) return pieno;
- if(ING[k]&&avere(k)>0) return k;
+ const pieno=alt.find(a=>basta(a,q));
+ if(pieno) return {uso:pieno,q,nota:notaScambio(k,pieno)};
+ /* 2. gli scambi che valgono in questa preparazione, con la loro proporzione */
+ for(const x of scambiPer(k,tipi)){
+  if(usati[x.a]) continue;
+  const qq=Math.round(q*x.q*10)/10;
+  if(basta(x.a,qq)) return {uso:x.a,q:qq,nota:x.nota,prop:x.q};
+ }
+ /* 3. ne ho un po': meglio di niente */
+ if(ING[k]&&avere(k)>0) return {uso:k,q};
  const parz=alt.find(a=>avere(a)>0);
- return parz||k;
+ if(parz) return {uso:parz,q,nota:notaScambio(k,parz)};
+ return {uso:k,q};
 }
 const altrimenti=k=>{ const visti=new Set();
  return sostituti(k).filter(a=>{ if(!ING[a]) return false;
@@ -3774,16 +4025,19 @@ const altrimenti=k=>{ const visti=new Set();
 function check(r,scale){
  const f=(scale||r.serv)/r.serv, miss=[],part=[],have=[],need=[],usati={};
  const avere=id=>ING[id]?ING[id].q:0;
+ const tipi=tipiRicetta(r);
  r.ing.forEach(([k,q0])=>{
   const q=Math.round(q0*f*10)/10;
-  const uso=scegli(k,q,avere,usati);
-  const i=ING[uso];
-  const v={k,q,uso};
+  const sc=scegli(k,q,avere,usati,tipi);
+  const i=ING[sc.uso];
+  /* q = quanto ne serve DAVVERO di quello che userai: con l'olio al posto
+     del burro non sono gli stessi grammi */
+  const v={k,uso:sc.uso,q:sc.q,chiesta:q,nota:sc.nota||'',prop:sc.prop||1};
   need.push(v);
   if(!i){miss.push(v);return;}
-  usati[uso]=1;
+  usati[sc.uso]=1;
   if(i.staple&&i.q>0){have.push(v);return;}
-  if(i.q<=0) miss.push(v); else if(i.q<q) part.push(v); else have.push(v);
+  if(i.q<=0) miss.push(v); else if(i.q<v.q) part.push(v); else have.push(v);
  });
  return {miss,part,have,need,gap:miss.length+part.length,
    cambi:need.filter(v=>v.uso!==v.k)};
@@ -3962,16 +4216,21 @@ function vRicetta(){
        const m=c.miss.includes(x), p=c.part.includes(x);
        const t=m?'n':p?'p':'y';
        const cambio=x.uso!==x.k;
-       /* le altre cose che andrebbero bene lo stesso: utile quando manca */
-       const altre=altrimenti(x.k).filter(a=>a!==x.uso)
-         .map(a=>ING[a].n.toLowerCase());
+       /* quando manca, dico con cosa si può fare lo stesso: prima gli
+          equivalenti, poi gli scambi buoni per questa preparazione */
+       const tipi=tipiRicetta(r);
+       const equivalenti=altrimenti(x.k).filter(a=>a!==x.uso).map(a=>ING[a].n.toLowerCase());
+       const contestuali=scambiPer(x.k,tipi).filter(z=>z.a!==x.uso)
+         .map(z=>ING[z.a].n.toLowerCase()+(z.q!==1?` (${z.q<1?'meno':'di più'})`:''));
+       const possibili=[...new Set([...equivalenti,...contestuali])];
        return `<div class="ing">
          <span class="tick ${t}">${t==='y'?'✓':t==='p'?'!':'✕'}</span>
          <span class="col grow">
            <span class="name">${esc(orig?orig.n:x.k)}${cambio?` <span class="small" style="font-weight:600">→ ${esc(i.n.toLowerCase())}</span>`:''}</span>
-           <span class="small">${cambio?`non ce l’hai, ma in dispensa c’è ${qty(i.q,i.u)} di ${esc(i.n.toLowerCase())}`
-             :m?(altre.length?`non ce l’hai · va bene anche ${esc(altre.slice(0,2).join(' o '))}`:'non ce l’hai')
+           <span class="small">${cambio?`non ce l’hai: lo fai con ${qty(i.q,i.u)} di ${esc(i.n.toLowerCase())} che hai`
+             :m?(possibili.length?`non ce l’hai · va bene anche ${esc(possibili.slice(0,2).join(' o '))}`:'non ce l’hai')
              :p?`ne hai solo ${qty(i.q,i.u)}`:`in dispensa ${qty(i.q,i.u)}`}</span>
+           ${x.nota?`<span class="small" style="margin-top:3px;color:var(--terra-ink)">${esc(x.nota)}</span>`:''}
          </span>
          <span class="tnum" style="font-weight:800;font-size:14.5px;color:var(--verde-scuro)">${qty(x.q,i?i.u:(orig?orig.u:'g'))}</span>
        </div>`;}).join('')}
@@ -4369,6 +4628,7 @@ function vBenvenuto(){
      </div>
      ${avanti('Cominciamo →')}
      <button class="btn sm ghost wide" data-a="onb-demo" style="margin-top:10px">Voglio solo curiosare con dati finti</button>
+     ${boscoHTML()}
    </div>`;
 
  if(p==='persone') return testa('1 di 7','Per quante persone cucinate?',
@@ -5757,6 +6017,19 @@ function vScontrino(){
               aria-pressed="${l.q===n}">${n}</button>`).join('')}
             ${peso?`<button class="chip" data-a="apeso" data-i="${i}">⚖️ al peso</button>`:''}
           </div>
+          <!-- i numeri pronti sono una scorciatoia, non una gabbia: se ne hai
+               prese quindici lo devi poter scrivere -->
+          <div class="row" style="margin-top:11px;gap:9px">
+            <span class="small grow">oppure scrivilo:</span>
+            <span class="quanto">
+              <button class="passo" data-a="quanti-passo" data-i="${i}" data-d="-1" aria-label="Uno in meno">−</button>
+              <input type="number" step="any" min="0" inputmode="decimal" class="tnum corto"
+                data-a="quanti-val" data-i="${i}" value="${l.q||''}" placeholder="0"
+                aria-label="Quanti ${esc(ing.n.toLowerCase())}">
+              <button class="passo" data-a="quanti-passo" data-i="${i}" data-d="1" aria-label="Uno in più">+</button>
+              <b>${esc(l.u||unitaPezzo(l.id))}</b>
+            </span>
+          </div>
         </div>`;}).join('');
      })()}
      ${(()=>{
@@ -5780,6 +6053,15 @@ function vScontrino(){
           <div class="chips" style="margin-top:11px;flex-wrap:wrap;overflow:visible">
             ${misure.map(v=>`<button class="chip tnum" data-a="peso-q" data-i="${i}" data-v="${v}"
               aria-pressed="${l.q===v}">${qty(v,ing.u)}</button>`).join('')}
+          </div>
+          <div class="row" style="margin-top:11px;gap:9px">
+            <span class="small grow">oppure scrivilo:</span>
+            <span class="quanto">
+              <input type="number" step="any" min="0" inputmode="decimal" class="tnum"
+                data-a="peso-val" data-i="${i}" value="${l.q||''}" placeholder="0"
+                aria-label="Quanto ${esc(ing.n.toLowerCase())}">
+              <b>${esc(ing.u)}</b>
+            </span>
           </div>
         </div>`;}).join('');
      })()}
@@ -6136,6 +6418,11 @@ document.addEventListener('click',e=>{
  else if(a==='peso-q'){ const l=S.lines[+t.dataset.i], ing=l&&ING[l.id];
    if(ing){ l.q=+t.dataset.v; l.u=ing.u; l.stato='certa'; l.c=1; l.on=true; }
    render(true); }
+ else if(a==='quanti-passo'){ const l=S.lines[+t.dataset.i];
+   if(l){ const u=l.u||unitaPezzo(l.id);
+     l.q=Math.max(0,Math.round(((l.q||0)+(+t.dataset.d))*10)/10);
+     l.u=u; l.stato='certa'; l.c=1; l.on=true; }
+   render(true); }
  else if(a==='apeso'){ const l=S.lines[+t.dataset.i], ing=l&&ING[l.id];
    if(ing){ l.u=ing.u; l.q=confezione(l.id); l.stato='certa'; l.c=1; l.on=true; }
    render(true); toast('Messo a peso: con la matita cambi i grammi'); }
@@ -6183,6 +6470,7 @@ document.addEventListener('click',e=>{
    salva(); render();
    toast('Dati di esempio: li cancelli da Dispensa → I tuoi dati'); }
  else if(a==='dieta'){ const g=t.dataset.v; S.diete[g]=!S.diete[g]; render(true); }
+ else if(a==='bacca'){ toccaBacca(t); return; }
  else if(a==='fav'){ const k=t.dataset.v; if(ING[k]) ING[k].fav=ING[k].fav?0:1; render(true); }
  else if(a==='mtog'){ const k=t.dataset.id;
    S.man.sel[k]=S.man.sel[k]>0?0:propostaManuale(k); render(true); }
@@ -6262,6 +6550,17 @@ document.addEventListener('input',e=>{
    const v=Number(t.value);
    S.man.sel[t.dataset.id]=(isFinite(v)&&v>0)?v:0;
    aggiornaTotaleManuale(); salvaPresto(); }
+ else if(a==='quanti-val'||a==='peso-val'){
+   /* si scrive mentre si guarda: non ridisegno la pagina a ogni tasto,
+      sennò il cursore salta via dal campo */
+   const l=S.lines[+t.dataset.i]; if(!l) return;
+   const v=Number(t.value);
+   if(!(isFinite(v)&&v>0)) return;
+   const ing=ING[l.id];
+   l.q=Math.round(v*10)/10;
+   l.u=a==='peso-val'?(ing?ing.u:l.u):(l.u||unitaPezzo(l.id));
+   l.stato='certa'; l.c=1; l.on=true;
+   salvaPresto(); }
  else if(t.id==='sq'){ S.scelta.q=t.value; disegnaScelta();
    const x=el('sq'); if(x){x.focus();x.setSelectionRange(x.value.length,x.value.length);} }
  else if(a==='budget'){ S.budget=Number(t.value);
@@ -6630,7 +6929,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261120-1221';
+const VERSIONE='20261120-1307';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
