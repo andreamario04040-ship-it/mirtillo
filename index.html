@@ -562,6 +562,9 @@ body.onboarding .app{padding-bottom:40px}
   transform:translateX(-50%) translateY(16px) scale(.96);
   transition:opacity var(--t-cambio) var(--mov),transform var(--t-cambio) var(--mov-molla)}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+#toast.conazione{display:flex;align-items:center;gap:14px;pointer-events:auto}
+.toast-az{flex:0 0 auto;color:var(--crema);font-weight:900;font-size:13.5px;
+  text-decoration:underline;text-underline-offset:3px;padding:2px 0}
 .pop{animation:pop .4s var(--mov-molla)}
 @keyframes pop{0%{transform:scale(.94);opacity:0}100%{transform:scale(1);opacity:1}}
 
@@ -831,7 +834,7 @@ const CATALOGO=[
 ['spinacino','Spinacino','🌱','g',150,1.50,'ortofrutta','baby spinaci foglia'],
 ['finocchi','Finocchi','🥬','g',700,1.90,'ortofrutta','finocchio'],
 ['cavolfiore','Cavolfiore','🥦','pz',1,1.90,'ortofrutta','cavolfiori'],
-['broccoli','Broccoli','🥦','g',500,1.90,'ortofrutta','broccolo cime rapa'],
+['broccoli','Broccoli','🥦','g',500,1.90,'ortofrutta','broccolo'],
 ['verza','Verza','🥬','pz',1,1.50,'ortofrutta','cavolo cappuccio'],
 ['peperoni','Peperoni','🫑','g',500,2.40,'ortofrutta','peperone'],
 ['cetrioli','Cetrioli','🥒','pz',2,1.20,'ortofrutta','cetriolo'],
@@ -874,11 +877,11 @@ const CATALOGO=[
 ['lonza','Lonza di maiale','🐖','g',500,4.50,'frigo','arista lombo maiale braciole costine'],
 ['spezzatino','Spezzatino','🥘','g',500,6.00,'frigo','spezzatino bovino manzo'],
 /* --- pesce --- */
-['merluzzo','Merluzzo','🐠','g',400,5.00,'freezer','baccala nasello platessa filetti bianchi'],
+['merluzzo','Merluzzo','🐠','g',400,5.00,'freezer','nasello platessa filetti bianchi'],
 ['orata','Orata','🐟','pz',2,6.50,'frigo','branzino spigola'],
 ['gamberi','Gamberi','🦐','g',300,6.00,'freezer','gamberetti mazzancolle code'],
 ['calamari','Calamari','🦑','g',400,5.50,'freezer','totani seppie anelli'],
-['cozze','Cozze','🦪','g',1000,4.00,'frigo','vongole frutti mare'],
+['cozze','Cozze','🦪','g',1000,4.00,'frigo','frutti mare'],
 ['bastoncini','Bastoncini di pesce','🍢','pz',10,3.20,'freezer','findus capitan'],
 ['alici','Alici','🐟','g',80,1.80,'credenza','acciughe filetti'],
 ['sgombro','Sgombro','🐟','g',120,1.60,'credenza','sgombri maccarello'],
@@ -893,7 +896,7 @@ const CATALOGO=[
 ['pangrattato','Pangrattato','🍞','g',500,1.00,'credenza','grattugiato'],
 ['pane','Pane','🍞','g',500,1.80,'credenza','pagnotta ciabatta michetta rosette baguette filone'],
 ['panebauletto','Pane in cassetta','🥪','pz',20,1.60,'credenza','bauletto toast sandwich morbido'],
-['piadina','Piadine','🫓','pz',4,1.60,'credenza','piadina tortillas wrap'],
+['piadina','Piadine','🫓','pz',4,1.60,'credenza','piadina'],
 /* --- dispensa: conserve e condimenti --- */
 ['concentrato','Concentrato di pomodoro','🥫','g',140,0.90,'credenza','triplo concentrato'],
 ['sugopronto','Sugo pronto','🥫','g',400,1.80,'credenza','ragu arrabbiata sughi freschi assor norma'],
@@ -907,7 +910,7 @@ const CATALOGO=[
 ['maionese','Maionese','🫙','g',250,1.80,'credenza','maio ketchup senape'],
 ['tonno2','Tonno all olio','🐟','scatole',3,3.00,'credenza','tonnetto pinne gialle'],
 /* --- dispensa: dolci e colazione --- */
-['cereali','Cereali','🥣','g',375,2.60,'credenza','corn flakes muesli granola fiocchi avena'],
+['cereali','Cereali','🥣','g',375,2.60,'credenza','corn flakes granola'],
 ['nutella','Crema spalmabile','🍫','g',400,3.20,'credenza','nutella cacao nocciola'],
 ['cioccolato','Cioccolato','🍫','g',100,1.50,'credenza','tavoletta fondente latte milka lindt novi'],
 ['merendine','Merendine','🧁','pz',10,2.60,'credenza','brioche brioches croissant kinder plumcake girelle cornetti'],
@@ -921,7 +924,7 @@ const CATALOGO=[
 ['zuccherocanna','Zucchero di canna','🍬','g',500,1.40,'credenza','canna grezzo'],
 /* --- spezie --- */
 ['origano','Origano','🌿','pz',1,0.90,'credenza','origano'],
-['paprika','Paprika','🌶️','pz',1,1.20,'credenza','paprica curry curcuma zafferano cannella noce moscata'],
+['paprika','Paprika','🌶️','pz',1,1.20,'credenza','paprica affumicata dolce'],
 /* --- surgelati --- */
 ['minestrone','Minestrone surgelato','🍲','g',1000,2.40,'freezer','minestrone verdure zuppa surgelata'],
 ['patatinefritte','Patatine fritte','🍟','g',750,2.00,'freezer','patate fritte surgelate'],
@@ -962,7 +965,7 @@ const CATALOGO=[
 ['formaggini','Formaggini','🧀','pz',8,1.70,'frigo','sottilette fettine formaggino'],
 ['feta','Feta','🐑','g',200,2.40,'frigo','greco salamoia halloumi'],
 ['burrata','Burrata','🧀','g',125,2.60,'frigo','stracciatella bufala'],
-['tofu','Tofu','🌱','g',200,2.20,'frigo','seitan tempeh soia vegetale'],
+['tofu','Tofu','🌱','g',200,2.20,'frigo','soia vegetale'],
 ['hummus','Hummus','🥣','g',200,2.20,'frigo','hommus ceci crema'],
 ['pastafresca','Pasta fresca','🍝','g',250,2.40,'frigo','tagliatelle fettuccine strozzapreti fresca'],
 /* --- carne e pesce, secondo giro --- */
@@ -988,7 +991,7 @@ const CATALOGO=[
 ['lievitobirra','Lievito di birra','🫧','pz',2,0.60,'frigo','cubetto mastro fornaio'],
 ['gelatina','Colla di pesce','🍮','pz',6,1.20,'credenza','gelatina fogli'],
 ['fruttasciroppo','Frutta sciroppata','🍑','g',400,1.60,'credenza','sciroppata pesche ananas macedonia'],
-['burroarachidi','Burro di arachidi','🥜','g',350,3.00,'credenza','arachidi tahina crema nocciole'],
+['burroarachidi','Burro di arachidi','🥜','g',350,3.00,'credenza','arachidi crema'],
 ['salsasoia','Salsa di soia','🥢','ml',250,1.80,'credenza','soia teriyaki worcester'],
 ['ketchup','Ketchup','🍅','g',340,1.60,'credenza','senape barbecue salsa rosa'],
 ['semi','Semi misti','🌻','g',200,2.20,'credenza','chia lino sesamo girasole zucca semi'],
@@ -1007,6 +1010,177 @@ const CATALOGO=[
 ['spumante','Spumante','🍾','ml',750,6.00,'credenza','prosecco brut franciacorta bollicine'],
 ['tefreddo','Tè freddo','🧃','ml',1500,1.20,'credenza','estathe lipton freddo'],
 ['energydrink','Energy drink','🥤','ml',250,1.30,'credenza','redbull monster energy'],
+/* --- cucina asiatica --- */
+['noodles','Noodles','🍜','g',250,1.90,'credenza','noodle ramen udon soba egg'],
+['risosushi','Riso per sushi','🍣','g',500,2.60,'credenza','sushi nigiri'],
+['nori','Alghe nori','🌊','g',25,3.20,'credenza','nori alga alghe'],
+['acetoriso','Aceto di riso','🍶','ml',250,2.10,'credenza','mirin'],
+['oliosesamo','Olio di sesamo','🧴','ml',250,3.60,'credenza','sesamo tostato'],
+['semisesamo','Semi di sesamo','⚪','g',100,1.60,'credenza','sesamo'],
+['salsateriyaki','Salsa teriyaki','🍢','ml',250,2.90,'credenza','teriyaki'],
+['sriracha','Salsa sriracha','🌶️','ml',250,2.80,'credenza','sriracha piccante'],
+['miso','Miso','🥣','g',300,4.60,'credenza','miso shiro'],
+['lattecocco','Latte di cocco','🥥','ml',400,1.95,'credenza','cocco coconut'],
+['currypolvere','Curry in polvere','🍛','g',40,1.60,'credenza','curry'],
+['garammasala','Garam masala','🫙','g',40,2.10,'credenza','masala garam'],
+['curcuma','Curcuma','🟡','g',40,1.90,'credenza','curcuma turmeric'],
+['cardamomo','Cardamomo','🫒','g',20,3.10,'credenza','cardamomo'],
+['germogli','Germogli di soia','🌱','g',200,1.70,'frigo','germogli'],
+['shiitake','Funghi shiitake','🍄','g',100,3.60,'ortofrutta','shiitake'],
+['bokchoy','Bok choy','🥬','g',300,2.60,'ortofrutta','choy pak cinese'],
+['edamame','Edamame','🫛','g',300,3.10,'freezer','edamame'],
+['anacardi','Anacardi','🥜','g',150,3.60,'credenza','anacardo cashew'],
+['gyoza','Gyoza','🥟','pz',12,4.10,'freezer','gyoza ravioli'],
+['wasabi','Wasabi','🍢','g',43,2.60,'credenza','wasabi'],
+['lenticchierosse','Lenticchie rosse','🔴','g',500,1.90,'credenza','decorticate'],
+['naan','Pane naan','🫓','pz',4,2.30,'credenza','naan'],
+['ghee','Ghee','🧈','g',250,4.10,'credenza','ghee chiarificato'],
+['chutney','Chutney di mango','🫙','g',200,3.10,'credenza','chutney'],
+['pastacurry','Pasta di curry','🍲','g',200,3.30,'credenza','rossa verde thai'],
+['tamarindo','Tamarindo','🟤','g',200,3.50,'credenza','tamarindo'],
+['lemongrass','Citronella','🌾','pz',2,2.20,'ortofrutta','citronella lemongrass'],
+
+/* --- Messico e Tex-Mex --- */
+['tortillas','Tortillas','🫓','pz',8,2.30,'credenza','tortilla wrap fajitas burrito'],
+['nachos','Nachos','🔺','g',200,1.90,'credenza','nachos doritos'],
+['fagiolineri','Fagioli neri','⚫','scatole',2,1.30,'credenza','neri black'],
+['jalapenos','Jalapeños','🌶️','g',200,2.30,'credenza','jalapeno'],
+['guacamole','Guacamole','🥑','g',200,2.90,'frigo','guacamole'],
+['salsamessicana','Salsa messicana','🥫','g',200,2.10,'credenza','taco salsa'],
+['chili','Chili in polvere','🌶️','g',40,1.60,'credenza','chili'],
+['cumino','Cumino','🟤','g',40,1.60,'credenza','cumino'],
+['coriandolo','Coriandolo','🌿','pz',1,1.30,'ortofrutta','coriandolo cilantro'],
+
+/* --- Medio Oriente e Nord Africa --- */
+['tahina','Tahina','🥣','g',300,3.60,'credenza','tahin tahini'],
+['falafel','Falafel','🧆','pz',10,3.10,'freezer','falafel'],
+['bulgur','Bulgur','🌾','g',500,2.10,'credenza','bulgur'],
+['pita','Pane pita','🫓','pz',5,1.60,'credenza','pita arabo'],
+['harissa','Harissa','🌶️','g',100,2.60,'credenza','harissa'],
+['zaatar','Za’atar','🌿','g',50,3.10,'credenza','zaatar'],
+['melassamelograno','Melassa di melograno','🍯','ml',250,4.50,'credenza','melassa'],
+
+/* --- America --- */
+['cheddar','Cheddar','🧀','g',200,3.10,'frigo','cheddar'],
+['panhamburger','Panini per hamburger','🍔','pz',4,1.60,'credenza','bun buns panino'],
+['salsabarbecue','Salsa barbecue','🍖','ml',250,2.30,'credenza','barbecue'],
+['sciroppoacero','Sciroppo d’acero','🍁','ml',250,5.10,'credenza','acero maple'],
+['marshmallow','Marshmallow','🍬','g',150,2.10,'credenza','marshmallow'],
+['bacon','Bacon','🥓','g',150,2.60,'frigo','bacon affumicata'],
+['popcorn','Popcorn','🍿','g',200,1.60,'credenza','popcorn'],
+['avena','Fiocchi d’avena','🥣','g',500,1.90,'credenza','avena porridge oats'],
+['coleslaw','Insalata coleslaw','🥗','g',250,2.20,'frigo','coleslaw'],
+
+/* --- Europa --- */
+['brie','Brie','🧀','g',200,3.10,'frigo','brie camembert'],
+['senape','Senape','🟡','g',200,1.60,'credenza','senape dijon mostarda'],
+['baguette','Baguette','🥖','pz',1,1.30,'credenza','baguette filoncino'],
+['erbeprovenza','Erbe di Provenza','🌿','g',30,1.60,'credenza','provenza'],
+['pannaacida','Panna acida','🥛','ml',200,1.90,'frigo','acida smetana'],
+['chorizo','Chorizo','🌭','g',200,3.60,'frigo','chorizo'],
+['zafferano','Zafferano','🟨','g',1,2.60,'credenza','zafferano'],
+['olivekalamata','Olive Kalamata','🫒','g',200,3.10,'credenza','kalamata'],
+['tzatziki','Tzatziki','🥒','g',200,2.60,'frigo','tzatziki'],
+['crauti','Crauti','🥬','g',400,1.90,'credenza','crauti'],
+['roquefort','Formaggio erborinato','🧀','g',150,3.80,'frigo','roquefort stilton erborinato'],
+
+/* --- italiani che mancavano: erbe, spezie, dispensa --- */
+['pinoli','Pinoli','🌰','g',100,4.60,'credenza','pinolo'],
+['cannella','Cannella','🟤','g',30,1.60,'credenza','cannella'],
+['vaniglia','Vaniglia','🤍','pz',2,2.10,'credenza','vaniglia vanillina bacche'],
+['nocemoscata','Noce moscata','🌰','g',20,2.10,'credenza','moscata'],
+['alloro','Alloro','🍃','pz',1,1.10,'credenza','alloro lauro'],
+['timo','Timo','🌿','pz',1,1.30,'ortofrutta','timo'],
+['maggiorana','Maggiorana','🌿','pz',1,1.30,'ortofrutta','maggiorana'],
+['menta','Menta','🌿','pz',1,1.30,'ortofrutta','menta'],
+['erbacipollina','Erba cipollina','🌿','pz',1,1.30,'ortofrutta','cipollina'],
+['finocchietto','Finocchietto','🌿','pz',1,1.60,'ortofrutta','finocchietto selvatico'],
+['chiodigarofano','Chiodi di garofano','🟤','g',20,1.80,'credenza','garofano'],
+['semifinocchio','Semi di finocchio','🌾','g',40,1.60,'credenza','finocchio'],
+['bicarbonatoammoniaca','Ammoniaca per dolci','🫙','g',50,1.20,'credenza','ammoniaca'],
+['amidomais','Amido di mais','🌽','g',250,1.40,'credenza','maizena amido'],
+['fecola','Fecola di patate','🥔','g',250,1.40,'credenza','fecola'],
+['pannamontare','Panna da montare','🍶','ml',250,1.60,'frigo','montare fresca'],
+['cioccolatobianco','Cioccolato bianco','🤍','g',100,1.80,'credenza','bianco'],
+['coccorape','Cocco rapé','🥥','g',150,1.90,'credenza','rape'],
+['granella','Granella di nocciole','🌰','g',100,2.60,'credenza','granella'],
+['canditi','Frutta candita','🍬','g',200,2.40,'credenza','canditi'],
+['rum','Rum','🥃','ml',500,9.00,'credenza','rum'],
+
+/* --- salumi e formaggi italiani --- */
+['nduja','’Nduja','🌶️','g',200,4.10,'frigo','nduja'],
+['caciocavallo','Caciocavallo','🧀','g',300,4.60,'frigo','caciocavallo'],
+['provola','Provola','🧀','g',250,3.40,'frigo','provola affumicata'],
+['ricottasalata','Ricotta salata','🧀','g',200,3.60,'frigo','infornata'],
+['grana','Grana Padano','🧀','g',200,3.10,'frigo','padano'],
+['robiola','Robiola','🧀','g',150,2.60,'frigo','robiola'],
+['fiordilatte','Fiordilatte','🧀','g',250,2.40,'frigo','fiordilatte'],
+['porchettafette','Porchetta a fette','🐖','g',200,3.60,'frigo','fette'],
+['soppressata','Soppressata','🍖','g',200,4.20,'frigo','soppressata'],
+['lardo','Lardo','🥓','g',150,3.60,'frigo','lardo colonnata'],
+['cotechinopre','Zampone','🍖','g',500,5.20,'frigo','zampone'],
+
+/* --- pesce --- */
+['baccala','Baccalà','🐟','g',400,6.50,'frigo','baccala stoccafisso merluzzo salato'],
+['seppie','Seppie','🦑','g',500,6.00,'frigo','seppia'],
+['vongole','Vongole','🐚','g',500,5.50,'frigo','vongola lupini'],
+['scampi','Scampi','🦞','g',300,7.50,'frigo','scampo'],
+['branzino','Branzino','🐟','pz',2,7.00,'frigo','branzino spigola'],
+['trota','Trota','🐟','pz',2,5.00,'frigo','trota salmonata'],
+['tonnofresco','Tonno fresco','🐟','g',300,8.00,'frigo','pinne'],
+['acciughesale','Acciughe sotto sale','🫙','g',100,3.00,'credenza','acciuga acciughe'],
+['bottarga','Bottarga','🟠','g',50,9.00,'credenza','bottarga'],
+['salmonegaffum','Filetti di aringa','🐟','g',200,3.20,'frigo','aringa aringhe'],
+
+/* --- carne --- */
+['anatra','Anatra','🦆','g',800,9.00,'frigo','anatra'],
+['faraona','Faraona','🐓','g',900,8.00,'frigo','faraona'],
+['vitello','Vitello','🥩','g',500,9.50,'frigo','vitello'],
+['ossobuco','Ossobuco','🍖','g',600,8.50,'frigo','ossobuco'],
+['costine','Costine di maiale','🍖','g',700,6.00,'frigo','costine puntine'],
+['fegato','Fegato','🍖','g',300,3.50,'frigo','fegato'],
+['trippa','Trippa','🍲','g',500,4.50,'frigo','trippa'],
+['tacchinofette','Fettine di tacchino','🦃','g',400,4.20,'frigo','fesa'],
+
+/* --- verdura --- */
+['cimedirapa','Cime di rapa','🥬','g',500,2.30,'ortofrutta','rapa friarielli broccoletti'],
+['bietole','Bietole','🥬','g',500,1.90,'ortofrutta','bieta coste'],
+['cicoria','Cicoria','🥬','g',500,2.10,'ortofrutta','cicoria catalogna'],
+['songino','Songino','🌿','g',150,1.80,'ortofrutta','valeriana songino'],
+['indivia','Indivia belga','🥬','pz',2,1.90,'ortofrutta','belga'],
+['puntarelle','Puntarelle','🥬','g',500,2.80,'ortofrutta','puntarelle'],
+['friggitelli','Friggitelli','🫑','g',400,2.60,'ortofrutta','friggitelli peperoncini'],
+['taccole','Taccole','🫛','g',300,2.60,'ortofrutta','taccole piattoni'],
+['fave','Fave','🫛','g',500,2.40,'ortofrutta','fava'],
+['topinambur','Topinambur','🥔','g',400,3.00,'ortofrutta','topinambur'],
+['sedanorapa','Sedano rapa','🥬','pz',1,2.20,'ortofrutta','rapa'],
+['ravanelli','Ravanelli','🔴','g',200,1.40,'ortofrutta','ravanello'],
+['zuccaviolina','Zucca violina','🎃','g',1000,2.20,'ortofrutta','violina delica'],
+['champignon','Champignon','🍄','g',300,2.20,'ortofrutta','champignon prataioli'],
+['patatenovelle','Patate novelle','🥔','g',750,2.00,'ortofrutta','novelle'],
+
+/* --- frutta --- */
+['mango','Mango','🥭','pz',1,2.50,'ortofrutta','mango'],
+['papaya','Papaya','🥭','pz',1,3.50,'ortofrutta','papaya'],
+['cocco','Cocco','🥥','pz',1,2.00,'ortofrutta','cocco noce'],
+['frutpassione','Frutto della passione','🟣','pz',3,3.00,'ortofrutta','passione maracuja'],
+['ribes','Ribes','🔴','g',125,2.80,'ortofrutta','ribes'],
+['more','More','🫐','g',125,2.80,'ortofrutta','mora'],
+['albicoccsecche','Albicocche secche','🟠','g',200,2.60,'credenza','secche'],
+['fichisecchi','Fichi secchi','🟤','g',250,3.00,'credenza','fico'],
+['mirtillirossi','Mirtilli rossi secchi','🔴','g',150,2.80,'credenza','cranberry rossi'],
+['bacchegoji','Bacche di goji','🔴','g',150,3.50,'credenza','goji'],
+
+/* --- altro --- */
+['seitan','Seitan','🌾','g',200,3.00,'frigo','seitan'],
+['tempeh','Tempeh','🫘','g',200,3.20,'frigo','tempeh'],
+['lievitomadre','Lievito madre','🫙','g',200,2.00,'credenza','madre essiccato'],
+['farinamanitoba','Farina manitoba','🌾','g',1000,1.60,'credenza','manitoba forte'],
+['farinariso','Farina di riso','🌾','g',500,1.80,'credenza','glutine'],
+['pastafillo','Pasta fillo','🫓','g',250,2.60,'freezer','fillo filo'],
+['brodovegetale','Brodo vegetale pronto','🥣','ml',1000,1.40,'credenza','vegetale'],
+['latticello','Latticello','🥛','ml',500,1.80,'frigo','latticello buttermilk'],
+
 /* --- non alimentari, per riconoscerli e scartarli --- */
 ];
 
@@ -2371,7 +2545,400 @@ let RECIPES=[
          'Nelle coppette, tre ore in frigo.']},
  {id:'macedoniaesotica',n:'Macedonia di ananas e kiwi',e:'🍍',min:15,d:1,serv:3,tag:'Dolce',extra:1,slots:['colazione','cena'],
   ing:[['ananas',1],['kiwi',200],['arance',250],['lime',1]],
-  steps:['Ananas a cubi, kiwi a rondelle, arance a vivo.','Succo di lime sopra e un’ora in frigo.']}
+  steps:['Ananas a cubi, kiwi a rondelle, arance a vivo.','Succo di lime sopra e un’ora in frigo.']},
+
+ /* ---- le ricette "qualunque cosa sia": servono quando in dispensa
+        arriva un prodotto che non conosco ma di cui ho capito la famiglia ---- */
+ {id:'pastasugo',n:'Pasta al sugo',e:'🍝',min:15,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['sugopronto',350],['parmigiano',40]],
+  steps:['Sugo a scaldare in padella mentre l’acqua bolle.',
+         'Pasta al dente direttamente nella padella, con un cucchiaio d’acqua di cottura.',
+         'Parmigiano e via. Qualunque sugo sia, funziona così.']},
+ {id:'risosugo',n:'Riso al sugo',e:'🍚',min:20,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['riso',160],['sugopronto',300],['parmigiano',30]],
+  steps:['Riso lessato e scolato.','Sugo caldo e parmigiano.']},
+ {id:'gnocchisugo',n:'Gnocchi al sugo',e:'🥔',min:15,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['gnocchi',500],['sugopronto',350],['parmigiano',40]],
+  steps:['Sugo in padella.','Gnocchi: vengono a galla, sono pronti.','Nel sugo e parmigiano.']},
+ {id:'pastaformaggio',n:'Pasta e formaggio',e:'🧀',min:18,d:1,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['scamorza',150],['latte',80],['parmigiano',30]],
+  steps:['Formaggio a cubetti nel latte caldo, a fuoco bassissimo.',
+         'Pasta dentro con l’acqua di cottura finché diventa una crema.',
+         'Va bene quasi qualunque formaggio ti sia rimasto.']},
+ {id:'paninoqualunque',n:'Panino con quello che c’è',e:'🥪',min:8,d:1,serv:2,tag:'Svuota-dispensa',slots:['pranzo'],
+  ing:[['pane',200],['prosciuttocotto',100],['scamorza',100],['insalata',60]],
+  steps:['Pane aperto, un filo d’olio.','Affettato e formaggio: quelli che hai.','Insalata e si chiude.']},
+ {id:'insalatasvuota',n:'Insalatona svuota-frigo',e:'🥗',min:12,d:1,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
+  ing:[['insalata',180],['pomodorini',150],['tonno',1],['maisscatola',100],['olive',50]],
+  steps:['Insalata lavata e asciutta.','Dentro tutto quello che avanza in frigo.','Olio, sale, e basta.']},
+ {id:'frittataqualunque',n:'Frittata con quello che c’è',e:'🍳',min:20,d:1,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
+  ing:[['uova',4],['verduresurg',250],['parmigiano',40]],
+  steps:['Verdure in padella finché sono asciutte: vanno bene anche gli avanzi di ieri.',
+         'Uova sbattute col parmigiano sopra.','Coperchio cinque minuti, poi gira.']},
+ {id:'pastalegumi',n:'Pasta e legumi',e:'🫘',min:30,d:1,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
+  ing:[['pasta_mista',160],['fagioli',2],['passata',150],['aglio',1],['olio',25]],
+  steps:['Aglio in olio, passata e i legumi scolati.','Acqua a coprire e la pasta dentro.',
+         'Fagioli, ceci o quello che hai in dispensa: cambia il nome, non il piatto.']},
+ {id:'yogurtqualunque',n:'Yogurt con quello che c’è',e:'🥣',min:4,d:1,serv:1,tag:'Svelta',slots:['colazione'],
+  ing:[['yogurt',1],['cereali',50],['miele',15]],
+  steps:['Yogurt nella ciotola.','Cereali, frutta secca, miele: quello che trovi in credenza.']},
+
+ /* ---- da chef: quelle che chiedono tempo e mani ---- */
+ {id:'pastafrescamano',n:'Pasta fresca fatta a mano',e:'🥚',min:90,d:5,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['farina',400],['uova',4],['semola',60],['passata',400]],
+  steps:['Cento grammi di farina per ogni uovo: è l’unica proporzione da ricordare.',
+         'Impasta venti minuti, finché è liscio come una guancia. Mezz’ora a riposare coperto.',
+         'Stendi sottile che si legga attraverso, infarina di semola e arrotola.',
+         'Taglia a coltello, allarga subito. Cuoce in due minuti, non di più.']},
+ {id:'ravioliricotta',n:'Ravioli ricotta e spinaci',e:'🥟',min:120,d:5,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['farina',400],['uova',4],['ricotta',300],['spinaci',400],['parmigiano',80],['burro',60]],
+  steps:['Sfoglia come per la pasta fresca, ma tenuta umida: se secca non sigilla.',
+         'Ripieno di spinaci strizzatissimi, ricotta e parmigiano, asciutto.',
+         'Mucchietti distanziati, piega, caccia fuori l’aria con le dita, taglia.',
+         'Cinque minuti in acqua appena mossa, poi burro fuso e salvia.']},
+ {id:'tortellinimano',n:'Tortellini fatti in casa',e:'🫕',min:180,d:5,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['farina',400],['uova',4],['lonza',200],['prosciuttocrudo',100],['mortadella',100],['parmigiano',100]],
+  steps:['Carne rosolata e tritata finissima con prosciutto, mortadella e parmigiano.',
+         'Un giorno di riposo del ripieno, se puoi: il sapore si lega.',
+         'Quadrati piccoli, ripieno come una lenticchia, piega a triangolo e gira intorno al dito.',
+         'In brodo, tre minuti. È una giornata di lavoro e dura dieci minuti a tavola.']},
+ {id:'bigne',n:'Bignè alla crema',e:'🍥',min:100,d:5,serv:8,tag:'Dolce',extra:1,slots:['cena'],
+  ing:[['farina',150],['burro',100],['uova',4],['latte',600],['zucchero',150]],
+  steps:['Acqua e burro a bollore, farina tutta insieme, mescola finché si stacca dalla pentola.',
+         'Fredda, poi le uova una per volta: la pasta deve fare il nastro, non colare.',
+         'Forno a 200° venti minuti, e non aprire mai lo sportello.',
+         'Crema pasticcera col latte, uova, zucchero e un cucchiaio di farina, e riempili da freddi.']},
+ {id:'souffleformaggio',n:'Soufflé al formaggio',e:'🧀',min:70,d:5,serv:4,tag:'Della domenica',slots:['cena'],
+  ing:[['besciamella',400],['uova',5],['emmental',150],['parmigiano',60],['burro',30]],
+  steps:['Besciamella densa, fredda, con tuorli e formaggi.',
+         'Albumi a neve ferma, incorporati in tre volte senza smontarli.',
+         'Stampo imburrato e zuccherato di parmigiano, riempito per tre quarti.',
+         'Forno a 190° per trenta minuti. Si porta in tavola di corsa: scende in due minuti.']},
+ {id:'ragunapoletano',n:'Ragù napoletano',e:'🍖',min:260,d:5,serv:6,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['spezzatino',800],['passata',1000],['cipolla',3],['vinorosso',200],['pasta_mista',500]],
+  steps:['Cipolle e carne a rosolare piano, quasi un’ora: deve prendere colore, non bruciare.',
+         'Vino sfumato fino in fondo, poi la passata.',
+         'Tre ore che "pippia": la pentola deve fare una bolla ogni tanto, non bollire.',
+         'La carne si mangia dopo, come secondo. Il sugo è per la pasta.']},
+ {id:'pizzalunga',n:'Pizza a lunga lievitazione',e:'🍕',min:1500,d:5,serv:4,tag:'Della domenica',slots:['cena'],
+  ing:[['farina',500],['lievitobirra',1],['passata',250],['mozzarella',250],['olio',30]],
+  steps:['Poco lievito, tanta acqua: 70 grammi d’acqua ogni 100 di farina.',
+         'Impasto incordato, poi ventiquattro ore in frigo.',
+         'Fuori due ore prima, panetti, e stendi solo con le dita: il bordo non si schiaccia.',
+         'Forno al massimo con la teglia già rovente, cinque minuti.']},
+ {id:'cremecaramel',n:'Crème caramel',e:'🍮',min:90,d:5,serv:6,tag:'Dolce',extra:1,slots:['cena'],
+  ing:[['latte',500],['uova',4],['zucchero',200],['limoni',1]],
+  steps:['Caramello a secco, scuro ma non amaro, subito negli stampini.',
+         'Latte scaldato con la scorza di limone, poi unito alle uova sbattute con lo zucchero.',
+         'Filtra: è questo che lo fa liscio.',
+         'Bagnomaria in forno a 150° per quaranta minuti. Una notte in frigo prima di girarlo.']},
+ {id:'supli',n:'Supplì',e:'🍙',min:100,d:5,serv:4,tag:'Della domenica',slots:['cena'],
+  ing:[['riso',320],['macinato',250],['passata',300],['mozzarella',150],['pangrattato',120],['uova',3]],
+  steps:['Risotto col ragù, molto asciutto, fatto raffreddare del tutto.',
+         'In mano una cucchiaiata, un bastoncino di mozzarella al centro, richiudi a polpetta lunga.',
+         'Uovo e pangrattato, e se vuoi un secondo giro di pangrattato.',
+         'Fritti in olio a 175° o in forno a 220°. Il filo di mozzarella è tutto il punto.']},
+
+ /* ---- impegnative ---- */
+ {id:'gnocchipatatemano',n:'Gnocchi di patate fatti in casa',e:'🥔',min:80,d:4,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['patate',1000],['farina',250],['uova',1],['passata',400],['parmigiano',50]],
+  steps:['Patate lessate con la buccia e schiacciate bollenti: il vapore deve uscire.',
+         'Farina poca per volta, finché l’impasto sta insieme. Più ne metti, più sono gommosi.',
+         'Rotolini, tagli, e il segno della forchetta per tenere il sugo.',
+         'Vengono a galla e sono pronti.']},
+ {id:'panecasa',n:'Pane fatto in casa',e:'🍞',min:1200,d:4,serv:8,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['farina',500],['lievitobirra',1],['sale',10],['semola',40]],
+  steps:['Impasto molto idratato, pieghe ogni mezz’ora per due ore.',
+         'Una notte in frigo nel cestino infarinato di semola.',
+         'Forno al massimo con una pentola di ghisa dentro: pane nella pentola, coperchio.',
+         'Venti minuti coperto, venti scoperto. Si taglia da freddo, non prima.']},
+ {id:'arrostoripieno',n:'Arrosto ripieno',e:'🍖',min:110,d:4,serv:6,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['lonza',900],['spinaci',300],['prosciuttocotto',120],['scamorza',120],['vino_bianco',150]],
+  steps:['Carne aperta a libro e battuta sottile.','Spinaci, prosciutto e formaggio, poi arrotola e lega stretto.',
+         'Rosolatura su tutti i lati, vino, e un’ora e mezza col coperchio.',
+         'Freddo si taglia meglio: scaldalo dopo, nel suo fondo.']},
+ {id:'calamariripieni',n:'Calamari ripieni',e:'🦑',min:70,d:4,serv:3,tag:'Della domenica',slots:['cena'],
+  ing:[['calamari',700],['pangrattato',100],['aglio',2],['prezzemolo',1],['pomodorini',200],['vino_bianco',70]],
+  steps:['Tentacoli tritati col pangrattato, aglio e prezzemolo.',
+         'Riempi i sacchetti solo per metà e chiudi con uno stecchino: in cottura si restringono.',
+         'Rosolati, sfumati, poi quaranta minuti nei pomodorini a fuoco basso.']},
+ {id:'melanzaneripiene',n:'Melanzane ripiene',e:'🍆',min:75,d:4,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['melanzane',800],['macinato',300],['pangrattato',70],['parmigiano',60],['passata',250],['uova',1]],
+  steps:['Melanzane svuotate; la polpa a dadini va in padella con la carne.',
+         'Ripieno con uovo, parmigiano e pangrattato.','Teglia con la passata sotto, 190° per quaranta minuti.']},
+ {id:'rotolinilasagna',n:'Rotolini di lasagna ricotta e spinaci',e:'🌯',min:70,d:4,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['lasagne',200],['ricotta',300],['spinaci',400],['besciamella',350],['parmigiano',70]],
+  steps:['Sfoglie sbollentate e stese su un telo.','Ricotta e spinaci spalmati, poi arrotola e taglia a tronchetti.',
+         'In piedi nella teglia con la besciamella, 180° per trenta minuti.']},
+ {id:'pastaboscaiola',n:'Pasta alla boscaiola',e:'🍄',min:35,d:3,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['funghi',300],['salsiccia',200],['panna',120],['passata',120]],
+  steps:['Salsiccia sbriciolata, poi i funghi a fuoco vivo.',
+         'Un cucchiaio di passata e la panna: il sugo diventa rosato.','Pasta dentro col prezzemolo.']},
+ {id:'carbonarazucchine',n:'Carbonara di zucchine',e:'🥒',min:30,d:3,serv:2,tag:'Classica',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['zucchine',400],['uova',3],['pecorino',70],['pepe',2]],
+  steps:['Zucchine a rondelle rosolate bene, quasi croccanti.',
+         'Uova e pecorino in una ciotola, fuori dal fuoco.',
+         'Pasta scolata nelle zucchine, poi le uova: crema, non frittata.']},
+ {id:'lasagnefunghi',n:'Lasagne bianche ai funghi',e:'🍄',min:85,d:4,serv:6,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['lasagne',250],['funghi',500],['besciamella',600],['parmigiano',90],['prezzemolo',1]],
+  steps:['Funghi a fuoco vivo con aglio e prezzemolo, ben asciutti.',
+         'Strati di sfoglia, funghi, besciamella e parmigiano.','180° per trentacinque minuti.']},
+ {id:'cipolleripiene',n:'Cipolle ripiene',e:'🧅',min:80,d:4,serv:4,tag:'Della domenica',slots:['cena'],
+  ing:[['cipolla',6],['macinato',250],['pangrattato',60],['parmigiano',50],['uova',1]],
+  steps:['Cipolle sbollentate dieci minuti, poi svuotate tenendo i gusci.',
+         'Il cuore tritato nel ripieno con carne, uovo e parmigiano.','190° per quaranta minuti.']},
+ {id:'peperoniagrodolce',n:'Peperoni in agrodolce',e:'🫑',min:45,d:3,serv:4,tag:'Contorno',extra:1,slots:['pranzo','cena'],
+  ing:[['peperoni',700],['aceto',40],['zucchero',25],['cipolla',1],['olio',30]],
+  steps:['Peperoni a falde con la cipolla, venti minuti.',
+         'Aceto e zucchero insieme, e lascia evaporare a fuoco vivo.','Si mangiano freddi, il giorno dopo.']},
+ {id:'pescecrostasale',n:'Orata in crosta di sale',e:'🧂',min:55,d:3,serv:2,tag:'Della domenica',slots:['cena'],
+  ing:[['orata',2],['sale',1500],['limoni',1],['rosmarino',1]],
+  steps:['Pesce non squamato, pancia con limone e rosmarino.',
+         'Letto di sale, pesce sopra, tutto coperto e compattato con poca acqua.',
+         '200° per trentacinque minuti. La crosta si rompe a tavola, col dorso del coltello.']},
+ {id:'flanverdure',n:'Flan di verdure',e:'🥧',min:60,d:3,serv:4,tag:'Della domenica',slots:['cena'],
+  ing:[['zucchine',500],['uova',3],['panna',150],['parmigiano',60],['burro',25]],
+  steps:['Verdure cotte, frullate e strizzate dall’acqua.',
+         'Uova, panna e parmigiano.','Stampini imburrati, bagnomaria a 170° per trentacinque minuti.']},
+ {id:'crocchettepatate',n:'Crocchette di patate',e:'🥔',min:60,d:3,serv:4,tag:'Della domenica',slots:['cena'],
+  ing:[['patate',800],['uova',3],['parmigiano',70],['pangrattato',120],['scamorza',100]],
+  steps:['Patate schiacciate calde, poi fredde, con tuorli e parmigiano.',
+         'Bastoncini con un cubetto di formaggio dentro.',
+         'Uovo e pangrattato, forno a 220° per venticinque minuti.']},
+ {id:'strudel',n:'Strudel di mele',e:'🥐',min:60,d:3,serv:6,tag:'Dolce',extra:1,slots:['colazione'],
+  ing:[['pastasfoglia',230],['mele',700],['uvetta',70],['zucchero',80],['pangrattato',40]],
+  steps:['Mele a fettine con zucchero e uvetta ammollata.',
+         'Pangrattato tostato sulla sfoglia: tiene l’umidità e non fa la pappa.',
+         'Arrotola, incidi sopra, 190° per trentacinque minuti.']},
+ {id:'tortanonna',n:'Torta della nonna',e:'🥧',min:95,d:4,serv:8,tag:'Dolce',extra:1,slots:['colazione'],
+  ing:[['farina',350],['burro',170],['zucchero',200],['uova',4],['latte',500],['mandorle',60]],
+  steps:['Frolla fredda, mezz’ora in frigo.',
+         'Crema pasticcera con latte, tuorli, zucchero e un po’ di farina, fatta raffreddare con la pellicola a contatto.',
+         'Guscio, crema, coperchio di frolla, mandorle sopra.','180° per quaranta minuti.']},
+ {id:'brodocarne',n:'Brodo di carne',e:'🍲',min:200,d:3,serv:6,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['spezzatino',600],['carote',200],['sedano',150],['cipolla',2],['pastina',120]],
+  steps:['Carne in acqua fredda: così rilascia tutto. Se parti dal bollore resta nella carne.',
+         'Verdure intere, e tre ore a fuoco bassissimo senza mai mescolare.',
+         'Schiuma via con la schiumarola, poi filtra.','Una notte in frigo e il grasso si toglie da solo.']},
+ {id:'zuppainglese',n:'Zuppa inglese',e:'🍮',min:60,d:4,serv:6,tag:'Dolce',extra:1,slots:['cena'],
+  ing:[['biscotti',24],['latte',600],['uova',4],['zucchero',150],['cacao',40]],
+  steps:['Due creme dalla stessa base: una gialla, una con il cacao.',
+         'Strati di biscotti bagnati e creme alternate.','Quattro ore in frigo.']},
+ {id:'cremapasticcera',n:'Crema pasticcera',e:'🍥',min:25,d:3,serv:6,tag:'Dolce',extra:1,slots:['cena'],
+  ing:[['latte',500],['uova',4],['zucchero',130],['farina',45],['limoni',1]],
+  steps:['Latte caldo con la scorza di limone, lasciato in infusione.',
+         'Tuorli, zucchero e farina montati a parte, poi il latte filtrato a filo.',
+         'Sul fuoco finché vela il cucchiaio. Pellicola a contatto, sennò fa la crosta.']},
+ {id:'polpogriglia',n:'Polpo alla griglia',e:'🐙',min:80,d:4,serv:3,tag:'Della domenica',slots:['cena'],
+  ing:[['polpo',800],['limoni',1],['prezzemolo',1],['olio',30],['patate',300]],
+  steps:['Polpo in acqua non salata, quaranta minuti, raffreddato nella sua acqua.',
+         'Tentacoli sulla griglia rovente, tre minuti per lato: fuori croccante, dentro morbido.',
+         'Olio, limone, prezzemolo e le patate schiacciate sotto.']},
+ {id:'coniglioporchetta',n:'Coniglio in porchetta',e:'🐇',min:120,d:4,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['coniglio',900],['pancetta',120],['rosmarino',1],['aglio',3],['vino_bianco',150],['patate',400]],
+  steps:['Coniglio disossato, aperto, con dentro pancetta, aglio e rosmarino.',
+         'Legato stretto e rosolato da ogni parte.','Vino e un’ora e mezza in forno a 170°, con le patate.']},
+
+ /* ---- facilissime: quelle che non sono nemmeno ricette, ma salvano una sera ---- */
+ {id:'tonnofagioli',n:'Tonno e fagioli',e:'🫘',min:8,d:1,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
+  ing:[['tonno',1],['fagioli',1],['cipolla',1],['olio',20]],
+  steps:['Fagioli scolati e sciacquati.','Tonno sopra senza mescolare troppo, cipolla sottile, olio e pepe.']},
+ {id:'panealici',n:'Pane, burro e alici',e:'🍞',min:6,d:1,serv:2,tag:'Svelta',slots:['cena'],
+  ing:[['pane',150],['burro',50],['alici',40]],
+  steps:['Burro morbido spalmato spesso sul pane.','Un filetto di alice sopra ogni fetta. Fine.']},
+ {id:'prosciuttomelone',n:'Prosciutto e melone',e:'🍈',min:8,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo','cena'],
+  ing:[['melone',1],['prosciuttocrudo',120]],
+  steps:['Melone a spicchi, freddo di frigo.','Crudo sopra, affettato sottile.']},
+ {id:'pomodoritonno',n:'Pomodori col tonno',e:'🍅',min:10,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['pomodori',400],['tonno',1],['olive',50],['olio',20],['origano',1]],
+  steps:['Pomodori a spicchi.','Tonno scolato, olive, olio, sale e origano.']},
+ {id:'crackersformaggio',n:'Crackers e formaggino',e:'🧀',min:3,d:1,serv:1,tag:'Svelta',slots:['pranzo'],
+  ing:[['crackers',100],['formaggini',2]],
+  steps:['Quando non c’è niente e non c’è tempo, c’è anche questo.']},
+ {id:'bruschettaaglio',n:'Bruschetta aglio e olio',e:'🧄',min:8,d:1,serv:2,tag:'Svelta',slots:['cena'],
+  ing:[['pane',180],['aglio',2],['olio',30]],
+  steps:['Pane tostato bene, quasi bruciacchiato ai bordi.','Aglio strofinato sopra da caldo, olio e sale.']},
+ {id:'piadinanutella',n:'Piadina alla crema',e:'🌯',min:5,d:1,serv:2,tag:'Coccola',slots:['colazione'],
+  ing:[['piadina',2],['nutella',60]],
+  steps:['Piadina scaldata un minuto per lato.','Crema spalmata e piegata in due.']},
+ {id:'risofreddoveloce',n:'Riso freddo veloce',e:'🍚',min:20,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['riso',180],['tonno',1],['maisscatola',120],['pomodorini',150],['olio',20]],
+  steps:['Riso lessato e raffreddato sotto l’acqua.','Tutto il resto dentro, olio e sale.']},
+ {id:'frullatopesche',n:'Frullato di pesche',e:'🍑',min:6,d:1,serv:2,tag:'Svelta',slots:['colazione'],
+  ing:[['pesche',400],['latte',250],['miele',15]],
+  steps:['Pesche sbucciate nel frullatore col latte.','Miele se servono dolci.']},
+ {id:'macedoniaanguria',n:'Anguria e melone',e:'🍉',min:10,d:1,serv:3,tag:'Dolce',extra:1,slots:['cena'],
+  ing:[['anguria',1],['melone',1],['lime',1]],
+  steps:['A cubi, tutti e due freddi.','Qualche goccia di lime: tira fuori il dolce.']},
+ {id:'patatelesse',n:'Patate lesse all’olio',e:'🥔',min:30,d:1,serv:3,tag:'Contorno',extra:1,slots:['pranzo','cena'],
+  ing:[['patate',700],['prezzemolo',1],['olio',25]],
+  steps:['Patate con la buccia in acqua fredda salata, venticinque minuti.','Sbucciate da calde, olio, sale e prezzemolo.']},
+ {id:'uovasodeveloci',n:'Uova sode e pane',e:'🥚',min:12,d:1,serv:2,tag:'Proteica',slots:['pranzo','cena'],
+  ing:[['uova',4],['pane',150],['olio',15]],
+  steps:['Nove minuti dal bollore, poi subito in acqua fredda.','Sale, olio e pane.']},
+
+ /* ---- fuori dall'Italia ---- */
+ {id:'poketonno',n:'Poke bowl al tonno',e:'🍥',min:30,d:2,serv:2,tag:'Pranzo freddo',slots:['pranzo','cena'],
+  ing:[['risosushi',200],['tonnofresco',250],['avocado',1],['salsasoia',30],['semisesamo',15],['edamame',150]],
+  steps:['Riso cotto e condito con aceto di riso, un po’ di zucchero e sale.',
+         'Tonno a cubi, marinato dieci minuti nella soia.',
+         'Nella ciotola: riso tiepido sotto, tutto il resto sopra a settori.']},
+ {id:'ramenveloce',n:'Ramen veloce',e:'🍜',min:25,d:2,serv:2,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['noodles',200],['brododado',800],['uova',2],['pollo',200],['germogli',100],['salsasoia',30]],
+  steps:['Uova sode morbide, sei minuti, e tagliate a metà.',
+         'Brodo insaporito con soia e zenzero.','Noodles tre minuti, poi tutto nella scodella.']},
+ {id:'risosaltatocinese',n:'Riso saltato alla cantonese',e:'🍚',min:25,d:2,serv:2,tag:'Svuota-dispensa',slots:['pranzo','cena'],
+  ing:[['risobasmati',200],['uova',2],['piselli',150],['prosciuttocotto',100],['salsasoia',25]],
+  steps:['Riso cotto il giorno prima: quello freddo non si impasta.',
+         'Uova strapazzate a parte e messe da parte.',
+         'Tutto in padella a fuoco altissimo, due minuti, soia alla fine.']},
+ {id:'polloteriyaki',n:'Pollo teriyaki',e:'🍢',min:30,d:2,serv:2,tag:'Proteica',slots:['pranzo','cena'],
+  ing:[['pollo',400],['salsateriyaki',80],['risobasmati',180],['semisesamo',15],['germogli',100]],
+  steps:['Pollo a bocconcini rosolato a fuoco vivo.',
+         'Teriyaki dentro, che si restringe e lucida la carne.','Riso bianco a parte e sesamo sopra.']},
+ {id:'curryverdure',n:'Curry di verdure al cocco',e:'🍛',min:35,d:2,serv:3,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['verduresurg',500],['lattecocco',400],['currypolvere',15],['cipolla',1],['risobasmati',180]],
+  steps:['Cipolla e curry in padella, un minuto: le spezie si svegliano nel grasso.',
+         'Verdure, latte di cocco e venti minuti.','Riso basmati a parte.']},
+ {id:'dahllenticchie',n:'Dahl di lenticchie rosse',e:'🍲',min:40,d:2,serv:3,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['lenticchierosse',300],['lattecocco',250],['curcuma',5],['cumino',5],['cipolla',1],['zenzero',15]],
+  steps:['Cipolla, zenzero e spezie nel burro o nell’olio.',
+         'Lenticchie rosse e acqua a coprire: in venti minuti si sfanno da sole.',
+         'Latte di cocco alla fine. Pane naan per raccogliere.']},
+ {id:'pollotikka',n:'Pollo tikka',e:'🍗',min:50,d:3,serv:3,tag:'Proteica',slots:['cena'],
+  ing:[['pollo',600],['yogurtgreco',2],['garammasala',15],['curcuma',5],['limoni',1],['naan',4]],
+  steps:['Marinatura di yogurt, spezie e limone: almeno due ore, meglio una notte.',
+         'Forno a 220° o padella rovente, quindici minuti girando.','Naan scaldato e yogurt a parte.']},
+ {id:'padthai',n:'Pad thai',e:'🍜',min:35,d:3,serv:2,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['noodles',200],['gamberi',250],['uova',2],['germogli',150],['arachidi',50],['salsasoia',30]],
+  steps:['Noodles ammollati, non lessati: finiscono di cuocere in padella.',
+         'Gamberi saltati, poi le uova strapazzate accanto.',
+         'Noodles, salsa, germogli. Arachidi tritate e lime alla fine.']},
+ {id:'saltatomanzo',n:'Manzo saltato con verdure',e:'🥢',min:25,d:2,serv:2,tag:'Proteica',slots:['cena'],
+  ing:[['spezzatino',400],['peperoni',200],['germogli',150],['salsasoia',30],['zenzero',15],['oliosesamo',15]],
+  steps:['Carne a striscioline sottili, padella rovente, due minuti e via.',
+         'Verdure a fuoco altissimo: devono restare croccanti.',
+         'Carne dentro, soia e olio di sesamo a fuoco spento.']},
+ {id:'gyozapadella',n:'Gyoza in padella',e:'🥟',min:20,d:2,serv:2,tag:'Svelta',slots:['cena'],
+  ing:[['gyoza',12],['salsasoia',30],['acetoriso',15],['oliosesamo',10]],
+  steps:['Padella con poco olio, gyoza appoggiati, due minuti finché il fondo è dorato.',
+         'Mezzo bicchiere d’acqua e coperchio: cuociono a vapore in cinque minuti.',
+         'Salsa di soia, aceto di riso e olio di sesamo per intingere.']},
+ {id:'zuppamiso',n:'Zuppa di miso',e:'🥣',min:15,d:1,serv:2,tag:'Svelta',slots:['pranzo','cena'],
+  ing:[['miso',60],['tofu',150],['nori',10],['germogli',80]],
+  steps:['Acqua calda, non bollente: il miso bollito perde tutto.',
+         'Miso sciolto a parte in un mestolo di brodo, poi unito.','Tofu a cubetti e alga a striscioline.']},
+
+ {id:'fajitaspollo',n:'Fajitas di pollo',e:'🌯',min:30,d:2,serv:2,tag:'Comfort',slots:['cena'],
+  ing:[['tortillas',6],['pollo',400],['peperoni',300],['cipolla',1],['salsamessicana',100],['cheddar',100]],
+  steps:['Pollo a strisce con paprika e cumino, rosolato forte.',
+         'Peperoni e cipolla nella stessa padella.',
+         'Tortillas scaldate, e ognuno si riempie la sua.']},
+ {id:'chilicarne',n:'Chili con carne',e:'🌶️',min:70,d:2,serv:4,tag:'Comfort',slots:['cena'],
+  ing:[['macinato',500],['fagiolineri',2],['passata',400],['cipolla',1],['chili',10],['cumino',5]],
+  steps:['Cipolla, carne, spezie: la carne deve rosolare, non lessare.',
+         'Passata e fagioli, poi quaranta minuti a fuoco basso.','Panna acida o yogurt sopra, e nachos accanto.']},
+ {id:'quesadillas',n:'Quesadillas',e:'🫓',min:20,d:1,serv:2,tag:'Svelta',slots:['cena'],
+  ing:[['tortillas',4],['cheddar',150],['fagiolineri',1],['jalapenos',40]],
+  steps:['Formaggio e fagioli su metà tortilla, piega.',
+         'Padella senza grassi, due minuti per lato.','Si taglia a spicchi, come una pizza.']},
+ {id:'nachosforno',n:'Nachos al forno',e:'🔺',min:20,d:1,serv:3,tag:'Svelta',slots:['cena'],
+  ing:[['nachos',200],['cheddar',150],['fagiolineri',1],['guacamole',150],['jalapenos',40]],
+  steps:['Nachos in teglia, formaggio sopra, 200° per otto minuti.',
+         'Fuori dal forno: guacamole, fagioli e jalapeños.']},
+ {id:'burritofagioli',n:'Burrito di fagioli',e:'🌯',min:25,d:1,serv:2,tag:'Proteica',slots:['pranzo','cena'],
+  ing:[['tortillas',4],['fagiolineri',2],['risobasmati',150],['salsamessicana',80],['cheddar',80]],
+  steps:['Riso lessato, fagioli scaldati con la salsa.',
+         'Tortilla, riso, fagioli, formaggio, e si chiude piegando prima i lati.']},
+
+ {id:'hummuscasa',n:'Hummus fatto in casa',e:'🥣',min:20,d:2,serv:4,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['ceci',2],['tahina',60],['limoni',1],['aglio',1],['cumino',5],['pita',4]],
+  steps:['Ceci scolati, frullati con tahina, limone, aglio e un po’ della loro acqua.',
+         'Deve venire liscio: se è duro, altra acqua, non altro olio.',
+         'Olio e paprika sopra, pita calda accanto.']},
+ {id:'falafelforno',n:'Falafel con salsa allo yogurt',e:'🧆',min:30,d:2,serv:2,tag:'Proteica',slots:['pranzo','cena'],
+  ing:[['falafel',10],['yogurtgreco',2],['tahina',40],['limoni',1],['pita',4],['insalata',120]],
+  steps:['Falafel in forno a 200° per venti minuti.',
+         'Salsa di yogurt, tahina e limone.','Dentro la pita con insalata.']},
+ {id:'tabule',n:'Tabulé',e:'🥗',min:30,d:2,serv:3,tag:'Pranzo freddo',slots:['pranzo'],
+  ing:[['bulgur',200],['prezzemolo',1],['pomodori',300],['limoni',1],['menta',1],['cipollotto',1]],
+  steps:['Bulgur coperto d’acqua bollente, quindici minuti, poi sgranato.',
+         'Prezzemolo tritato tantissimo: è l’ingrediente principale, non la guarnizione.',
+         'Pomodoro a dadini, limone, olio, menta.']},
+ {id:'shakshuka',n:'Shakshuka',e:'🍳',min:30,d:2,serv:2,tag:'Proteica',slots:['colazione','cena'],
+  ing:[['uova',4],['pelati',400],['peperoni',200],['cipolla',1],['cumino',5],['harissa',15]],
+  steps:['Cipolla e peperoni, poi pelati, cumino e harissa, quindici minuti.',
+         'Quattro buche nel sugo, le uova dentro, coperchio.',
+         'Cinque minuti: il bianco rappreso, il tuorlo ancora liquido.']},
+ {id:'coussoucpollo',n:'Couscous con pollo e ceci',e:'🍛',min:40,d:2,serv:3,tag:'Comfort',slots:['pranzo','cena'],
+  ing:[['couscous',200],['pollo',400],['ceci',1],['carote',200],['zucchine',200],['harissa',15]],
+  steps:['Pollo e verdure in umido con poca acqua e le spezie, venticinque minuti.',
+         'Couscous sgranato a parte.','Brodo di cottura sopra, harissa per chi la vuole.']},
+
+ {id:'pancakeamericani',n:'Pancake americani',e:'🥞',min:25,d:2,serv:3,tag:'Coccola',slots:['colazione'],
+  ing:[['farina',250],['latticello',300],['uova',2],['lievito',1],['sciroppoacero',60],['burro',40]],
+  steps:['Secchi e liquidi uniti con pochi giri: i grumi vanno bene.',
+         'Padella calda appena unta, un mestolino per volta.','Burro e sciroppo d’acero sopra.']},
+ {id:'porridgeavena',n:'Porridge d’avena',e:'🥣',min:12,d:1,serv:2,tag:'Comfort',slots:['colazione'],
+  ing:[['avena',100],['latte',400],['miele',25],['banane',120],['cannella',2]],
+  steps:['Avena nel latte, dieci minuti a fuoco basso mescolando.',
+         'Banana a rondelle, miele e cannella.']},
+ {id:'burgercasa',n:'Hamburger fatto come si deve',e:'🍔',min:30,d:2,serv:2,tag:'Comfort',slots:['cena'],
+  ing:[['macinato',400],['panhamburger',2],['cheddar',80],['insalata',60],['salsabarbecue',40],['cipolla',1]],
+  steps:['Carne lavorata pochissimo e schiacciata sottile: più la stringi, più viene dura.',
+         'Padella rovente, tre minuti, gira una volta sola, formaggio sopra col coperchio.',
+         'Pane tostato nel suo grasso. Cipolla caramellata se hai dieci minuti in più.']},
+ {id:'baconuova',n:'Uova e bacon',e:'🥓',min:15,d:1,serv:2,tag:'Proteica',slots:['colazione'],
+  ing:[['bacon',120],['uova',4],['pane',150]],
+  steps:['Bacon in padella fredda, fuoco medio, finché è croccante.',
+         'Uova nel grasso del bacon.','Pane tostato.']},
+ {id:'coleslawbbq',n:'Coleslaw',e:'🥗',min:20,d:1,serv:4,tag:'Contorno',extra:1,slots:['pranzo','cena'],
+  ing:[['verza',1],['carote',250],['maionese',120],['aceto',20],['senape',15]],
+  steps:['Verza e carote a filetti sottilissimi.','Salsa di maionese, aceto e senape.',
+         'Un’ora in frigo: deve ammorbidirsi.']},
+
+ {id:'insalatagrecavera',n:'Insalata greca con olive kalamata',e:'🫒',min:15,d:1,serv:2,tag:'Pranzo freddo',slots:['pranzo','cena'],
+  ing:[['cetrioli',2],['pomodori',400],['feta',150],['olivekalamata',80],['cipolla',1],['origano',1]],
+  steps:['Verdure a pezzi grossi.','Feta intera sopra, non sbriciolata.','Olio, origano e niente sale: la feta basta.']},
+ {id:'tzatzikicasa',n:'Tzatziki',e:'🥒',min:20,d:1,serv:4,tag:'Contorno',extra:1,slots:['pranzo','cena'],
+  ing:[['yogurtgreco',4],['cetrioli',2],['aglio',2],['menta',1],['olio',20]],
+  steps:['Cetrioli grattugiati e strizzati forte: l’acqua rovina tutto.',
+         'Yogurt, aglio grattugiato, menta e olio.','Un’ora in frigo.']},
+ {id:'moussakaveloce',n:'Moussaka veloce',e:'🍆',min:80,d:3,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['melanzane',700],['macinato',400],['passata',350],['besciamella',450],['cannella',2]],
+  steps:['Melanzane a fette grigliate.','Ragù con un pizzico di cannella: è quella che la fa greca.',
+         'Strati, besciamella sopra, 180° per quaranta minuti.']},
+ {id:'paellaveloce',n:'Paella di pollo e gamberi',e:'🥘',min:50,d:3,serv:4,tag:'Della domenica',slots:['pranzo','cena'],
+  ing:[['riso',350],['pollo',400],['gamberi',250],['piselli',150],['peperoni',200],['zafferano',1]],
+  steps:['Pollo rosolato, poi peperoni e riso tostato.',
+         'Brodo con lo zafferano, due dita sopra il riso, e da qui non si mescola più.',
+         'Gamberi e piselli negli ultimi cinque minuti. La crosticina sotto è la parte buona.']},
+ {id:'tortillapatate',n:'Tortilla di patate',e:'🥔',min:45,d:3,serv:4,tag:'Classica',slots:['pranzo','cena'],
+  ing:[['patate',700],['uova',6],['cipolla',1],['olio',60]],
+  steps:['Patate a fette sottili stufate nell’olio, non fritte: devono restare morbide.',
+         'Scolate e mescolate alle uova sbattute, dieci minuti di riposo.',
+         'In padella a fuoco basso, poi girata con un piatto. Dentro deve restare umida.']},
+ {id:'zuppacipollefrancese',n:'Zuppa di cipolle gratinata',e:'🧅',min:70,d:3,serv:3,tag:'Comfort',slots:['cena'],
+  ing:[['cipolla',6],['brododado',800],['baguette',1],['emmental',150],['burro',50],['vino_bianco',100]],
+  steps:['Cipolle nel burro, quaranta minuti a fuoco basso: devono diventare scure e dolci.',
+         'Vino sfumato, poi il brodo, venti minuti.',
+         'Nelle ciotole con la baguette e il formaggio, sotto il grill finché fa la crosta.']},
+ {id:'crepesprosciutto',n:'Crêpes al prosciutto e brie',e:'🥞',min:35,d:3,serv:2,tag:'Della domenica',slots:['cena'],
+  ing:[['farina',150],['uova',2],['latte',350],['prosciuttocotto',120],['brie',150]],
+  steps:['Crêpes sottili.','Prosciutto e brie dentro, piegate in quattro.',
+         'Padella o forno due minuti, finché il formaggio cola.']},
+ {id:'pastaseitan',n:'Pasta con ragù di seitan',e:'🌾',min:40,d:2,serv:2,tag:'Proteica',slots:['pranzo','cena'],
+  ing:[['pasta_mista',180],['seitan',200],['passata',350],['carote',100],['sedano',80],['cipolla',1]],
+  steps:['Seitan tritato grosso, rosolato bene con il soffritto.','Passata e mezz’ora.','Pasta dentro.']},
+ {id:'tofucroccante',n:'Tofu croccante alla soia',e:'🍢',min:30,d:2,serv:2,tag:'Proteica',slots:['pranzo','cena'],
+  ing:[['tofu',300],['amidomais',40],['salsasoia',40],['oliosesamo',15],['risobasmati',180]],
+  steps:['Tofu strizzato sotto un peso mezz’ora: via l’acqua, entra il sapore.',
+         'A cubi nell’amido, poi in padella finché è dorato da tutte le parti.',
+         'Soia e sesamo a fuoco spento, riso a parte.']},
+ {id:'buddhabowl',n:'Buddha bowl',e:'🥗',min:40,d:2,serv:2,tag:'Proteica',slots:['pranzo','cena'],
+  ing:[['quinoa',160],['ceci',1],['patatedolci',300],['avocado',1],['hummus',100],['spinacino',100]],
+  steps:['Patate dolci e ceci in forno a 200° con olio e paprika, venticinque minuti.',
+         'Quinoa lessata.','Nella ciotola a settori, con avocado e un cucchiaio di hummus al centro.']}
 ];
 
 /* piano dei prossimi 7 giorni */
@@ -2543,8 +3110,24 @@ function listaSpesa(){
 }
 const r_name=m=>`${dayLabel(m.di)} a ${m.slot==='cena'?'cena':m.slot==='pranzo'?'pranzo':'colazione'}`;
 
-function toast(msg){const t=el('toast');t.textContent=msg;t.classList.add('on');
- clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2800);}
+/* Il messaggino in basso. Con "azione" diventa anche un modo per tornare
+   indietro: resta su più a lungo, perché uno deve avere il tempo di
+   accorgersi di aver sbagliato e di arrivarci col dito. */
+function toast(msg,azione){
+ const t=el('toast');
+ t.innerHTML='';
+ t.classList.toggle('conazione',!!azione);
+ const s=document.createElement('span'); s.textContent=msg; t.appendChild(s);
+ if(azione){
+  const b=document.createElement('button');
+  b.className='toast-az'; b.type='button'; b.textContent=azione.testo;
+  b.onclick=()=>{ t.classList.remove('on','conazione'); clearTimeout(toast.t); azione.fai(); };
+  t.appendChild(b);
+ }
+ t.classList.add('on');
+ clearTimeout(toast.t);
+ toast.t=setTimeout(()=>t.classList.remove('on','conazione'),azione?6000:2800);
+}
 
 /* ===================== pattern generati ===================== */
 /* forme sparse, posizionate a caso: ogni tessera è grande e le tessere sono di misure diverse,
@@ -3032,21 +3615,142 @@ const FAMIGLIE=[
  ['biscotti','fette'],
  ['marmellata','miele'],
  ['aceto','balsamico'],
- ['vino_bianco','vinorosso']
+ ['vino_bianco','vinorosso'],
+ /* --- le varianti arrivate dopo, italiane e no --- */
+ ['pasta_lunga','noodles'],
+ ['riso','risobasmati','risosushi'],
+ ['lenticchie','lenticchierosse'],
+ ['pancetta','bacon','guanciale','lardo'],
+ ['stracchino','fiordilatte','caciocavallo','cheddar','brie','robiola','provola'],
+ ['parmigiano','grana','pecorino','ricottasalata'],
+ ['panna','pannamontare'],
+ /* la piadina, la tortilla, la pita e il naan sono la stessa idea in
+    quattro paesi: una sfoglia che tiene insieme quello che ci metti */
+ ['piadina','tortillas','pita','naan'],
+ ['farina','farinamanitoba'],
+ ['amidomais','fecola'],
+ ['cereali','avena'],
+ ['insalata','songino'],
+ ['spinaci','bietole'],
+ ['broccoli','cimedirapa'],
+ ['funghi','funghi2','champignon','shiitake'],
+ ['olive','olivekalamata'],
+ ['alici','acciughesale'],
+ ['merluzzo','baccala'],
+ ['orata','branzino','trota'],
+ ['calamari','seppie'],
+ ['gamberi','scampi'],
+ ['pollo','tacchinofette'],
+ ['spezzatino','vitello','ossobuco'],
+ ['salsiccia','chorizo'],
+ ['zucca','zuccaviolina'],
+ ['patate','patatenovelle'],
+ ['fagioli','fagiolineri'],
+ ['latte','latticello'],
+ ['aceto','acetoriso'],
+ ['cioccolato','cioccolatobianco'],
+ ['noci','mandorle','nocciole','anacardi','pistacchi'],
+ ['uvetta','albicoccsecche','fichisecchi','datteri','pruguesecche'],
+ /* le erbe fresche si scambiano quasi sempre: cambia il profumo,
+    non il piatto */
+ ['salvia','timo','maggiorana','menta','erbacipollina','coriandolo','prezzemolo2'],
+ ['tofu','seitan','tempeh'],
+ ['hummus','guacamole','tzatziki'],
+ ['crackers','grissini','taralli','gallette'],
+ ['patatine','nachos','popcorn']
 ];
 /* La tabella si costruisce al primo uso, non qui: all'avvio la dispensa
    conosce solo i suoi alimenti, e tutto il resto del catalogo arriva un
    momento dopo. Costruendola subito mi perdevo per strada il philadelphia,
    lo speck e tre quarti delle varianti, senza che niente si lamentasse. */
+/* ===================== le cose che non conosco =====================
+   Il catalogo non arriverà mai a coprire tutto: escono prodotti nuovi ogni
+   settimana e ogni catena ha i suoi. Però il nome quasi sempre dice la
+   famiglia: non devo sapere cos'è un "SUGO ALLA BOSCAIOLA" per capire che
+   è un sugo, e che un sugo ci va sulla pasta. Quindi, quando una cosa non
+   la riconosco, le do un parente: eredita la sua unità di misura e le
+   ricette che usano il parente diventano fattibili anche con lei. */
+const INDIZI=[
+ [/\b(sug[oh]i?|ragu|condimento|arrabbiata|amatriciana|boscaiola|puttanesca|norma|polpa|passata)\b/,'sugopronto'],
+ [/\b(pesto|genovese|trapanese)\b/,'pesto'],
+ [/\b(spaghett|linguin|bucatin|vermicell|tagliatell|fettuccin|pappardell)/,'pasta_lunga'],
+ [/\b(past[ae]|penn[ea]|fusill|rigaton|farfall|macchieron|maccheron|sedanin|tortiglion|conchigli|orecchiett|trofi[ea]|caserecc|mezze maniche)/,'pasta_mista'],
+ [/\b(riso|basmati|carnaroli|arborio|vialone|parboiled)\b/,'riso'],
+ [/\b(farina|farine)\b/,'farina'],
+ [/\b(latte|parzialmente scremato)\b/,'latte'],
+ [/\b(yogurt|yoghurt)\b/,'yogurt'],
+ [/\b(grattugiato|grana|parmigiano|reggiano|pecorino)\b/,'parmigiano'],
+ [/\b(formaggio|caciotta|fontina|asiago|provola|provolone|primosale|squacquerone|crescenza|galbanino|sottilette|spalmabile)\b/,'scamorza'],
+ [/\b(prosciutto|salame|salamino|coppa|capocollo|affettato|affettati|mortadella|bresaola|speck)\b/,'prosciuttocotto'],
+ [/\b(biscott|frollin|wafer|gocciole|pavesin|savoiard)/,'biscotti'],
+ [/\b(cereali|muesli|fiocchi|corn ?flakes)\b/,'cereali'],
+ [/\b(marmellata|confettura|composta)\b/,'marmellata'],
+ [/\b(succo|nettare|spremuta)\b/,'succo'],
+ [/\b(olio|extravergine|evo)\b/,'olio'],
+ [/\b(aceto|balsamico)\b/,'aceto'],
+ [/\b(ceci)\b/,'ceci'],
+ [/\b(lenticchie)\b/,'lenticchie'],
+ [/\b(fagioli|cannellini|borlotti|legumi)\b/,'fagioli'],
+ [/\b(surgelat|minestrone|verdure miste|contorno misto)/,'verduresurg'],
+ [/\b(pane|pancarre|baguette|ciabatta|rosetta|michetta|filone)\b/,'pane'],
+ [/\b(cioccolat|cacao)/,'cioccolato'],
+ [/\b(gelato|cornetti algida|vaschetta)\b/,'gelato'],
+ [/\b(caffe|caffe')\b/,'caffe'],
+ [/\b(te|the|tisana|infuso)\b/,'te'],
+ [/\b(acqua|naturale frizzante)\b/,'acqua'],
+ [/\b(birra|bionda)\b/,'birra'],
+ [/\b(vino|rosso|bianco) (doc|igt|docg)\b/,'vinorosso'],
+ /* --- e le cose che arrivano da fuori --- */
+ [/\b(noodles?|ramen|udon|soba)\b/,'noodles'],
+ [/\b(tortilla|tortillas|wrap|fajitas|burrito|quesadilla)\b/,'tortillas'],
+ [/\b(sushi|maki|nigiri|onigiri)\b/,'risosushi'],
+ [/\b(curry|masala|tikka|tandoori)\b/,'currypolvere'],
+ [/\b(tahin|tahina|tahini)\b/,'tahina'],
+ [/\b(pita|naan|piadine)\b/,'piadina'],
+ [/\b(bacon|pancetta affumicata)\b/,'bacon'],
+ [/\b(feta|halloumi)\b/,'feta'],
+ [/\b(bulgur|quinoa|couscous)\b/,'couscous'],
+ [/\b(avena|oats|porridge|muesli)\b/,'avena'],
+ [/\b(cheddar|gouda|edamer|emmenthal)\b/,'cheddar'],
+ [/\b(nachos|chips|doritos)\b/,'nachos'],
+ [/\b(guacamole|hummus|tzatziki)\b/,'hummus'],
+ [/\b(kimchi|crauti|sauerkraut)\b/,'crauti'],
+ [/\b(seitan|tempeh|proteine vegetali)\b/,'tofu']
+];
+function famigliaIgnota(nome){
+ const n=normalizza(nome||'');
+ if(!n) return null;
+ for(const [re,rap] of INDIZI) if(re.test(n)&&ING[rap]) return rap;
+ return null;
+}
+/* gli do il parente: stessa unità di misura, stesso scaffale, e da quel
+   momento vale per tutte le ricette che usano il parente */
+function adottaFamiglia(k,nome){
+ const i=ING[k]; if(!i) return null;
+ const rap=famigliaIgnota(nome); if(!rap||rap===k) return null;
+ const p=ING[rap];
+ i.fam=rap;
+ i.l=p.l;
+ if(i.u!==p.u){ i.u=p.u; i.q=i.q>0?p.f:0; i.f=p.f; }
+ if(!i.pr) i.pr=p.pr;
+ _SOST=null;
+ return rap;
+}
 let _SOST=null;
 function sostituti(k){
  if(!_SOST){
   _SOST={};
-  FAMIGLIE.forEach(g=>g.forEach(x=>{
-   if(!ING[x]) return;
-   g.forEach(a=>{ if(a!==x&&ING[a]&&ING[a].u===ING[x].u&&!(_SOST[x]||[]).includes(a))
-     (_SOST[x]=_SOST[x]||[]).push(a); });
-  }));
+  const lega=(a,b)=>{ if(a===b||!ING[a]||!ING[b]) return;
+   if(ING[a].u!==ING[b].u) return;
+   if(!(_SOST[a]||[]).includes(b)) (_SOST[a]=_SOST[a]||[]).push(b); };
+  FAMIGLIE.forEach(g=>g.forEach(x=>{ if(!ING[x]) return; g.forEach(a=>lega(x,a)); }));
+  /* e poi le cose che non conoscevo, attaccate al loro parente: così
+     "Sugo alla boscaiola" vale come sugo pronto in tutte le ricette */
+  Object.keys(ING).forEach(k=>{
+   const rap=ING[k]&&ING[k].fam; if(!rap||!ING[rap]) return;
+   lega(k,rap); lega(rap,k);
+   (_SOST[rap]||[]).slice().forEach(altro=>{ lega(k,altro); lega(altro,k); });
+  });
  }
  return _SOST[k]||[];
 }
@@ -3063,7 +3767,9 @@ function scegli(k,q,avere,usati){
  const parz=alt.find(a=>avere(a)>0);
  return parz||k;
 }
-const altrimenti=k=>sostituti(k).filter(a=>ING[a]);
+const altrimenti=k=>{ const visti=new Set();
+ return sostituti(k).filter(a=>{ if(!ING[a]) return false;
+  const n=normalizza(ING[a].n); if(visti.has(n)) return false; visti.add(n); return true; }); };
 
 function check(r,scale){
  const f=(scale||r.serv)/r.serv, miss=[],part=[],have=[],need=[],usati={};
@@ -3176,7 +3882,7 @@ function vRicette(){
        <span class="col grow">
          <span class="name" style="font-size:17px">${esc(r.n)}</span>
          <span class="meta">
-           ${c.gap?`<span class="pill ${c.gap<=2?'warn':'bad'}">mancano ${c.gap}</span>`
+           ${c.gap?`<span class="pill ${c.gap<=2?'warn':'bad'}">manc${c.gap===1?'a':'ano'} ${c.gap}</span>`
                   :'<span class="pill ok">✓ puoi farla</span>'}
            <span class="small">${r.min} min · ${eur(perPorz(r))} a porz.</span>
            ${diffPip(r)}
@@ -3192,14 +3898,15 @@ function vRicette(){
    <h1 class="grow" style="font-size:26px">Le ricette</h1>
    <button class="btn sm primary" data-a="go" data-s="nuova">＋ Nuova</button>
  </div>
- <p class="muted" style="margin:3px 0 13px">${RECIPES.length} ricette · ${RECIPES.filter(r=>!check(r).gap).length} fattibili adesso</p>
+ ${(()=>{const ok=RECIPES.filter(r=>!check(r).gap).length;
+   return `<p class="muted" style="margin:3px 0 13px">${RECIPES.length} ricette · ${ok} fattibil${ok===1?'e':'i'} adesso</p>`;})()}
  <div class="searchbar">
    <div class="row" style="gap:9px;align-items:stretch">
      <div class="search grow"><span>🔍</span>
        <input id="rq" placeholder="Cerca fra le ricette…" value="${esc(S.recQuery||'')}" autocomplete="off"></div>
-     <button class="btn sm ${attivi?'dark':''}" data-a="filtri"
+     <button class="btn sm dark" data-a="filtri"
        aria-label="${attivi?attivi+' filtri accesi':'Filtri'}"
-       style="flex:0 0 auto;min-height:54px;padding:0 16px;gap:7px">${ICO_FILTRO}${attivi?`<span class="tnum">${attivi}</span>`:''}</button>
+       style="flex:0 0 auto;min-height:54px;padding:0 17px;gap:7px">${ICO_FILTRO}${attivi?`<span class="tnum">${attivi}</span>`:''}</button>
    </div>
  </div>
  ${(attivi||q)?`<div class="chips" style="margin-top:11px">
@@ -5411,6 +6118,8 @@ document.addEventListener('click',e=>{
  else if(a==='uso-fine'){ cambiaUso(0); }
  else if(a==='uso-pieno'){ cambiaUso(ING[S.uso.k].f); }
  else if(a==='uso-salva'){ salvaUso(); }
+ else if(a==='uso-togli'){ const k=S.uso&&S.uso.k;
+   S.uso=null; chiudiPannello(); if(k) togliDispensa(k); }
  else if(a==='chiudi-uso'){ if(!e.target.closest('[data-stop]')){ S.uso=null; chiudiPannello(); } }
  else if(a==='cooked'){ cucinata(t.dataset.id); }
  else if(a==='manuale'){ fermaScanner(); apriManuale(); }
@@ -5450,8 +6159,11 @@ document.addEventListener('click',e=>{
      ING[k]={visto:1,n:nome,e:emojiPer(nome),
              u:aPeso?l.u:'pz', q:0, f:aPeso?l.q:1,
              pr:l.prezzo||0, l:'credenza'};
+     const rap=adottaFamiglia(k,nome);
      l.id=k; l.stato='certa'; l.c=1; l.on=true;
-     if(!aPeso){ l.q=1; l.u='pz'; }
+     if(rap&&ING[k].u!==(aPeso?l.u:'pz')){ l.u=ING[k].u; l.q=ING[k].f; }
+     else if(!aPeso){ l.q=1; l.u='pz'; }
+     if(rap) toast(`Non lo conoscevo, ma è ${ING[rap].n.toLowerCase()}: lo userò come tale`);
      impara(l.raw,k);
    }
    render(true); toast('Aggiunto ai tuoi prodotti'); }
@@ -5498,7 +6210,10 @@ document.addEventListener('click',e=>{
    const k='mio'+Date.now().toString(36);
    ING[k]={visto:1,n:nome.charAt(0).toUpperCase()+nome.slice(1),e:emojiPer(nome),
            u:'pz',q:0,f:1,pr:0,l:'credenza'};
-   S.man.sel[k]=1; S.man.q=''; render(true); toast(`"${ING[k].n}" aggiunto: scrivi quanto`); }
+   const rap=adottaFamiglia(k,nome);
+   S.man.sel[k]=rap?ING[k].f:1; S.man.q=''; render(true);
+   toast(rap?`"${ING[k].n}": lo tratto come ${ING[rap].n.toLowerCase()}`
+            :`"${ING[k].n}" aggiunto: scrivi quanto`); }
  else if(a==='mok'){ applicaManuale(); }
  else if(a==='svuota'){ svuotaDispensa(); }
  else if(a==='esporta'){ esporta(); }
@@ -5675,10 +6390,41 @@ function disegnaUso(){
        <button class="chip" data-a="uso-pieno">confezione piena</button>
      </div>
      <button class="btn primary wide" data-a="uso-salva">Salva</button>
+     <button class="btn sm ghost wide" data-a="uso-togli" style="margin-top:10px">
+       🗑️ Toglilo dalla dispensa</button>
+     <p class="muted" style="margin:8px 0 0;text-align:center">Se l’hai messo dentro per sbaglio.
+       Diverso da «è finito», che invece lo manda nella lista della spesa.</p>
    </div></div>`;
  segnaPannello();
  const inp=el('uso-q');
  if(inp) inp.oninput=()=>{ S.uso.q=Math.max(0,Number(inp.value)||0); };
+}
+/* Togliere una cosa dalla dispensa non è come dire "è finita": finita vuol
+   dire che la devi ricomprare, e infatti va nella lista della spesa. Questa
+   invece è per quando l'hai messa dentro per sbaglio: sparisce e basta.
+   Se è una cosa che ti sei inventato tu e nessuna ricetta la usa, la
+   dimentico del tutto; se la conosco, me la ricordo ma non è più in casa. */
+function togliDispensa(k){
+ const i=ING[k]; if(!i) return;
+ const prima=JSON.parse(JSON.stringify(i));
+ const eraSpuntata=S.checked[k], eraExtra=S.extra.includes(k);
+ const nelCatalogo=CATALOGO.some(c=>c[0]===k);
+ const inRicetta=RECIPES.some(r=>r.ing.some(([x])=>x===k));
+ const inPiano=PLAN.some(d=>SLOTS.some(sl=>{const id=d.meals[sl];
+   const r=id&&R(id); return r&&r.ing.some(([x])=>x===k);}));
+ const miaRoba=!nelCatalogo&&!inRicetta&&!inPiano;
+ if(miaRoba) delete ING[k];
+ else { i.q=0; i.visto=0; }
+ delete S.checked[k];
+ S.extra=S.extra.filter(x=>x!==k);
+ _SOST=null;
+ salva(); render(true);
+ toast(`${prima.n}: tolto dalla dispensa`,{testo:'Annulla',fai:()=>{
+   ING[k]=prima;
+   if(eraSpuntata) S.checked[k]=eraSpuntata;
+   if(eraExtra&&!S.extra.includes(k)) S.extra.push(k);
+   _SOST=null; salva(); render(true); toast(`${prima.n}: rimesso a posto`);
+ }});
 }
 function apriUso(k){
  if(!ING[k]) return;
@@ -5734,8 +6480,9 @@ function salvaModifica(){
  }else{
   const esistente=Object.keys(ING).find(k=>normalizza(ING[k].n)===normalizza(nome));
   const k=esistente||('mio'+Date.now().toString(36));
-  if(!esistente) ING[k]={visto:1,n:nome.slice(0,34),e:emojiPer(nome),
-                         u,q:0,f:q||1,pr:l.prezzo||0,l:rep};
+  if(!esistente){ ING[k]={visto:1,n:nome.slice(0,34),e:emojiPer(nome),
+                          u,q:0,f:q||1,pr:l.prezzo||0,l:rep};
+                  adottaFamiglia(k,nome); }
   else { ING[k].visto=1; ING[k].l=rep; }
   l.id=k; l.q=q||1; l.u=u;
  }
@@ -5778,7 +6525,8 @@ function salvaRicetta(){
  const ing=rows.map(r=>{
   let k=trovaIng(r.name);
   if(!k){ k='x_'+Math.random().toString(36).slice(2,7);
-   ING[k]={n:r.name.trim(),e:'🥄',u:r.u,q:0,f:Number(r.q)*2,pr:2.50,l:'credenza'}; }
+   ING[k]={n:r.name.trim(),e:'🥄',u:r.u,q:0,f:Number(r.q)*2,pr:2.50,l:'credenza'};
+   adottaFamiglia(k,r.name); }
   return [k,Number(r.q)];
  });
  RECIPES.unshift({id:'new'+Date.now().toString(36),mia:1,n:nome,e:'🥄',min:Math.max(5,Number(el('nr-t')?.value||30)),
@@ -5882,7 +6630,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261120-0153';
+const VERSIONE='20261120-1221';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
