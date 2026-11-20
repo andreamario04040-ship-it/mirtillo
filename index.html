@@ -3799,7 +3799,15 @@ const FAMIGLIE=[
  ['pangrattato','avena'],
  ['noci','pistacchi','arachidi'],
  ['patatinefritte','crocchette'],
- ['bastoncini','cotolettesurg']
+ ['bastoncini','cotolettesurg'],
+ ['orzo','farro'],
+ ['quinoa','bulgur'],
+ ['melone','anguria'],
+ ['scarola','verza'],
+ ['succo','bibita'],
+ ['uvetta','mirtillirossi','bacchegoji'],
+ ['tortellini','pastafresca'],
+ ['acetoriso','aceto','balsamico']
 ];
 /* La tabella si costruisce al primo uso, non qui: all'avvio la dispensa
    conosce solo i suoi alimenti, e tutto il resto del catalogo arriva un
@@ -4009,7 +4017,69 @@ const SCAMBI=[
  {da:'cacao',a:'cioccolato',q:2,dove:['dolce'],nota:'è più grasso: togli un po’ di burro'},
  {da:'marmellata',a:'miele',q:0.8,dove:['dolce'],nota:'più dolce e senza pezzi di frutta'},
  {da:'nutella',a:'burroarachidi',q:1,dove:['crudo'],nota:'molto meno dolce e più sapido'},
- {da:'miele',a:'sciroppoacero',q:1,dove:['dolce'],nota:'più liquido: il dolce resta più umido'}
+ {da:'miele',a:'sciroppoacero',q:1,dove:['dolce'],nota:'più liquido: il dolce resta più umido'},
+
+ /* --- scambi fra unità diverse: la proporzione serve proprio a questo.
+        Una scatoletta di tonno sono ottanta grammi di sgombro, e mezzo
+        chilo di broccoli è un cavolfiore intero. --- */
+ {da:'tonno',a:'sgombro',q:80,dove:['crudo','padella'],nota:'più saporito e più grasso del tonno'},
+ {da:'tonno',a:'salmoneaffum',q:70,dove:['crudo'],nota:'molto più delicato: non coprirlo di limone'},
+ {da:'fagioli',a:'lenticchie',q:200,dove:['bollito','padella'],nota:'due etti a scatola, ma vanno lessate prima'},
+ {da:'ceci',a:'fagioli',q:1,dove:['bollito','padella','crudo'],nota:'più morbidi e meno saporiti'},
+ {da:'broccoli',a:'cavolfiore',q:0.0025,dove:['bollito','padella','forno'],
+  nota:'un cavolfiore intero sta a mezzo chilo di broccoli'},
+ {da:'cavolfiore',a:'broccoli',q:400,dove:['bollito','padella','forno'],nota:'più verdi e più dolci'},
+ {da:'origano',a:'erbeprovenza',q:10,dove:['forno','padella'],nota:'un cucchiaino: dentro c’è anche altro'},
+ {da:'uova',a:'amidomais',q:15,dove:['dolce'],nota:'un cucchiaio per uovo: lega, ma non gonfia'},
+ {da:'gnocchi',a:'pasta_mista',q:0.36,dove:['bollito'],nota:'la pasta pesa molto meno: 180 g, non mezzo chilo'},
+ {da:'pasta_mista',a:'gnocchi',q:2.8,dove:['bollito'],nota:'gli gnocchi pesano di più e saziano prima'},
+ {da:'pane',a:'crackers',q:0.5,dove:['crudo'],nota:'croccanti, ma non si inzuppano'},
+
+ /* --- cereali --- */
+ {da:'pastina',a:'riso',q:1,dove:['bollito'],nota:'il riso ci mette il doppio: mettilo prima'},
+ {da:'riso',a:'couscous',q:0.8,dove:['bollito'],nota:'il couscous non si cuoce: si copre d’acqua bollente'},
+ {da:'quinoa',a:'bulgur',q:1,dove:['bollito'],nota:'il bulgur è più morbido e meno nocciolato'},
+ {da:'spaghetti',a:'noodles',q:1,dove:['bollito'],nota:'i noodles cuociono in tre minuti: occhio'},
+ {da:'pangrattato',a:'semola',q:1,dove:['forno'],nota:'viene più croccante e più ruvido'},
+ {da:'pangrattato',a:'biscotti',q:1,dove:['dolce'],nota:'per una base di dolce vanno benissimo'},
+
+ /* --- latticini --- */
+ {da:'besciamella',a:'ricotta',q:0.8,dove:['forno'],nota:'più granulosa: allungala con un po’ di latte'},
+ {da:'yogurt',a:'latticello',q:1,dove:['dolce','lievitato'],nota:'stessa acidità, molto più liquido'},
+ {da:'latte',a:'yogurt',q:1,dove:['dolce'],nota:'più acidulo: il dolce viene più morbido'},
+ {da:'latte',a:'panna',q:1,dove:['dolce'],nota:'molto più ricco e più denso'},
+ {da:'panna',a:'lattecocco',q:1,dove:['padella'],nota:'senza latte, ma profuma di cocco: non va in tutti i piatti'},
+ {da:'philadelphia',a:'ricotta',q:1,dove:['crudo','dolce'],nota:'meno acida e più granulosa'},
+ {da:'parmigiano',a:'ricottasalata',q:1,dove:['crudo','padella'],nota:'più asciutta e più salata, non si scioglie'},
+
+ /* --- carne e pesce --- */
+ {da:'spezzatino',a:'coniglio',q:1,dove:['padella','forno'],nota:'cuoce prima: mezz’ora in meno'},
+ {da:'gamberi',a:'calamari',q:1,dove:['padella'],nota:'vogliono venti minuti, non due: mettili prima'},
+ {da:'alici',a:'nduja',q:0.5,dove:['padella'],nota:'piccante: cambia il piatto, ma funziona'},
+ {da:'macinato',a:'salsiccia',q:1,dove:['padella','forno'],nota:'è già salata e condita: non aggiungere sale'},
+ {da:'pollo',a:'seitan',q:0.8,dove:['padella'],nota:'va marinato, sennò sa di poco'},
+
+ /* --- verdura --- */
+ {da:'melanzane',a:'zucchine',q:1,dove:['forno','padella'],nota:'più acquose e meno saporite'},
+ {da:'funghi',a:'melanzane',q:1,dove:['padella'],nota:'carnose, reggono bene il sugo'},
+ {da:'peperoni',a:'zucchine',q:1,dove:['forno','padella'],nota:'più delicate, cuociono prima'},
+ {da:'zucca',a:'carote',q:1,dove:['bollito','forno'],nota:'meno dolce e più soda'},
+ {da:'patate',a:'topinambur',q:1,dove:['forno'],nota:'sanno di carciofo: il piatto cambia sapore'},
+ {da:'spinaci',a:'rucola',q:1,dove:['padella'],nota:'più pepata: mettila a fuoco spento'},
+ {da:'cipolla',a:'cipollotto',q:1,dove:['crudo'],nota:'più dolce e più delicato da crudo'},
+
+ /* --- spezie e condimenti --- */
+ {da:'paprika',a:'peperoncino',q:0.3,dove:['padella','forno'],nota:'molto più piccante: un terzo basta'},
+ {da:'capperi',a:'olive',q:2,dove:['padella'],nota:'meno salate: aggiusta di sale alla fine'},
+ {da:'senape',a:'maionese',q:1,dove:['crudo'],nota:'più grassa e meno pungente'},
+ {da:'balsamico',a:'aceto',q:0.7,dove:['crudo'],nota:'molto più aggressivo: mettine meno'},
+
+ /* --- dolce --- */
+ {da:'farina',a:'mandorle',q:1,dove:['dolce'],nota:'senza glutine: più umido, più ricco, non lievita uguale'},
+ {da:'zucchero',a:'zuccherovelo',q:1,dove:['dolce'],nota:'si scioglie prima: bene nelle creme a freddo'},
+ {da:'zucchero',a:'sciroppoacero',q:0.8,dove:['dolce'],nota:'liquido: togli un po’ di latte dall’impasto'},
+ {da:'biscotti',a:'gallette',q:1,dove:['dolce','crudo'],nota:'molto meno dolci: aggiungi miele'},
+ {da:'cioccolato',a:'nutella',q:1,dove:['dolce'],nota:'più dolce e più morbida: il dolce resta più molle'}
 ];
 /* note anche sugli equivalenti, dove la differenza c'è lo stesso */
 const NOTE_SCAMBIO={
@@ -4035,7 +4105,18 @@ const NOTE_SCAMBIO={
  'arance>mandarini':'i mandarini sono più dolci e meno succosi',
  'pangrattato>avena':'l’avena fa una crosta più rustica',
  'noci>pistacchi':'i pistacchi sono più dolci e meno amari',
- 'cereali>avena':'i fiocchi d’avena da crudi sono più duri: lasciali ammorbidire'
+ 'cereali>avena':'i fiocchi d’avena da crudi sono più duri: lasciali ammorbidire',
+ 'lenticchie>lenticchierosse':'le rosse si sfanno in venti minuti: diventa una crema',
+ 'orzo>farro':'il farro resta più sodo e ha il guscio più spesso',
+ 'melone>anguria':'l’anguria è molto più acquosa',
+ 'scarola>verza':'la verza è più dura: dieci minuti in più',
+ 'tortellini>pastafresca':'la pasta fresca non è ripiena: il piatto è meno sostanzioso',
+ 'spaghetti>noodles':'i noodles cuociono in tre minuti',
+ 'macinato>salsiccia':'la salsiccia è già salata e condita',
+ 'uvetta>datteri':'i datteri sono molto più dolci e appiccicosi',
+ 'patate>patatenovelle':'le novelle hanno la buccia sottile: non serve sbucciarle',
+ 'funghi>shiitake':'gli shiitake sono molto più profumati e un po’ gommosi',
+ 'insalata>songino':'il songino è più delicato: condiscilo all’ultimo'
 };
 /* dove si usa una ricetta: lo ricavo da come è scritta, una volta sola */
 const TIPI_MEMO={};
@@ -7032,7 +7113,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261120-1319';
+const VERSIONE='20261120-1408';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
