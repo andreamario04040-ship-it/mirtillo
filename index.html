@@ -3781,7 +3781,25 @@ const FAMIGLIE=[
  ['tofu','seitan','tempeh'],
  ['hummus','guacamole','tzatziki'],
  ['crackers','grissini','taralli','gallette'],
- ['patatine','nachos','popcorn']
+ ['patatine','nachos','popcorn'],
+ /* --- altri equivalenti, aggiunti dopo --- */
+ ['fagioli','ceci','fagiolineri'],
+ ['peperoni','friggitelli'],
+ ['fagiolini','taccole'],
+ ['piselli','fave'],
+ ['mele','pere'],
+ ['pesche','albicocche','susine'],
+ ['fragole','more','lamponi','mirtilli','ribes','fruttibosco'],
+ ['arance','mandarini'],
+ ['prosciuttocrudo','soppressata','roastbeef'],
+ ['sgombro','alici'],
+ ['scamorza','provola','caciocavallo'],
+ ['ricotta','robiola'],
+ ['semola','farinamanitoba'],
+ ['pangrattato','avena'],
+ ['noci','pistacchi','arachidi'],
+ ['patatinefritte','crocchette'],
+ ['bastoncini','cotolettesurg']
 ];
 /* La tabella si costruisce al primo uso, non qui: all'avvio la dispensa
    conosce solo i suoi alimenti, e tutto il resto del catalogo arriva un
@@ -3930,7 +3948,68 @@ const SCAMBI=[
  {da:'farina',a:'farinaintegrale',q:1,dove:['lievitato','dolce'],
   nota:'assorbe più acqua: se l’impasto è duro aggiungine un goccio'},
  {da:'uova',a:'banane',q:50,dove:['dolce'],
-  nota:'mezza banana schiacciata per uovo: lega, ma si sente il sapore'}
+  nota:'mezza banana schiacciata per uovo: lega, ma si sente il sapore'},
+
+ /* --- grassi --- */
+ {da:'burro',a:'ghee',q:1,dove:['padella','forno'],nota:'regge meglio il calore e non brucia'},
+ {da:'olio',a:'oliosesamo',q:0.3,dove:['padella'],nota:'molto più forte: va messo alla fine, non per cuocere'},
+
+ /* --- latticini --- */
+ {da:'panna',a:'besciamella',q:1,dove:['forno'],nota:'lega di più e gratina meglio'},
+ {da:'panna',a:'philadelphia',q:0.8,dove:['padella'],nota:'più acidulo: scioglilo con l’acqua di cottura'},
+ {da:'panna',a:'ricotta',q:0.8,dove:['padella'],nota:'va allungata con l’acqua di cottura, sennò resta granulosa'},
+ {da:'latte',a:'acqua',q:1,dove:['lievitato'],nota:'l’impasto viene meno morbido e meno dorato'},
+ {da:'latte',a:'lattecocco',q:1,dove:['dolce'],nota:'profuma di cocco e il dolce resta più umido'},
+ {da:'mascarpone',a:'ricotta',q:1,dove:['dolce'],nota:'meno grasso e meno dolce: un cucchiaio di zucchero in più'},
+ {da:'mascarpone',a:'philadelphia',q:1,dove:['dolce'],nota:'più acidulo, tiene bene lo stesso'},
+ {da:'pannamontare',a:'yogurtgreco',q:1,dove:['dolce'],nota:'non monta: la crema resta densa e un po’ acidula'},
+ {da:'parmigiano',a:'pangrattato',q:1,dove:['forno'],nota:'per la crosticina va bene, il sapore no'},
+
+ /* --- leganti e farine --- */
+ {da:'farina',a:'amidomais',q:0.5,dove:['padella'],nota:'lega il doppio e resta trasparente'},
+ {da:'amidomais',a:'farina',q:2,dove:['padella'],nota:'ci vuole il doppio e va cotta più a lungo'},
+ {da:'farina',a:'farinariso',q:1,dove:['dolce'],nota:'senza glutine: viene più friabile e si sbriciola'},
+ {da:'lievitobirra',a:'lievitomadre',q:3,dove:['lievitato'],nota:'ci mette il doppio del tempo a lievitare'},
+ {da:'bicarbonato',a:'lievito',q:2,dove:['dolce'],nota:'il lievito è più debole: ne serve il doppio'},
+
+ /* --- odori ed erbe --- */
+ {da:'cipolla',a:'porro',q:1.5,dove:['padella','bollito'],nota:'più dolce e più delicato'},
+ {da:'aglio',a:'scalogno',q:0.5,dove:['padella'],nota:'molto meno pungente: il piatto cambia carattere'},
+ {da:'rosmarino',a:'timo',q:1,dove:['forno','padella'],nota:'più delicato, meno resinoso'},
+ {da:'basilico',a:'origano',q:0.3,dove:['padella','forno'],nota:'secco e molto più forte: mettine un terzo'},
+ {da:'prezzemolo',a:'erbacipollina',q:1,dove:['crudo'],nota:'sa di cipolla: bene sulle uova e sulle patate'},
+
+ /* --- liquidi e acidi --- */
+ {da:'vino_bianco',a:'acqua',q:1,dove:['padella'],nota:'sfuma lo stesso, ma manca l’acidità'},
+ {da:'aceto',a:'acetoriso',q:1,dove:['crudo'],nota:'più dolce e più delicato'},
+ {da:'ketchup',a:'passata',q:1,dove:['crudo'],nota:'meno dolce e meno acido: aggiungi un pizzico di zucchero'},
+
+ /* --- proteine --- */
+ {da:'macinato',a:'lenticchie',q:1.2,dove:['padella','bollito'],
+  nota:'senza carne: lessa le lenticchie prima, sennò restano dure'},
+ {da:'macinato',a:'tofu',q:0.8,dove:['padella'],nota:'sbriciolato e rosolato bene, sennò resta insipido'},
+ {da:'pollo',a:'tofu',q:0.8,dove:['padella'],nota:'va insaporito molto di più'},
+ {da:'pancetta',a:'prosciuttocotto',q:1,dove:['padella'],nota:'molto meno grasso: aggiungi un filo d’olio'},
+ {da:'tonno',a:'ceci',q:1,dove:['crudo'],nota:'versione senza pesce, più sostanziosa'},
+ {da:'alici',a:'capperi',q:0.5,dove:['padella'],nota:'salano e insaporiscono, ma non è la stessa cosa'},
+ {da:'gamberi',a:'surimi',q:1,dove:['crudo'],nota:'già cotto e molto più dolce: mettilo alla fine'},
+
+ /* --- verdura --- */
+ {da:'zucchine',a:'melanzane',q:1,dove:['forno','padella'],nota:'le melanzane bevono più olio'},
+ {da:'patate',a:'zucca',q:1,dove:['forno','bollito'],nota:'più dolce e più acquosa: cuoce prima'},
+ {da:'funghi',a:'zucchine',q:1,dove:['padella'],nota:'non profumano, ma riempiono il piatto'},
+ {da:'carote',a:'zucca',q:1,dove:['bollito'],nota:'più dolce: la minestra viene più tonda'},
+ {da:'spinaci',a:'cicoria',q:1,dove:['padella','bollito'],nota:'amarognola: sbollentala prima'},
+
+ /* --- cereali --- */
+ {da:'pasta_mista',a:'riso',q:0.9,dove:['bollito'],nota:'il riso assorbe di più: controlla il sale'},
+ {da:'couscous',a:'bulgur',q:1,dove:['bollito'],nota:'il bulgur vuole quindici minuti, il couscous cinque'},
+
+ /* --- dolce --- */
+ {da:'cacao',a:'cioccolato',q:2,dove:['dolce'],nota:'è più grasso: togli un po’ di burro'},
+ {da:'marmellata',a:'miele',q:0.8,dove:['dolce'],nota:'più dolce e senza pezzi di frutta'},
+ {da:'nutella',a:'burroarachidi',q:1,dove:['crudo'],nota:'molto meno dolce e più sapido'},
+ {da:'miele',a:'sciroppoacero',q:1,dove:['dolce'],nota:'più liquido: il dolce resta più umido'}
 ];
 /* note anche sugli equivalenti, dove la differenza c'è lo stesso */
 const NOTE_SCAMBIO={
@@ -3945,25 +4024,43 @@ const NOTE_SCAMBIO={
  'stracchino>scamorza':'la scamorza fila e non si spalma',
  'prosciuttocrudo>prosciuttocotto':'il cotto è più dolce e meno saporito',
  'burro>olio':'più asciutto, meno tondo',
- 'funghi>champignon':'gli champignon profumano molto meno dei porcini'
+ 'funghi>champignon':'gli champignon profumano molto meno dei porcini',
+ 'fagioli>ceci':'i ceci restano più sodi e sanno di più',
+ 'mele>pere':'le pere si disfano prima: tienile a pezzi più grossi',
+ 'fragole>fruttibosco':'i frutti di bosco sono più aspri',
+ 'peperoni>friggitelli':'i friggitelli sono più dolci e la buccia è più sottile',
+ 'piselli>fave':'le fave hanno un gusto più deciso e vanno sbucciate',
+ 'prosciuttocrudo>roastbeef':'il roast beef è più magro e meno saporito',
+ 'scamorza>provola':'la provola affumicata si sente parecchio',
+ 'arance>mandarini':'i mandarini sono più dolci e meno succosi',
+ 'pangrattato>avena':'l’avena fa una crosta più rustica',
+ 'noci>pistacchi':'i pistacchi sono più dolci e meno amari',
+ 'cereali>avena':'i fiocchi d’avena da crudi sono più duri: lasciali ammorbidire'
 };
 /* dove si usa una ricetta: lo ricavo da come è scritta, una volta sola */
 const TIPI_MEMO={};
 /* queste cose vogliono l'acqua bollente, comunque sia scritta la ricetta */
+/* se c'è un grasso da scaldare o un sugo, c'è una padella */
+const GRASSI=new Set(['olio','burro','ghee','panna','pannacucina','besciamella',
+ 'passata','pelati','sugopronto','concentrato','guanciale','pancetta','bacon','lardo']);
 const BOLLITI=new Set(['pasta_mista','spaghetti','pasta_lunga','pastaintegrale',
  'pastasenzaglutine','pastina','lasagne','pastafresca','tortellini','gnocchi',
  'riso','risobasmati','risosushi','orzo','farro','polenta','couscous','quinoa',
  'bulgur','noodles','lenticchie','lenticchierosse','semola']);
 function tipiRicetta(r){
  if(TIPI_MEMO[r.id]) return TIPI_MEMO[r.id];
- const nome=normalizza(r.n), tag=normalizza(r.tag||''), passi=normalizza(r.steps.join(' '));
+ const nome=normalizza(r.n), tag=normalizza(r.tag||'');
+ const grezzi=r.steps.join(' ');          /* con gradi e accenti: "180°" */
+ const passi=normalizza(grezzi);
  const T=new Set();
  /* la cottura la dicono i passaggi, e solo le parole che vogliono dire
     davvero quella cosa: "olio a crudo" sta in mezzo a mille sughi cotti,
     e "zucchero" in mezzo a mille piatti salati. La prima versione di
     questa funzione ci cascava e faceva risultare la pasta al pomodoro
     un dolce crudo. */
- if(/forno|teglia|pirofila|gratin|grill/.test(passi)) T.add('forno');
+ /* molte ricette non dicono "forno", dicono "180° per 35 minuti": il
+    grado va cercato nel testo originale, perché normalizza() lo toglie */
+ if(/forno|teglia|pirofila|gratin|grill/.test(passi)||/\d{3}\s?°/.test(grezzi)) T.add('forno');
  if(/padella|rosola|soffritt|saltat|trifolat|friggi|frittura|tegame/.test(passi)) T.add('padella');
  if(/lievit|impast|frolla|sfoglia/.test(passi)) T.add('lievitato');
  if(/lessa|bollore|brodo|zuppa|minestra|acqua salata|pentola/.test(passi)) T.add('bollito');
@@ -3978,8 +4075,14 @@ function tipiRicetta(r){
     cosa c'è dentro, e in mancanza d'altro do per buone le due cotture
     normali: qualcosa che cuoce dieci minuti non si mangia crudo. */
  if(r.ing.some(([k])=>BOLLITI.has(k))) T.add('bollito');
- if(!T.has('crudo')&&!T.has('forno')&&!T.has('padella')&&!T.has('bollito')&&r.min>=8){
-  T.add('padella'); T.add('bollito');
+ /* un grasso o un sugo vogliono dire che da qualche parte c'è una padella,
+    anche quando i passaggi non la nominano ("gorgonzola sciolto nella
+    panna a fuoco basso") */
+ if(!T.has('crudo')&&r.ing.some(([k])=>GRASSI.has(k))) T.add('padella');
+ if(!T.has('crudo')&&!T.has('forno')&&!T.has('padella')&&!T.has('bollito')){
+  /* un dolce che non cuoce è un dolce al cucchiaio, non una padella */
+  if(dolce) T.add('crudo');
+  else if(r.min>=8){ T.add('padella'); T.add('bollito'); }
  }
  TIPI_MEMO[r.id]=T;
  return T;
@@ -6929,7 +7032,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261120-1307';
+const VERSIONE='20261120-1319';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
