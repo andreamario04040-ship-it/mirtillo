@@ -566,16 +566,39 @@ body.onboarding .app{padding-bottom:40px}
 
 /* ---------- i mirtilli in fondo alla home ---------- */
 .chip.grosso{min-width:62px;justify-content:center;font-size:19px;padding:14px 18px}
-/* ---------- i mirtilli che galleggiano sotto le domande ---------- */
-.coro-sec{margin-top:30px;pointer-events:none;user-select:none}
-.coro{display:block;width:100%;max-width:440px;margin:0 auto}
-.coro .stella{fill:#2B3585;opacity:.5}
-/* ognuno con il suo tempo e la sua altezza: così non sembra un carillon */
-.bacca-ferma{transform-box:fill-box;transform-origin:50% 50%;
-  animation:fluttua var(--dur) cubic-bezier(.45,0,.55,1) var(--rit) infinite alternate}
-@keyframes fluttua{
-  from{transform:translateY(0) rotate(-3deg)}
-  to{transform:translateY(calc(var(--su) * -1)) rotate(3deg)}
+/* ---------- il mirtillo che rimbalza sotto le domande ---------- */
+.solo-sec{margin-top:26px;pointer-events:none;user-select:none}
+.solo{display:block;width:100%;max-width:300px;margin:0 auto}
+.solo .stella{fill:#2B3585;opacity:.5}
+.solo-corpo{transform-box:fill-box;transform-origin:50% 100%;
+  animation:rimbalzo 1.9s infinite}
+.solo-ombra{fill:rgba(var(--ombra-scura),.17);transform-box:fill-box;transform-origin:50% 50%;
+  animation:rimbalzo-ombra 1.9s infinite}
+/* un ciclo intero: riposo, accucciata, volo, apice, caduta, botta, riposo.
+   Le curve stanno sui fotogrammi perché ogni tratto ha la sua: su si
+   rallenta, giù si accelera, la botta si assesta con un filo di molla. */
+@keyframes rimbalzo{
+  0%  {transform:translateY(0) scale(1,1);          animation-timing-function:cubic-bezier(.33,1,.68,1)}
+  10% {transform:translateY(2px) scale(1.14,.86);   animation-timing-function:cubic-bezier(.32,0,.67,0)}
+  22% {transform:translateY(-34px) scale(.92,1.14); animation-timing-function:cubic-bezier(.33,1,.68,1)}
+  44% {transform:translateY(-72px) scale(1,1);      animation-timing-function:cubic-bezier(.32,0,.67,0)}
+  /* la caduta è un tratto solo che accelera fino a terra: mettendoci una
+     tappa in mezzo con la curva sbagliata, il mirtillo rallentava a un
+     palmo dal suolo e poi cadeva di scatto */
+  76% {transform:translateY(-14px) scale(.9,1.16);  animation-timing-function:cubic-bezier(.55,0,1,.5)}
+  83% {transform:translateY(0) scale(1.22,.78);     animation-timing-function:cubic-bezier(.34,1.18,.64,1)}
+  91% {transform:translateY(0) scale(.97,1.04);     animation-timing-function:cubic-bezier(.33,1,.68,1)}
+  100%{transform:translateY(0) scale(1,1)}
+}
+/* l'ombra fa il contrario: si allarga e si scurisce quando il corpo
+   arriva, si stringe e sbiadisce quando è in alto */
+@keyframes rimbalzo-ombra{
+  0%  {transform:scale(1);opacity:1;          animation-timing-function:cubic-bezier(.33,1,.68,1)}
+  10% {transform:scale(1.1);opacity:1;        animation-timing-function:cubic-bezier(.32,0,.67,0)}
+  44% {transform:scale(.52);opacity:.45;      animation-timing-function:cubic-bezier(.55,0,1,.5)}
+  83% {transform:scale(1.16);opacity:1;       animation-timing-function:cubic-bezier(.34,1.18,.64,1)}
+  100%{transform:scale(1);opacity:1}
+}
 }
 .bosco-sec{margin-top:26px;margin-bottom:0;text-align:center}
 .bosco{display:block;width:100%;max-width:420px;margin:0 auto;overflow:visible}
@@ -3462,38 +3485,32 @@ function boscoHTML(){
    Questi non si toccano: galleggiano piano, a profondità diverse, e
    servono solo a non lasciare mezza pagina bianca sotto un bottone.
    Niente eventi, niente dito: pointer-events a zero e basta. */
-const CORO=[
- /* x, y, raggio, opacità, durata, ritardo, quanto sale.
-    Sparsi su tutta l'area e a profondità diverse: i piccoli e chiari
-    stanno dietro, i grandi e pieni davanti. Durate tutte diverse e senza
-    rapporti semplici fra loro, così non tornano mai in fila. */
- [52,62,30,1,7.5,0,16],[232,54,22,.9,8.6,1.1,12],[150,124,36,1,6.8,.5,20],
- [288,128,18,.75,9.4,2,11],[88,180,24,.9,7.9,1.5,14],[196,200,15,.6,10.6,.8,9],
- [262,224,27,.95,8.2,2.4,15],[120,252,19,.7,9.8,1.8,12],[34,214,13,.55,11.2,3,8],
- [176,302,31,.9,7.2,1.3,17],[292,298,16,.6,10.2,2.7,10],[66,314,21,.8,8.8,.3,13]
-];
-function coroHTML(){
- /* due gruppi annidati: quello fuori mette la bacca al suo posto, quello
-    dentro si muove. Se metto tutto sullo stesso gruppo, la trasformazione
-    del CSS cancella quella che la posiziona e finiscono tutte in un
-    angolo: è successo, e dallo schermo sembrava che non ci fossero. */
- const bacche=CORO.map(([x,y,r,op,dur,rit,su])=>`
-   <g transform="translate(${x},${y})" opacity="${op}">
-    <g class="bacca-ferma" style="--dur:${dur}s;--rit:${rit}s;--su:${su}px">
-     <circle r="${r}" fill="url(#coro-g)"/>
-     <ellipse cx="${(-r*0.36).toFixed(1)}" cy="${(-r*0.4).toFixed(1)}"
-       rx="${(r*0.34).toFixed(1)}" ry="${(r*0.22).toFixed(1)}" fill="#fff" opacity=".3"
-       transform="rotate(-26)"/>
-     <path class="stella" d="${stellaPath(r*0.3)}" transform="translate(0,${(-r*0.3).toFixed(1)})"/>
-    </g>
-   </g>`).join('');
+/* ===================== il mirtillo che rimbalza =====================
+   Uno solo, e il ciclo è quello della palla che rimbalza: si accuccia
+   prima di partire, si allunga mentre vola, si schiaccia quando tocca
+   terra. Senza quello schiacciarsi e allungarsi sembra un sasso tirato
+   con lo spago; con quello sembra che pesi qualcosa.
+   Sale rallentando e scende accelerando, come fa la gravità: sono le due
+   curve opposte, e sono scritte per esteso perché dentro i keyframes le
+   variabili del CSS non vengono lette. L'ombra fa il contrario del corpo:
+   grande e scura quando è a terra, piccola e chiara quando è in alto. */
+function mirtilloHTML(){
+ const r=46;
  return `
- <div class="coro-sec" aria-hidden="true">
-   <svg class="coro" viewBox="0 0 320 350" preserveAspectRatio="xMidYMid meet">
-     <defs><radialGradient id="coro-g" cx="34%" cy="28%" r="80%">
+ <div class="solo-sec" aria-hidden="true">
+   <svg class="solo" viewBox="0 22 220 192" preserveAspectRatio="xMidYMid meet">
+     <defs><radialGradient id="solo-g" cx="34%" cy="28%" r="80%">
        <stop offset="0" stop-color="#8E97E4"/><stop offset="52%" stop-color="#4A56B5"/>
        <stop offset="100%" stop-color="#333E96"/></radialGradient></defs>
-     ${bacche}
+     <ellipse class="solo-ombra" cx="110" cy="196" rx="${r*0.95}" ry="${r*0.22}"/>
+     <g transform="translate(110,150)">
+       <g class="solo-corpo">
+         <circle r="${r}" fill="url(#solo-g)"/>
+         <ellipse class="luce" cx="${-r*0.36}" cy="${-r*0.4}"
+           rx="${r*0.34}" ry="${r*0.22}" fill="#fff" opacity=".3" transform="rotate(-26)"/>
+         <path class="stella" d="${stellaPath(r*0.3)}" transform="translate(0,${-r*0.3})"/>
+       </g>
+     </g>
    </svg>
  </div>`;
 }
@@ -4897,24 +4914,24 @@ function vBenvenuto(){
  if(p==='persone') return chiedi('Quanti siete?')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${[1,2,3,4,5,6].map(n=>`<button class="chip grosso" aria-pressed="${S.people===n}" data-a="people" data-v="${n}">${n}</button>`).join('')}
-   </div>`+avanti()+coroHTML();
+   </div>`+avanti()+mirtilloHTML();
 
  if(p==='budget') return chiedi('Quanto a testa, a pasto?')
    +`<div class="card" style="padding:20px;text-align:center">
      <span class="num tnum" id="bdgval" style="font-family:var(--font-display);font-size:40px;color:var(--verde-scuro)">${eur(S.budget)}</span>
      <input class="rng" type="range" min="0.5" max="9" step="0.25" value="${S.budget}" data-a="budget" id="bdg" style="margin-top:14px">
-   </div>`+avanti()+coroHTML();
+   </div>`+avanti()+mirtilloHTML();
 
  if(p==='negozio') return chiedi('Dove fate la spesa?')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${STORES.map(x=>`<button class="chip" aria-pressed="${S.store===x}" data-a="store" data-v="${esc(x)}">${esc(x)}</button>`).join('')}
-   </div>`+avanti()+coroHTML();
+   </div>`+avanti()+mirtilloHTML();
 
  if(p==='impegno') return chiedi('Quanta voglia di cucinare?')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${[1,2,3,4,5].map(n=>`<button class="chip" aria-pressed="${S.diffMax===n}" data-a="diff" data-v="${n}"
        style="display:inline-flex;align-items:center;gap:8px"><span class="diff">${pallini(n)}</span>${DIFF[n]}</button>`).join('')}
-   </div>`+avanti()+coroHTML();
+   </div>`+avanti()+mirtilloHTML();
 
  if(p==='diete') return chiedi('Qualcosa che non mangiate?')
    +`<div class="inv">
@@ -4923,12 +4940,12 @@ function vBenvenuto(){
        <span class="col grow" style="text-align:left"><span class="name">${GRUPPI[g].n}</span></span>
        <span class="box" style="${S.diete[g]?'background:var(--ok);color:var(--ok-su);box-shadow:none':''}">${S.diete[g]?'✓':''}</span>
      </button>`).join('')}
-   </div>`+avanti()+coroHTML();
+   </div>`+avanti()+mirtilloHTML();
 
  if(p==='spesso') return chiedi('Cosa prendete sempre?','Spegnete quello che non comprate.')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${SPESSO.filter(k=>ING[k]).map(k=>`<button class="chip" aria-pressed="${!!ING[k].fav}" data-a="fav" data-v="${k}">${ING[k].e} ${esc(ING[k].n)}</button>`).join('')}
-   </div>`+avanti()+coroHTML();
+   </div>`+avanti()+mirtilloHTML();
 
  return `${barra}
    <div style="text-align:center;padding-top:6px">
@@ -4939,7 +4956,7 @@ function vBenvenuto(){
    <div style="margin-top:24px;display:flex;flex-direction:column;gap:10px">
      <button class="btn primary wide" data-a="onb-fine" data-v="spesa">📸 Carico lo scontrino</button>
      <button class="btn wide" data-a="onb-fine" data-v="home">Dopo</button>
-   </div>${coroHTML()}`;
+   </div>${mirtilloHTML()}`;
 }
 
 function finisciOnb(dove){
@@ -7261,7 +7278,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261125-1938';
+const VERSIONE='20261125-1952';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
