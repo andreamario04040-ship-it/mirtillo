@@ -566,6 +566,17 @@ body.onboarding .app{padding-bottom:40px}
 
 /* ---------- i mirtilli in fondo alla home ---------- */
 .chip.grosso{min-width:62px;justify-content:center;font-size:19px;padding:14px 18px}
+/* ---------- i mirtilli che galleggiano sotto le domande ---------- */
+.coro-sec{margin-top:30px;pointer-events:none;user-select:none}
+.coro{display:block;width:100%;max-width:440px;margin:0 auto}
+.coro .stella{fill:#2B3585;opacity:.5}
+/* ognuno con il suo tempo e la sua altezza: così non sembra un carillon */
+.bacca-ferma{transform-box:fill-box;transform-origin:50% 50%;
+  animation:fluttua var(--dur) cubic-bezier(.45,0,.55,1) var(--rit) infinite alternate}
+@keyframes fluttua{
+  from{transform:translateY(0) rotate(-3deg)}
+  to{transform:translateY(calc(var(--su) * -1)) rotate(3deg)}
+}
 .bosco-sec{margin-top:26px;margin-bottom:0;text-align:center}
 .bosco{display:block;width:100%;max-width:420px;margin:0 auto;overflow:visible}
 .bosco .terra{fill:var(--verde-bg)}
@@ -1205,7 +1216,7 @@ const CATALOGO=[
 ['frutpassione','Frutto della passione','🟣','pz',3,3.00,'ortofrutta','passione maracuja'],
 ['ribes','Ribes','🔴','g',125,2.80,'ortofrutta','ribes'],
 ['more','More','🫐','g',125,2.80,'ortofrutta','mora'],
-['albicoccsecche','Albicocche secche','🟠','g',200,2.60,'credenza','secche'],
+['albicoccsecche','Albicocche secche','🟠','g',200,2.60,'credenza',''],
 ['fichisecchi','Fichi secchi','🟤','g',250,3.00,'credenza','fico'],
 ['mirtillirossi','Mirtilli rossi secchi','🔴','g',150,2.80,'credenza','cranberry rossi'],
 ['bacchegoji','Bacche di goji','🔴','g',150,3.50,'credenza','goji'],
@@ -3447,6 +3458,45 @@ function boscoHTML(){
    <p class="bosco-dice" id="bosco-dice">Toccali.</p>
  </section>`;
 }
+/* I mirtilli che riempiono il vuoto sotto le domande del primo avvio.
+   Questi non si toccano: galleggiano piano, a profondità diverse, e
+   servono solo a non lasciare mezza pagina bianca sotto un bottone.
+   Niente eventi, niente dito: pointer-events a zero e basta. */
+const CORO=[
+ /* x, y, raggio, opacità, durata, ritardo, quanto sale.
+    Sparsi su tutta l'area e a profondità diverse: i piccoli e chiari
+    stanno dietro, i grandi e pieni davanti. Durate tutte diverse e senza
+    rapporti semplici fra loro, così non tornano mai in fila. */
+ [52,62,30,1,7.5,0,16],[232,54,22,.9,8.6,1.1,12],[150,124,36,1,6.8,.5,20],
+ [288,128,18,.75,9.4,2,11],[88,180,24,.9,7.9,1.5,14],[196,200,15,.6,10.6,.8,9],
+ [262,224,27,.95,8.2,2.4,15],[120,252,19,.7,9.8,1.8,12],[34,214,13,.55,11.2,3,8],
+ [176,302,31,.9,7.2,1.3,17],[292,298,16,.6,10.2,2.7,10],[66,314,21,.8,8.8,.3,13]
+];
+function coroHTML(){
+ /* due gruppi annidati: quello fuori mette la bacca al suo posto, quello
+    dentro si muove. Se metto tutto sullo stesso gruppo, la trasformazione
+    del CSS cancella quella che la posiziona e finiscono tutte in un
+    angolo: è successo, e dallo schermo sembrava che non ci fossero. */
+ const bacche=CORO.map(([x,y,r,op,dur,rit,su])=>`
+   <g transform="translate(${x},${y})" opacity="${op}">
+    <g class="bacca-ferma" style="--dur:${dur}s;--rit:${rit}s;--su:${su}px">
+     <circle r="${r}" fill="url(#coro-g)"/>
+     <ellipse cx="${(-r*0.36).toFixed(1)}" cy="${(-r*0.4).toFixed(1)}"
+       rx="${(r*0.34).toFixed(1)}" ry="${(r*0.22).toFixed(1)}" fill="#fff" opacity=".3"
+       transform="rotate(-26)"/>
+     <path class="stella" d="${stellaPath(r*0.3)}" transform="translate(0,${(-r*0.3).toFixed(1)})"/>
+    </g>
+   </g>`).join('');
+ return `
+ <div class="coro-sec" aria-hidden="true">
+   <svg class="coro" viewBox="0 0 320 350" preserveAspectRatio="xMidYMid meet">
+     <defs><radialGradient id="coro-g" cx="34%" cy="28%" r="80%">
+       <stop offset="0" stop-color="#8E97E4"/><stop offset="52%" stop-color="#4A56B5"/>
+       <stop offset="100%" stop-color="#333E96"/></radialGradient></defs>
+     ${bacche}
+   </svg>
+ </div>`;
+}
 const BOSCO_DICE=['Oh.','Ancora?','Uno alla volta.','Ehi.','Va bene, mi muovo.','Fermo lì.','Ancora uno?'];
 let boscoTocchi=new Set(), boscoFrase=0;
 function toccaBacca(g){
@@ -4847,24 +4897,24 @@ function vBenvenuto(){
  if(p==='persone') return chiedi('Quanti siete?')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${[1,2,3,4,5,6].map(n=>`<button class="chip grosso" aria-pressed="${S.people===n}" data-a="people" data-v="${n}">${n}</button>`).join('')}
-   </div>`+avanti();
+   </div>`+avanti()+coroHTML();
 
  if(p==='budget') return chiedi('Quanto a testa, a pasto?')
    +`<div class="card" style="padding:20px;text-align:center">
      <span class="num tnum" id="bdgval" style="font-family:var(--font-display);font-size:40px;color:var(--verde-scuro)">${eur(S.budget)}</span>
      <input class="rng" type="range" min="0.5" max="9" step="0.25" value="${S.budget}" data-a="budget" id="bdg" style="margin-top:14px">
-   </div>`+avanti();
+   </div>`+avanti()+coroHTML();
 
  if(p==='negozio') return chiedi('Dove fate la spesa?')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${STORES.map(x=>`<button class="chip" aria-pressed="${S.store===x}" data-a="store" data-v="${esc(x)}">${esc(x)}</button>`).join('')}
-   </div>`+avanti();
+   </div>`+avanti()+coroHTML();
 
  if(p==='impegno') return chiedi('Quanta voglia di cucinare?')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${[1,2,3,4,5].map(n=>`<button class="chip" aria-pressed="${S.diffMax===n}" data-a="diff" data-v="${n}"
        style="display:inline-flex;align-items:center;gap:8px"><span class="diff">${pallini(n)}</span>${DIFF[n]}</button>`).join('')}
-   </div>`+avanti();
+   </div>`+avanti()+coroHTML();
 
  if(p==='diete') return chiedi('Qualcosa che non mangiate?')
    +`<div class="inv">
@@ -4873,12 +4923,12 @@ function vBenvenuto(){
        <span class="col grow" style="text-align:left"><span class="name">${GRUPPI[g].n}</span></span>
        <span class="box" style="${S.diete[g]?'background:var(--ok);color:var(--ok-su);box-shadow:none':''}">${S.diete[g]?'✓':''}</span>
      </button>`).join('')}
-   </div>`+avanti();
+   </div>`+avanti()+coroHTML();
 
  if(p==='spesso') return chiedi('Cosa prendete sempre?','Spegnete quello che non comprate.')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${SPESSO.filter(k=>ING[k]).map(k=>`<button class="chip" aria-pressed="${!!ING[k].fav}" data-a="fav" data-v="${k}">${ING[k].e} ${esc(ING[k].n)}</button>`).join('')}
-   </div>`+avanti();
+   </div>`+avanti()+coroHTML();
 
  return `${barra}
    <div style="text-align:center;padding-top:6px">
@@ -4889,7 +4939,7 @@ function vBenvenuto(){
    <div style="margin-top:24px;display:flex;flex-direction:column;gap:10px">
      <button class="btn primary wide" data-a="onb-fine" data-v="spesa">📸 Carico lo scontrino</button>
      <button class="btn wide" data-a="onb-fine" data-v="home">Dopo</button>
-   </div>`;
+   </div>${coroHTML()}`;
 }
 
 function finisciOnb(dove){
@@ -5544,12 +5594,13 @@ const ABBREV={pst:'pasta',ltt:'latte',frn:'farina',zch:'zucchero',tnn:'tonno',
  extrav:'extravergine',extraverg:'extravergine',oliv:'oliva',pett:'petto',
  macin:'macinata',filett:'filetti',yog:'yogurt',marmell:'marmellata',
  confett:'confettura',biscott:'biscotti',frollin:'frollini',vasch:'vaschetta',
- conf:'confezione',sfus:'sfuso',surg:'surgelato',screm:'scremato',
+ conf:'confettura',sfus:'sfuso',surg:'surgelato',screm:'scremato',
  cipoll:'cipolle',carot:'carote',patat:'patate',
  prezzem:'prezzemolo',rosmar:'rosmarino',basil:'basilico',
  lievit:'lievito',farin:'farina',zuccher:'zucchero',caffe:'caffe',
  fett:'fette',bisc:'biscotti',form:'formaggio',gorg:'gorgonzola',
  bev:'bevanda',gratt:'grattugiato',grattug:'grattugiato',parz:'parziale',
+ ins:'insalata',cip:'cipolla',pom2:'pomodoro',
  lt:'latte',fettine:'fettine',fettina:'fettine',
  past:'pasta',sugh:'sugo',cioc:'cioccolato',ciocc:'cioccolato',
  nat:'naturale',integr:'integrale',sgoccio:'sgocciolato',affum:'affumicato',
@@ -5694,6 +5745,10 @@ function ripulisciRiga(raw){
      catalogo la conosce, non è sporcizia: è il nome del prodotto. */
   const pulita=normalizza(p0).replace(/[.\s]/g,'');
   if(pulita.length>=2 && (parolaNota(pulita)||ABBREV[pulita])) break;
+  /* "T0NN0" e "PETT0" sembrano numeri e finirebbero nel cestino: prima
+     raddrizzo le cifre lette male, poi conto le lettere */
+  const dritta=cifreStorte(pulita);
+  if(dritta!==pulita && (parolaNota(dritta)||(dritta.match(/[a-z]/g)||[]).length>=4)) break;
   const lettere=(p0.match(/[a-zA-ZàèéìòùÀÈÉÌÒÙ']/g)||[]).length;
   /* un token di tre lettere tutte maiuscole seguito da altro è quasi sempre
      sporcizia del margine ("pit", "Bc", "AN"): tengo solo parole vere */
@@ -5848,9 +5903,21 @@ function parolaNota(w){
    funzioni si chiamerebbero a vicenda per sempre. */
 function parolaNotaOEspansa(w){ return parolaNota(w)||parolaNota(espandi(w)); }
 
+/* Lo zero al posto della o, l'uno al posto della i: è l'errore che la
+   lettura fa più spesso, e dentro una parola si vede a occhio nudo
+   ("M0ZZARELLA", "T0NN0", "PATAT3"). Raddrizzo le cifre solo dentro i
+   gruppi che hanno almeno tre lettere, così "1LT", "500G" e "3X80" — dove
+   la cifra è un numero vero — restano come sono. */
+const CIFRE_STORTE={'0':'o','1':'i','3':'e','4':'a','5':'s','6':'g','8':'b'};
+function cifreStorte(w){
+ if(!/\d/.test(w)) return w;
+ if((w.match(/[a-z]/g)||[]).length<3) return w;
+ return w.replace(/[0134568]/g,c=>CIFRE_STORTE[c]||c);
+}
 function abbina(desc){
  const grezze=normalizza(desc).split(/[\s\/.-]+/)
-   .filter(w=>w.length>=2 && !/^\d/.test(w));
+   .filter(w=>w.length>=2 && !/^\d/.test(w))
+   .map(cifreStorte);
  /* Ogni parola vale due volte: per come è scritta e per come la allargo.
     "olive" resta "olive" e trova le olive, ma vale anche "oliva" e trova
     l'olio — solo un po' meno. Così la parola scritta per intero batte
@@ -5870,7 +5937,10 @@ function abbina(desc){
  /* i punti e le barre valgono come spazi anche qui, altrimenti
     "PROSC.CRUDO" non incontra mai l'alias "prosc crudo" e il prosciutto
     crudo diventa cotto */
- const intera=normalizza(desc).replace(/[\/.,-]+/g,' ').replace(/\s+/g,' ').trim();
+ /* anche la riga intera va raddrizzata, sennò le frasi non si trovano
+    mai nelle righe lette male ("F0RMAGGIO GRATT.") */
+ const intera=normalizza(desc).replace(/[\/.,-]+/g,' ').replace(/\s+/g,' ').trim()
+   .split(' ').map(cifreStorte).join(' ');
  let best={id:null,punti:0,quante:0,proprie:0};
  for(const id in ALIAS){
   if(!ING[id]) continue;
@@ -5880,7 +5950,11 @@ function abbina(desc){
   for(const alias of ALIAS[id]){
    /* un alias di più parole ("pomodori pelati", "petto di pollo") vale pieno
       ovunque compaia: è più specifico di una parola sola */
-   if(alias.includes(' ')&&intera.includes(alias)){ migliore=Math.max(migliore,1.05); prese.add(alias); continue; }
+   if(alias.includes(' ')&&intera.includes(alias)){
+    /* se la frase comincia dove comincia la riga, è il nome del prodotto;
+       se sta in mezzo, è un complemento ("tonno all'olio di oliva") */
+    const dove=intera.indexOf(alias);
+    migliore=Math.max(migliore,dove<=1?1.05:0.78); prese.add(alias); continue; }
    for(const {w,idx,peso} of parole){
     let p=0;
     if(w===alias) p=1;
@@ -5940,8 +6014,12 @@ function leggiRiga(grezza,colonne){
  const sporco=NONCIBO.find(w=>n.includes(w));
  if(sporco) return {scarto:'non è cibo',raw};
  if(NONRIGA.some(r=>r.test(n))) return {scarto:'riga non prodotto',raw};
- /* l'intestazione col nome della catena non è un prodotto */
- if(CATENE.some(c=>{const k=normalizza(c); return k.length>3&&n.includes(k);}))
+ /* L'intestazione col nome della catena non è un prodotto — ma "CONAD
+    PERCORSO QUALITA POLLO" sì, ed è il caso di tutti i prodotti a
+    marchio del supermercato. La differenza è il prezzo in fondo: una
+    intestazione non ce l'ha. */
+ if(CATENE.some(c=>{const k=normalizza(c); return k.length>3&&n.includes(k);})
+    && !/\d{1,4}[.,]\d{2}\s*[a-z]?\s*$/.test(n))
   return {scarto:'intestazione',raw};
  const pulita=colonne?{desc:colonne.desc,prezzo:colonne.prezzo}:ripulisciRiga(raw);
  const desc=pulita.desc, prezzo=pulita.prezzo;
@@ -7180,7 +7258,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261125-1921';
+const VERSIONE='20261125-1935';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
@@ -7256,16 +7334,20 @@ const FRASI={
  lattepas:['parzialmente scremato'], patatedolci:['patate dolci'],
  pastafresca:['pasta fresca','tagliatelle fresche','sfoglia fresca'],
  pizzasurgelata:['pizza surgelata'],
- parmigiano:['formaggio grattugiato','form grattugiato','form gratt','formaggio gratt'],
+ parmigiano:['formaggio grattugiato','form grattugiato','form gratt','formaggio gratt',
+   'formaggio da grattugiare','da grattugiare'],
  lievitobirra:['lievito birra','lievito di birra','cubetto lievito'],
  lattepas:['latte ps','latte parz','parz scremato','parzialmente scremato'],
  latte:['latte intero','lt intero','latte fresco intero'],
  lattevegetale:['bev soia','bev vegetale','bevanda soia','bevanda mandorla'],
  pelati:['pom pelati','pomodori pelati','pomodoro pelato'],
  te:['the verde','the nero','te verde','te nero','tisane','filtri'],
+ carote:['car novelle','carote novelle'],
+ albicoccsecche:['albicocche secche'], fichisecchi:['fichi secchi'],
+ pruguesecche:['prugne secche'], mirtillirossi:['mirtilli rossi'],
+ pomodorini:['pom ciliegino','pomodori ciliegini','pomodori pachino','pomodorini pachino'],
  tefreddo:['the freddo','te freddo','the pesca','the limone'],
  verduresurg:['verdure miste','verdure surgelate','contorno misto'],
- pomodorini:['pomodori pachino','pomodorini pachino'],
  pastasenzaglutine:['senza glutine','pasta senza glut'],
  patatinefritte:['patate fritte'], cotolettesurg:['cordon bleu'],
  prosciuttocotto:['prosciutto cotto','prosc cotto'],
@@ -7300,6 +7382,7 @@ function montaCatalogo(){
  const FORMATO=new Set(['filetti','fette','fettine','pronto','pronta','fresca','fresco',
   'fresche','misto','misti','miste','naturale','classico','classica','grande','piccolo',
   'vaschetta','busta','surgelato','surgelata','surgelate','sfuso','intero','intera',
+  'secche','secchi','essiccate','essiccati',
   'tagliato','affettato','grattugiato','cubetti','bustina','bottiglia','scatola','padano']);
  Object.keys(ING).forEach(k=>{
   const miei=new Set(ALIAS[k]||[]);
