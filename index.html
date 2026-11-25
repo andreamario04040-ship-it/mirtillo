@@ -5771,9 +5771,12 @@ function ripulisciRiga(raw){
 /* ha l'aria di una riga di prodotto? */
 function sembraProdotto(desc,prezzo){
  if(prezzo===null) return false;
- const lettere=(desc.match(/[a-zA-ZàèéìòùÀÈÉÌÒÙ]/g)||[]).length;
+ /* conto le lettere dopo aver raddrizzato le cifre lette male: "T0NN0"
+    ha tre lettere e due zeri, ma è una parola di cinque lettere */
+ const dritto=normalizza(desc).split(' ').map(cifreStorte).join(' ');
+ const lettere=(dritto.match(/[a-z]/g)||[]).length;
  if(lettere<4) return false;
- if(lettere/Math.max(1,desc.length)<0.45) return false;
+ if(lettere/Math.max(1,dritto.length)<0.45) return false;
  return true;
 }
 
@@ -7258,7 +7261,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261125-1935';
+const VERSIONE='20261125-1938';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
