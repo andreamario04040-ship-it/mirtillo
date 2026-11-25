@@ -565,6 +565,7 @@ body.onboarding .app{padding-bottom:40px}
 #toast.conazione{display:flex;align-items:center;gap:14px;pointer-events:auto}
 
 /* ---------- i mirtilli in fondo alla home ---------- */
+.chip.grosso{min-width:62px;justify-content:center;font-size:19px;padding:14px 18px}
 .bosco-sec{margin-top:26px;margin-bottom:0;text-align:center}
 .bosco{display:block;width:100%;max-width:420px;margin:0 auto;overflow:visible}
 .bosco .terra{fill:var(--verde-bg)}
@@ -914,16 +915,16 @@ const CATALOGO=[
 ['hamburger','Hamburger','🍔','pz',2,3.00,'frigo','svizzere vitello bovino burger'],
 ['cosciapollo','Cosce di pollo','🍗','g',600,4.00,'frigo','sovracosce fusi alette pollo'],
 ['tacchino','Fesa di tacchino','🦃','g',400,4.20,'frigo','tacchino fesa'],
-['lonza','Lonza di maiale','🐖','g',500,4.50,'frigo','arista lombo maiale braciole costine'],
+['lonza','Lonza di maiale','🐖','g',500,4.50,'frigo','arista lombo braciole'],
 ['spezzatino','Spezzatino','🥘','g',500,6.00,'frigo','spezzatino bovino manzo'],
 /* --- pesce --- */
-['merluzzo','Merluzzo','🐠','g',400,5.00,'freezer','nasello platessa filetti bianchi'],
+['merluzzo','Merluzzo','🐠','g',400,5.00,'freezer','nasello platessa'],
 ['orata','Orata','🐟','pz',2,6.50,'frigo','branzino spigola'],
 ['gamberi','Gamberi','🦐','g',300,6.00,'freezer','gamberetti mazzancolle code'],
 ['calamari','Calamari','🦑','g',400,5.50,'freezer','totani seppie anelli'],
 ['cozze','Cozze','🦪','g',1000,4.00,'frigo','frutti mare'],
 ['bastoncini','Bastoncini di pesce','🍢','pz',10,3.20,'freezer','findus capitan'],
-['alici','Alici','🐟','g',80,1.80,'credenza','acciughe filetti'],
+['alici','Alici','🐟','g',80,1.80,'credenza','acciughe'],
 ['sgombro','Sgombro','🐟','g',120,1.60,'credenza','sgombri maccarello'],
 /* --- dispensa: primi --- */
 ['pasta_lunga','Pasta lunga','🍝','g',500,0.90,'credenza','linguine bucatini vermicelli spaghettini capellini tagliatelle fettuccine'],
@@ -1002,7 +1003,7 @@ const CATALOGO=[
 ['lattevegetale','Bevanda vegetale','🥛','ml',1000,1.90,'frigo','mandorla soia avena riso alpro'],
 ['pannacucina','Panna da cucina','🥛','ml',200,1.00,'frigo','cucina chef vegetale'],
 ['yogurtfrutta','Yogurt alla frutta','🍨','pz',8,2.80,'frigo','vitasnella muller frutta pesca fragola'],
-['formaggini','Formaggini','🧀','pz',8,1.70,'frigo','sottilette fettine formaggino'],
+['formaggini','Formaggini','🧀','pz',8,1.70,'frigo','sottilette formaggino'],
 ['feta','Feta','🐑','g',200,2.40,'frigo','greco salamoia halloumi'],
 ['burrata','Burrata','🧀','g',125,2.60,'frigo','stracciatella bufala'],
 ['tofu','Tofu','🌱','g',200,2.20,'frigo','soia vegetale'],
@@ -1012,7 +1013,7 @@ const CATALOGO=[
 ['coniglio','Coniglio','🐰','g',800,7.00,'frigo','coniglio busto'],
 ['agnello','Agnello','🍖','g',800,9.00,'frigo','abbacchio costolette agnello'],
 ['costata','Costata','🥩','g',500,8.00,'frigo','fiorentina entrecote controfiletto tagliata'],
-['roastbeef','Roast beef','🥩','g',100,3.00,'frigo','roastbeef arrosto fettine'],
+['roastbeef','Roast beef','🥩','g',100,3.00,'frigo','roastbeef arrosto'],
 ['cotechino','Cotechino','🌭','g',500,3.50,'frigo','zampone'],
 ['porchetta','Porchetta','🥓','g',150,2.80,'frigo','porchetta'],
 ['pescespada','Pesce spada','🐟','g',300,6.50,'frigo','spada trancio'],
@@ -1076,7 +1077,7 @@ const CATALOGO=[
 ['naan','Pane naan','🫓','pz',4,2.30,'credenza','naan'],
 ['ghee','Ghee','🧈','g',250,4.10,'credenza','ghee chiarificato'],
 ['chutney','Chutney di mango','🫙','g',200,3.10,'credenza','chutney'],
-['pastacurry','Pasta di curry','🍲','g',200,3.30,'credenza','rossa verde thai'],
+['pastacurry','Pasta di curry','🍲','g',200,3.30,'credenza','thai'],
 ['tamarindo','Tamarindo','🟤','g',200,3.50,'credenza','tamarindo'],
 ['lemongrass','Citronella','🌾','pz',2,2.20,'ortofrutta','citronella lemongrass'],
 
@@ -1140,7 +1141,7 @@ const CATALOGO=[
 ['bicarbonatoammoniaca','Ammoniaca per dolci','🫙','g',50,1.20,'credenza','ammoniaca'],
 ['amidomais','Amido di mais','🌽','g',250,1.40,'credenza','maizena amido'],
 ['fecola','Fecola di patate','🥔','g',250,1.40,'credenza','fecola'],
-['pannamontare','Panna da montare','🍶','ml',250,1.60,'frigo','montare fresca'],
+['pannamontare','Panna da montare','🍶','ml',250,1.60,'frigo','montare'],
 ['cioccolatobianco','Cioccolato bianco','🤍','g',100,1.80,'credenza','bianco'],
 ['coccorape','Cocco rapé','🥥','g',150,1.90,'credenza','rape'],
 ['granella','Granella di nocciole','🌰','g',100,2.60,'credenza','granella'],
@@ -1152,7 +1153,7 @@ const CATALOGO=[
 ['caciocavallo','Caciocavallo','🧀','g',300,4.60,'frigo','caciocavallo'],
 ['provola','Provola','🧀','g',250,3.40,'frigo','provola affumicata'],
 ['ricottasalata','Ricotta salata','🧀','g',200,3.60,'frigo','infornata'],
-['grana','Grana Padano','🧀','g',200,3.10,'frigo','padano'],
+['grana','Grana Padano','🧀','g',200,3.10,'frigo','grana padano'],
 ['robiola','Robiola','🧀','g',150,2.60,'frigo','robiola'],
 ['fiordilatte','Fiordilatte','🧀','g',250,2.40,'frigo','fiordilatte'],
 ['porchettafette','Porchetta a fette','🐖','g',200,3.60,'frigo','fette'],
@@ -1180,7 +1181,6 @@ const CATALOGO=[
 ['costine','Costine di maiale','🍖','g',700,6.00,'frigo','costine puntine'],
 ['fegato','Fegato','🍖','g',300,3.50,'frigo','fegato'],
 ['trippa','Trippa','🍲','g',500,4.50,'frigo','trippa'],
-['tacchinofette','Fettine di tacchino','🦃','g',400,4.20,'frigo','fesa'],
 
 /* --- verdura --- */
 ['cimedirapa','Cime di rapa','🥬','g',500,2.30,'ortofrutta','rapa friarielli broccoletti'],
@@ -1196,7 +1196,6 @@ const CATALOGO=[
 ['sedanorapa','Sedano rapa','🥬','pz',1,2.20,'ortofrutta','rapa'],
 ['ravanelli','Ravanelli','🔴','g',200,1.40,'ortofrutta','ravanello'],
 ['zuccaviolina','Zucca violina','🎃','g',1000,2.20,'ortofrutta','violina delica'],
-['champignon','Champignon','🍄','g',300,2.20,'ortofrutta','champignon prataioli'],
 ['patatenovelle','Patate novelle','🥔','g',750,2.00,'ortofrutta','novelle'],
 
 /* --- frutta --- */
@@ -1218,7 +1217,6 @@ const CATALOGO=[
 ['farinamanitoba','Farina manitoba','🌾','g',1000,1.60,'credenza','manitoba forte'],
 ['farinariso','Farina di riso','🌾','g',500,1.80,'credenza','glutine'],
 ['pastafillo','Pasta fillo','🫓','g',250,2.60,'freezer','fillo filo'],
-['brodovegetale','Brodo vegetale pronto','🥣','ml',1000,1.40,'credenza','vegetale'],
 ['latticello','Latticello','🥛','ml',500,1.80,'frigo','latticello buttermilk'],
 
 /* --- non alimentari, per riconoscerli e scartarli --- */
@@ -3757,14 +3755,14 @@ const FAMIGLIE=[
  ['insalata','songino'],
  ['spinaci','bietole'],
  ['broccoli','cimedirapa'],
- ['funghi','funghi2','champignon','shiitake'],
+ ['funghi','funghi2','shiitake'],
  ['olive','olivekalamata'],
  ['alici','acciughesale'],
  ['merluzzo','baccala'],
  ['orata','branzino','trota'],
  ['calamari','seppie'],
  ['gamberi','scampi'],
- ['pollo','tacchinofette'],
+ ['pollo','tacchino'],
  ['spezzatino','vitello','ossobuco'],
  ['salsiccia','chorizo'],
  ['zucca','zuccaviolina'],
@@ -4079,7 +4077,29 @@ const SCAMBI=[
  {da:'zucchero',a:'zuccherovelo',q:1,dove:['dolce'],nota:'si scioglie prima: bene nelle creme a freddo'},
  {da:'zucchero',a:'sciroppoacero',q:0.8,dove:['dolce'],nota:'liquido: togli un po’ di latte dall’impasto'},
  {da:'biscotti',a:'gallette',q:1,dove:['dolce','crudo'],nota:'molto meno dolci: aggiungi miele'},
- {da:'cioccolato',a:'nutella',q:1,dove:['dolce'],nota:'più dolce e più morbida: il dolce resta più molle'}
+ {da:'cioccolato',a:'nutella',q:1,dove:['dolce'],nota:'più dolce e più morbida: il dolce resta più molle'},
+
+ /* --- quello che resta in dispensa quando è finito tutto il resto --- */
+ {da:'concentrato',a:'passata',q:4,dove:['padella','bollito'],nota:'molto più leggero: fallo restringere'},
+ {da:'passata',a:'sugopronto',q:1,dove:['padella','bollito'],nota:'è già condito: niente aglio, niente sale'},
+ {da:'maisscatola',a:'piselli',q:1,dove:['crudo'],nota:'meno dolci, ma lessali prima'},
+ {da:'olive',a:'capperi',q:0.5,dove:['padella','crudo'],nota:'molto più salati: metà dose e niente sale'},
+ {da:'feta',a:'ricottasalata',q:1,dove:['crudo'],nota:'meno salata e più asciutta'},
+ {da:'feta',a:'mozzarella',q:1,dove:['crudo'],nota:'molto più dolce: manca la punta salata'},
+ {da:'merluzzo',a:'bastoncini',q:0.05,dove:['forno'],nota:'già impanati: è un altro piatto, ma risolve la sera'},
+ {da:'caffe',a:'orzosolubile',q:1,dove:['crudo','dolce'],nota:'senza caffeina, e più dolce'},
+ {da:'prezzemolo',a:'prezzemolo2',q:1,dove:['padella','crudo'],nota:'lo stesso, solo venduto in vaschetta'},
+ {da:'nutella',a:'marmellata',q:1,dove:['crudo','dolce'],nota:'meno dolce e senza grassi'},
+ {da:'fette',a:'pane',q:25,dove:['crudo'],nota:'il pane va tostato, sennò si inzuppa'},
+ {da:'cereali',a:'biscotti',q:1,dove:['crudo'],nota:'più dolci: togli il miele'},
+ {da:'pancetta',a:'speck',q:1,dove:['padella'],nota:'affumicato: si sente parecchio'},
+ {da:'guanciale',a:'pancetta',q:1,dove:['padella'],nota:'meno grasso e meno dolce: la carbonara cambia un po’'},
+ {da:'cavolini',a:'broccoli',q:1,dove:['forno','bollito'],nota:'più teneri e meno amari'},
+ {da:'banane',a:'mele',q:1,dove:['dolce'],nota:'meno dolci e più acquose: un cucchiaio di zucchero in più'},
+ {da:'latte',a:'lattecocco',q:1,dove:['padella'],nota:'sta bene col curry, meno con tutto il resto'},
+ {da:'besciamella',a:'formaggini',q:0.5,dove:['forno'],nota:'sciolti con un goccio di latte fanno lo stesso lavoro'},
+ {da:'pangrattato',a:'polenta',q:1,dove:['forno','padella'],nota:'croccante come l’impanatura dei ristoranti'},
+ {da:'patate',a:'polenta',q:0.3,dove:['bollito'],nota:'è un altro contorno, ma sta con le stesse cose'}
 ];
 /* note anche sugli equivalenti, dove la differenza c'è lo stesso */
 const NOTE_SCAMBIO={
@@ -4184,15 +4204,22 @@ function scambiPer(k,tipi){
 const notaScambio=(da,a)=>NOTE_SCAMBIO[da+'>'+a]||NOTE_SCAMBIO[a+'>'+da]||'';
 
 function scegli(k,q,avere,usati,tipi){
- const basta=(id,qq)=>{const i=ING[id]; return i&&(i.staple?avere(id)>0:avere(id)>=qq);};
+ /* Se avete detto che una cosa non la mangiate, non ve la posso proporre
+    di nascosto come sostituto: il piatto chiedeva olio, io ci metto il
+    ghee, e il ghee è burro. L'ingrediente scritto nella ricetta resta,
+    perché quella ricetta l'avete scelta voi; sono le alternative che
+    devono rispettare le regole. */
+ const no=vietati();
+ const ammesso=id=>id===k||!no.includes(id);
+ const basta=(id,qq)=>{const i=ING[id]; return i&&ammesso(id)&&(i.staple?avere(id)>0:avere(id)>=qq);};
  if(!usati[k]&&basta(k,q)) return {uso:k,q};
  /* 1. gli equivalenti: stessa cosa, stessa quantità */
- const alt=sostituti(k).filter(a=>!usati[a]);
+ const alt=sostituti(k).filter(a=>!usati[a]&&ammesso(a));
  const pieno=alt.find(a=>basta(a,q));
  if(pieno) return {uso:pieno,q,nota:notaScambio(k,pieno)};
  /* 2. gli scambi che valgono in questa preparazione, con la loro proporzione */
  for(const x of scambiPer(k,tipi)){
-  if(usati[x.a]) continue;
+  if(usati[x.a]||!ammesso(x.a)) continue;
   const qq=Math.round(q*x.q*10)/10;
   if(basta(x.a,qq)) return {uso:x.a,q:qq,nota:x.nota,prop:x.q};
  }
@@ -4202,8 +4229,8 @@ function scegli(k,q,avere,usati,tipi){
  if(parz) return {uso:parz,q,nota:notaScambio(k,parz)};
  return {uso:k,q};
 }
-const altrimenti=k=>{ const visti=new Set();
- return sostituti(k).filter(a=>{ if(!ING[a]) return false;
+const altrimenti=k=>{ const visti=new Set(), no=vietati();
+ return sostituti(k).filter(a=>{ if(!ING[a]||no.includes(a)) return false;
   const n=normalizza(ING[a].n); if(visti.has(n)) return false; visti.add(n); return true; }); };
 
 function check(r,scale){
@@ -4404,7 +4431,7 @@ function vRicetta(){
           equivalenti, poi gli scambi buoni per questa preparazione */
        const tipi=tipiRicetta(r);
        const equivalenti=altrimenti(x.k).filter(a=>a!==x.uso).map(a=>ING[a].n.toLowerCase());
-       const contestuali=scambiPer(x.k,tipi).filter(z=>z.a!==x.uso)
+       const contestuali=scambiPer(x.k,tipi).filter(z=>z.a!==x.uso&&!vietati().includes(z.a))
          .map(z=>ING[z.a].n.toLowerCase()+(z.q!==1?` (${z.q<1?'meno':'di più'})`:''));
        const possibili=[...new Set([...equivalenti,...contestuali])];
        return `<div class="ing">
@@ -4790,94 +4817,78 @@ const SPESSO=['uova','latte','pasta_mista','spaghetti','riso','passata','pelati'
 
 const PASSI=['via','persone','budget','negozio','impegno','diete','spesso','dispensa'];
 
+/* ===================== il primo avvio =====================
+   Sette domande, una per schermata, una riga ciascuna. Prima c'era un
+   occhiello, un titolo, una spiegazione e spesso anche un riquadro che
+   diceva di nuovo la stessa cosa: chi apre un'app per la prima volta non
+   legge, guarda. Quindi resta la domanda e le risposte da toccare. */
 function vBenvenuto(){
  const p=PASSI[S.onb.passo]||'via';
- const avanti=(testo,attivo=true)=>`<button class="btn primary wide" data-a="onb-avanti" ${attivo?'':'disabled'}
-   style="margin-top:20px">${testo}</button>`;
- const barra=`<div class="flow" style="margin:0 0 18px">${PASSI.map((_,i)=>
+ const avanti=(testo='Avanti →')=>`<button class="btn primary wide" data-a="onb-avanti"
+   style="margin-top:22px">${testo}</button>`;
+ const barra=`<div class="flow" style="margin:6px 0 22px">${PASSI.map((_,i)=>
    `<i class="${i<=S.onb.passo?'on':''}"></i>`).join('')}</div>`;
- const testa=(occhiello,titolo,sotto)=>`
-   ${barra}
-   <p class="muted" style="margin:0 0 4px;text-transform:uppercase;letter-spacing:.08em;font-size:11.5px">${occhiello}</p>
-   <h1 style="font-size:27px;line-height:1.15">${titolo}</h1>
-   ${sotto?`<p class="muted" style="margin:7px 0 18px">${sotto}</p>`:'<div style="height:18px"></div>'}`;
+ /* i pallini dicono già a che punto siamo: il titolo non deve ripeterlo */
+ const chiedi=(domanda,aiuto)=>`${barra}
+   <h1 style="font-size:29px;line-height:1.12">${domanda}</h1>
+   ${aiuto?`<p class="muted" style="margin:8px 0 20px">${aiuto}</p>`:'<div style="height:20px"></div>'}`;
 
  if(p==='via') return `
-   <div style="padding-top:30px;text-align:center">
-     <div class="blob av-lg b2" style="margin:0 auto 18px;width:104px;height:104px;font-size:56px;background:var(--salvia)">🫐</div>
-     <h1 style="font-size:32px;line-height:1.1">Ciao, sono Mirtillo</h1>
-     <p class="muted" style="margin:10px auto 0;max-width:30ch">Tengo il conto di cosa avete in casa, vi dico cosa potete cucinare e preparo la lista della spesa da solo.</p>
-     <div class="card" style="padding:16px;margin-top:22px;text-align:left">
-       <p class="small" style="margin:0">Prima vi faccio qualche domanda: quante persone siete, quanto volete spendere, cosa non mangiate. Un minuto, e poi le proposte saranno su misura.</p>
-     </div>
+   <div style="padding-top:26px;text-align:center">
+     <div class="blob av-lg b2" style="margin:0 auto 20px;width:104px;height:104px;font-size:56px;background:var(--salvia)">🫐</div>
+     <h1 style="font-size:34px;line-height:1.08">Ciao, sono Mirtillo</h1>
+     <p class="muted" style="margin:12px auto 0;max-width:26ch;font-size:15px">Tengo io il conto
+       di cosa avete in casa.</p>
      ${avanti('Cominciamo →')}
-     <button class="btn sm ghost wide" data-a="onb-demo" style="margin-top:10px">Voglio solo curiosare con dati finti</button>
+     <button class="btn sm ghost wide" data-a="onb-demo" style="margin-top:10px">Solo un’occhiata</button>
      ${boscoHTML()}
    </div>`;
 
- if(p==='persone') return testa('1 di 7','Per quante persone cucinate?',
-   'Scalo le quantità delle ricette e la lista della spesa.')
+ if(p==='persone') return chiedi('Quanti siete?')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
-     ${[1,2,3,4,5,6].map(n=>`<button class="chip" aria-pressed="${S.people===n}" data-a="people" data-v="${n}">${n===1?'1 persona':n+' persone'}</button>`).join('')}
-   </div>`+avanti('Avanti →');
+     ${[1,2,3,4,5,6].map(n=>`<button class="chip grosso" aria-pressed="${S.people===n}" data-a="people" data-v="${n}">${n}</button>`).join('')}
+   </div>`+avanti();
 
- if(p==='budget') return testa('2 di 7','Quanto volete spendere a pasto?',
-   'Per persona, solo gli ingredienti del piatto. Si cambia quando volete.')
-   +`<div class="card" style="padding:18px">
-     <div class="row" style="margin-bottom:8px"><span class="small grow">a pasto, a testa</span>
-       <span class="num tnum" id="bdgval" style="font-family:var(--font-display);font-size:28px;color:var(--verde-scuro)">${eur(S.budget)}</span></div>
-     <input class="rng" type="range" min="0.5" max="9" step="0.25" value="${S.budget}" data-a="budget" id="bdg">
-     <div class="row"><span class="muted grow">0,50 €</span><span class="muted">9,00 €</span></div>
-   </div>`+avanti('Avanti →');
+ if(p==='budget') return chiedi('Quanto a testa, a pasto?')
+   +`<div class="card" style="padding:20px;text-align:center">
+     <span class="num tnum" id="bdgval" style="font-family:var(--font-display);font-size:40px;color:var(--verde-scuro)">${eur(S.budget)}</span>
+     <input class="rng" type="range" min="0.5" max="9" step="0.25" value="${S.budget}" data-a="budget" id="bdg" style="margin-top:14px">
+   </div>`+avanti();
 
- if(p==='negozio') return testa('3 di 7','Dove fate la spesa di solito?',
-   'Così non vi propongo prodotti che lì non trovate. Lo correggo da solo quando leggo uno scontrino.')
+ if(p==='negozio') return chiedi('Dove fate la spesa?')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${STORES.map(x=>`<button class="chip" aria-pressed="${S.store===x}" data-a="store" data-v="${esc(x)}">${esc(x)}</button>`).join('')}
-   </div>`+avanti('Avanti →');
+   </div>`+avanti();
 
- if(p==='impegno') return testa('4 di 7','Quanto vi va di cucinare?',
-   'Posso restare sui piatti svelti o proporvi anche quelli lunghi.')
+ if(p==='impegno') return chiedi('Quanta voglia di cucinare?')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${[1,2,3,4,5].map(n=>`<button class="chip" aria-pressed="${S.diffMax===n}" data-a="diff" data-v="${n}"
        style="display:inline-flex;align-items:center;gap:8px"><span class="diff">${pallini(n)}</span>${DIFF[n]}</button>`).join('')}
-   </div>
-   <p class="small" style="margin-top:12px;color:var(--ink-3)">${S.diffMax===5
-     ? 'Nessun limite: vi propongo di tutto.'
-     : `Niente di più impegnativo di «${DIFF[S.diffMax].toLowerCase()}».`}</p>`+avanti('Avanti →');
+   </div>`+avanti();
 
- if(p==='diete') return testa('5 di 7','C’è qualcosa che non mangiate?',
-   'Le ricette che lo contengono non ve le propongo più.')
+ if(p==='diete') return chiedi('Qualcosa che non mangiate?')
    +`<div class="inv">
      ${Object.keys(GRUPPI).map(g=>`<button class="item ingr" data-a="dieta" data-v="${g}" style="width:100%">
        <span class="tile av-sm">${GRUPPI[g].e}</span>
-       <span class="col grow" style="text-align:left"><span class="name">Niente ${GRUPPI[g].n.toLowerCase()}</span></span>
+       <span class="col grow" style="text-align:left"><span class="name">${GRUPPI[g].n}</span></span>
        <span class="box" style="${S.diete[g]?'background:var(--ok);color:var(--ok-su);box-shadow:none':''}">${S.diete[g]?'✓':''}</span>
      </button>`).join('')}
-   </div>
-   <p class="small" style="margin-top:12px;color:var(--ink-3)">Se mangiate tutto, tirate dritto.</p>`+avanti('Avanti →');
+   </div>`+avanti();
 
- if(p==='spesso'){
-  const n=SPESSO.filter(k=>ING[k]&&ING[k].fav).length;
-  return testa('6 di 7','Cosa comprate quasi sempre?',
-   'Ho già acceso i soliti: spegnete quelli che non prendete mai. Le proposte partiranno da qui.')
+ if(p==='spesso') return chiedi('Cosa prendete sempre?','Spegnete quello che non comprate.')
    +`<div class="chips" style="flex-wrap:wrap;overflow:visible;margin:0">
      ${SPESSO.filter(k=>ING[k]).map(k=>`<button class="chip" aria-pressed="${!!ING[k].fav}" data-a="fav" data-v="${k}">${ING[k].e} ${esc(ING[k].n)}</button>`).join('')}
-   </div>
-   <p class="small" style="margin-top:12px;color:var(--ink-3)">${n?`${n} selezionat${n===1?'o':'i'}.`:'Puoi anche saltare.'}</p>`
-   +avanti('Avanti →');
- }
+   </div>`+avanti();
 
- return testa('7 di 7','La dispensa parte vuota',
-   'È giusto così: si riempie con la vostra prima spesa, non con roba finta.')
-   +`<div class="card" style="padding:18px">
-     <div class="row"><span class="blob av" style="background:var(--salvia)">🧺</span>
-       <span class="col grow"><strong style="font-family:var(--font-display);font-size:17px;color:var(--verde-scuro)">Come la riempite</strong>
-       <span class="small">Fotografate lo scontrino, oppure spuntate a mano quello che avete preso.</span></span></div>
+ return `${barra}
+   <div style="text-align:center;padding-top:6px">
+     <div class="blob av-lg b2" style="margin:0 auto 18px;width:92px;height:92px;font-size:46px;background:var(--salvia)">🧺</div>
+     <h1 style="font-size:29px;line-height:1.12">La dispensa è vuota</h1>
+     <p class="muted" style="margin:10px auto 0;max-width:26ch">Si riempie con la vostra spesa.</p>
    </div>
-   <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px">
-     <button class="btn primary wide" data-a="onb-fine" data-v="spesa">Carico la spesa adesso</button>
-     <button class="btn wide" data-a="onb-fine" data-v="home">Lo faccio dopo</button>
+   <div style="margin-top:24px;display:flex;flex-direction:column;gap:10px">
+     <button class="btn primary wide" data-a="onb-fine" data-v="spesa">📸 Carico lo scontrino</button>
+     <button class="btn wide" data-a="onb-fine" data-v="home">Dopo</button>
    </div>`;
 }
 
@@ -5537,7 +5548,14 @@ const ABBREV={pst:'pasta',ltt:'latte',frn:'farina',zch:'zucchero',tnn:'tonno',
  cipoll:'cipolle',carot:'carote',patat:'patate',
  prezzem:'prezzemolo',rosmar:'rosmarino',basil:'basilico',
  lievit:'lievito',farin:'farina',zuccher:'zucchero',caffe:'caffe',
- fett:'fette',bisc:'biscotti',form:'formaggio',gorg:'gorgonzola'};
+ fett:'fette',bisc:'biscotti',form:'formaggio',gorg:'gorgonzola',
+ bev:'bevanda',gratt:'grattugiato',grattug:'grattugiato',parz:'parziale',
+ lt:'latte',fettine:'fettine',fettina:'fettine',
+ past:'pasta',sugh:'sugo',cioc:'cioccolato',ciocc:'cioccolato',
+ nat:'naturale',integr:'integrale',sgoccio:'sgocciolato',affum:'affumicato',
+ scat:'scatola',bott:'bottiglia',bust:'bustina',vaschett:'vaschetta',
+ pomodorin:'pomodorini',insal:'insalata',pecorin:'pecorino',mozzarell:'mozzarella',
+ prosciutt:'prosciutto',tacch:'tacchino',merluz:'merluzzo',gamber:'gamberi'};
 
 /* parole che dicono "non si mangia" */
 const NONCIBO=['detersiv','detergent','deodorant','shampoo','bagnoschiuma','sapone',
@@ -5574,7 +5592,7 @@ const ALIAS={uova:['uova','uovo','ovoprodotto'],
  latte:['latte','granarolo','parmalat','zymil','accadi'],
  yogurt:['yogurt','yoghurt','activia','muller','vipiteno','yomo','fage','skyr'],
  mozzarella:['mozzarella','fiordilatte','galbani','santalucia','bufala'],
- parmigiano:['parmigiano','grana','reggiano','padano','grattugiato'],
+ parmigiano:['parmigiano','reggiano','grattugiato'],
  pecorino:['pecorino','romano'],guanciale:['guanciale','pancetta'],burro:['burro'],
  panna:['panna'],pomodorini:['pomodorini','ciliegino','ciliegini','datterini'],
  pollo:['pollo','fesa','sovracoscia','amadori','petto di pollo','petto pollo'],
@@ -5604,12 +5622,31 @@ const ALIAS={uova:['uova','uovo','ovoprodotto'],
  zucchine:['zucchine','zucchina']};
 
 /* a cosa serve: se non mangiate pesce, le ricette col pesce non ve le propongo */
+/* Queste liste erano rimaste a quando gli alimenti erano cinquantadue:
+   "niente carne" voleva dire niente pollo, niente macinato e niente
+   guanciale, e tutto il resto passava. Adesso ci sono tutti, perché una
+   regola che vale a metà è peggio di nessuna regola: ti fa fidare. */
 const GRUPPI={
- carne:{n:'Carne',e:'🥩',k:['pollo','macinato','guanciale']},
- pesce:{n:'Pesce',e:'🐟',k:['tonno','salmone']},
- maiale:{n:'Maiale',e:'🥓',k:['guanciale']},
- latticini:{n:'Latticini',e:'🧀',k:['latte','yogurt','mozzarella','parmigiano','pecorino','burro','panna']},
- uova:{n:'Uova',e:'🥚',k:['uova']}
+ carne:{n:'Carne',e:'🥩',k:['pollo','cosciapollo','tacchino','macinato',
+  'lonza','spezzatino','vitello','ossobuco','costine','fegato','trippa','coniglio',
+  'agnello','costata','roastbeef','anatra','faraona','hamburger','salsiccia','wurstel',
+  'guanciale','pancetta','bacon','lardo','prosciuttocotto','prosciuttocrudo','speck',
+  'bresaola','salame','mortadella','soppressata','porchetta','porchettafette','nduja',
+  'chorizo','cotechino','cotechinopre','cotolettesurg']},
+ pesce:{n:'Pesce',e:'🐟',k:['tonno','tonno2','tonnofresco','salmone','salmoneaffum',
+  'salmonegaffum','merluzzo','baccala','orata','branzino','trota','sogliola','pescespada',
+  'sgombro','alici','acciughesale','bottarga','gamberi','scampi','calamari','seppie',
+  'cozze','vongole','polpo','surimi','bastoncini']},
+ maiale:{n:'Maiale',e:'🥓',k:['guanciale','pancetta','bacon','lardo','salsiccia','wurstel',
+  'lonza','costine','prosciuttocotto','prosciuttocrudo','speck','salame','mortadella',
+  'soppressata','porchetta','porchettafette','nduja','chorizo','cotechino','cotechinopre']},
+ latticini:{n:'Latticini',e:'🧀',k:['latte','lattepas','lattesenza','latticello','yogurt',
+  'yogurtgreco','yogurtfrutta','burro','ghee','panna','pannacucina','pannamontare','pannaacida',
+  'besciamella','mozzarella','fiordilatte','burrata','scamorza','provola','caciocavallo',
+  'parmigiano','grana','pecorino','ricotta','ricottasalata','robiola','stracchino',
+  'philadelphia','mascarpone','gorgonzola','taleggio','emmental','cheddar','brie','roquefort',
+  'feta','formaggini','tzatziki','gelato']},
+ uova:{n:'Uova',e:'🥚',k:['uova','maionese','pastafresca','tortellini']}
 };
 const vietati=()=>Object.keys(S.diete||{}).filter(g=>S.diete[g])
   .flatMap(g=>GRUPPI[g]?GRUPPI[g].k:[]);
@@ -5652,6 +5689,11 @@ function ripulisciRiga(raw){
  const pezzi=testa.split(/\s+/).filter(Boolean);
  while(pezzi.length>1){
   const p0=pezzi[0];
+  /* Le parole corte in testa di solito sono sporcizia del margine, ma non
+     sempre: "LT INTERO", "BEV. SOIA", "THE VERDE". Se quella parola il
+     catalogo la conosce, non è sporcizia: è il nome del prodotto. */
+  const pulita=normalizza(p0).replace(/[.\s]/g,'');
+  if(pulita.length>=2 && (parolaNota(pulita)||ABBREV[pulita])) break;
   const lettere=(p0.match(/[a-zA-ZàèéìòùÀÈÉÌÒÙ']/g)||[]).length;
   /* un token di tre lettere tutte maiuscole seguito da altro è quasi sempre
      sporcizia del margine ("pit", "Bc", "AN"): tengo solo parole vere */
@@ -5687,9 +5729,13 @@ function nomePresentabile(desc){
  return t.charAt(0).toUpperCase()+t.slice(1);
 }
 
+/* "LATTE P.S." e "OLIO E.V.O.": le casse scrivono le sigle con i punti.
+   Separandole diventano lettere singole, che poi butto via perche' troppo
+   corte, e la sigla sparisce. Quindi prima le incollo. */
+const siglePuntate=t=>String(t).replace(/\b(?:[a-zA-Z]\.){2,}/g,m=>m.replace(/\./g,''));
 const senzaAccenti=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'');
 function normalizza(t){
- return senzaAccenti(String(t||'').toLowerCase())
+ return siglePuntate(senzaAccenti(String(t||'').toLowerCase()))
   .replace(/[^a-z0-9,.\s\/x-]/g,' ').replace(/\s+/g,' ').trim();
 }
 /* distanza di Levenshtein, per reggere gli errori di lettura (RISQ per RISO) */
@@ -5713,6 +5759,11 @@ const somiglianza=(a,b)=>{const L=Math.max(a.length,b.length); return L?1-lev(a,
 /* una parola abbreviata vale la sua versione lunga */
 function espandi(parola){
  if(ABBREV[parola]) return ABBREV[parola];
+ /* "verde" comincia per "verd" e "fettine" per "fett", ma sono parole
+    intere, non abbreviazioni: se le allungo, il tè verde diventa un
+    contorno di verdure e le fettine di pollo diventano fette biscottate.
+    Una parola che il catalogo conosce già resta com'è. */
+ if(parolaNota(parola)) return parola;
  if(parola.length>=4){
   for(const k in ABBREV) if(k.length>=4 && parola.startsWith(k)) return ABBREV[k];
  }
@@ -5785,13 +5836,17 @@ function parolaNota(w){
   NOTE=new Set();
   for(const id in ALIAS) (ALIAS[id]||[]).forEach(a=>{ if(!a.includes(' ')) NOTE.add(a); });
  }
- if(NOTE.has(w)||NOTE.has(espandi(w))) return true;
+ if(NOTE.has(w)) return true;
  if(w.length>=6){
   const radice=w.slice(0,-1);
   for(const v of 'aeio') if(NOTE.has(radice+v)) return true;
  }
  return false;
 }
+/* la stessa domanda, ma allungando prima le abbreviazioni. Sta a parte
+   perché espandi() chiede a sua volta se la parola è nota, e le due
+   funzioni si chiamerebbero a vicenda per sempre. */
+function parolaNotaOEspansa(w){ return parolaNota(w)||parolaNota(espandi(w)); }
 
 function abbina(desc){
  const grezze=normalizza(desc).split(/[\s\/.-]+/)
@@ -5809,17 +5864,19 @@ function abbina(desc){
  /* "la parola che conta è la prima" vale dalla prima parola vera: la
     sporcizia che l'OCR trova nel margine ("VON PASS. POMODORO") non si
     prende il posto d'onore e non fa retrocedere il nome del prodotto */
- let base=grezze.findIndex(parolaNota);
+ let base=grezze.findIndex(parolaNotaOEspansa);
  if(base<0) base=0;
  if(!parole.length) return {id:null,punti:0};
  /* i punti e le barre valgono come spazi anche qui, altrimenti
     "PROSC.CRUDO" non incontra mai l'alias "prosc crudo" e il prosciutto
     crudo diventa cotto */
  const intera=normalizza(desc).replace(/[\/.,-]+/g,' ').replace(/\s+/g,' ').trim();
- let best={id:null,punti:0,quante:0};
+ let best={id:null,punti:0,quante:0,proprie:0};
  for(const id in ALIAS){
   if(!ING[id]) continue;
-  let migliore=0; const prese=new Set();
+  let migliore=0, proprie=0; const prese=new Set();
+  /* le parole del mio nome, per sapere se la riga parla proprio di me */
+  const mieParole=new Set(normalizza((ING[id]&&ING[id].n)||'').split(/\s+/).filter(w=>w.length>2));
   for(const alias of ALIAS[id]){
    /* un alias di più parole ("pomodori pelati", "petto di pollo") vale pieno
       ovunque compaia: è più specifico di una parola sola */
@@ -5847,17 +5904,27 @@ function abbina(desc){
     }
     if(!p) continue;
     p*=peso;
-    if(p>=0.86) prese.add(idx);
+    if(p>=0.86){ prese.add(idx);
+     /* la parola sta anche nel MIO nome, non solo nella mia lista di
+        sinonimi? Allora quella riga parla di me. È la differenza fra la
+        provola (che si chiama Provola) e la scamorza, che la teneva
+        soltanto come sinonimo. */
+     if(mieParole.has(w)||mieParole.has(alias)) proprie++;
+    }
     if(idx>base) p*=0.8;
     if(p>migliore) migliore=p;
    }
   }
   /* a pari punteggio vince chi spiega più parole della riga: "LATTE PARZ.
      SCREMATO" è il parzialmente scremato, non il latte intero, perché del
-     latte intero quella riga avrebbe spiegato solo la prima parola */
+     latte intero quella riga avrebbe spiegato solo la prima parola.
+     E a pari copertura vince chi di quelle parole ne ha nel proprio nome:
+     senza questo, la voce più vecchia del catalogo si teneva per sempre
+     le parole delle voci aggiunte dopo. */
   if(migliore>best.punti+1e-9 ||
-     (migliore>best.punti-1e-9 && prese.size>best.quante))
-   best={id,punti:migliore,quante:prese.size};
+     (migliore>best.punti-1e-9 && prese.size>best.quante) ||
+     (migliore>best.punti-1e-9 && prese.size===best.quante && proprie>best.proprie))
+   best={id,punti:migliore,quante:prese.size,proprie};
  }
  return {id:best.id,punti:best.punti};
 }
@@ -7113,7 +7180,7 @@ function svuotaDispensa(){
    - a ogni apertura e a ogni rientro chiedo al service worker di aggiornarsi;
    - e controllo un segnavolta minuscolo, versione.json, che è l'unica prova
      sicura: se non combacia con quella in esecuzione, ricarico. */
-const VERSIONE='20261120-1408';
+const VERSIONE='20261125-1921';
 let ricaricando=false;
 
 function ricaricaPerAggiornamento(silenzioso){
@@ -7179,7 +7246,7 @@ document.addEventListener('visibilitychange',()=>{
 const FRASI={
  salmoneaffum:['salmone affumicato','salmone affum'],
  yogurtgreco:['yogurt greco'], yogurtfrutta:['yogurt alla frutta','yogurt frutta'],
- panebauletto:['pane bauletto','pane in cassetta','pane per toast'],
+ panebauletto:['pane bauletto','pane in cassetta','pane per toast','pancarre','pan carre'],
  balsamico:['aceto balsamico'], lievitobirra:['lievito di birra'],
  zuccherovelo:['zucchero a velo'], zuccherocanna:['zucchero di canna'],
  fruttibosco:['frutti di bosco'], pastasfoglia:['pasta sfoglia','pasta brise'],
@@ -7187,7 +7254,19 @@ const FRASI={
  risobasmati:['riso basmati','riso venere','riso integrale'],
  pastaintegrale:['pasta integrale'], lattesenza:['senza lattosio'],
  lattepas:['parzialmente scremato'], patatedolci:['patate dolci'],
- pastafresca:['pasta fresca'], pizzasurgelata:['pizza surgelata'],
+ pastafresca:['pasta fresca','tagliatelle fresche','sfoglia fresca'],
+ pizzasurgelata:['pizza surgelata'],
+ parmigiano:['formaggio grattugiato','form grattugiato','form gratt','formaggio gratt'],
+ lievitobirra:['lievito birra','lievito di birra','cubetto lievito'],
+ lattepas:['latte ps','latte parz','parz scremato','parzialmente scremato'],
+ latte:['latte intero','lt intero','latte fresco intero'],
+ lattevegetale:['bev soia','bev vegetale','bevanda soia','bevanda mandorla'],
+ pelati:['pom pelati','pomodori pelati','pomodoro pelato'],
+ te:['the verde','the nero','te verde','te nero','tisane','filtri'],
+ tefreddo:['the freddo','te freddo','the pesca','the limone'],
+ verduresurg:['verdure miste','verdure surgelate','contorno misto'],
+ pomodorini:['pomodori pachino','pomodorini pachino'],
+ pastasenzaglutine:['senza glutine','pasta senza glut'],
  patatinefritte:['patate fritte'], cotolettesurg:['cordon bleu'],
  prosciuttocotto:['prosciutto cotto','prosc cotto'],
  prosciuttocrudo:['prosciutto crudo','prosc crudo'],
@@ -7213,9 +7292,18 @@ function montaCatalogo(){
     a qualcuno non viene regalata a nessun altro. */
  const assegnate=new Set();
  Object.keys(ALIAS).forEach(k=>(ALIAS[k]||[]).forEach(w=>assegnate.add(w)));
+ /* Dal nome ricavo i sinonimi, ma non tutte le parole di un nome dicono
+    che cos'è una cosa: "Filetti di salmone" è salmone, non filetti, e
+    "Verdure surgelate" non si prende la parola "surgelate". Se le lascio
+    passare, la prima voce che le prende se le tiene per sempre e tutte le
+    righe che le contengono finiscono da lei. */
+ const FORMATO=new Set(['filetti','fette','fettine','pronto','pronta','fresca','fresco',
+  'fresche','misto','misti','miste','naturale','classico','classica','grande','piccolo',
+  'vaschetta','busta','surgelato','surgelata','surgelate','sfuso','intero','intera',
+  'tagliato','affettato','grattugiato','cubetti','bustina','bottiglia','scatola','padano']);
  Object.keys(ING).forEach(k=>{
   const miei=new Set(ALIAS[k]||[]);
-  const nome=normalizza(ING[k].n).split(/\s+/).filter(w=>w.length>3);
+  const nome=normalizza(ING[k].n).split(/\s+/).filter(w=>w.length>3&&!FORMATO.has(w));
   /* la prima parola del nome è di chi porta quel nome: "Birra" è la birra,
      non il lievito di birra, anche se lui l'aveva chiesta prima */
   const dalNome=nome.filter((w,i)=>w.length>3 && (i===0||miei.has(w)||!assegnate.has(w)));
